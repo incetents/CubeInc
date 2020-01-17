@@ -1,0 +1,6 @@
+
+CubeInc Unity Project to do list:
+
+-> FPS movement needs some tweaking
+-> raycast blocks to add or delete
+-> texturing (sprite atlas generated)
