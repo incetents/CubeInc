@@ -31,6 +31,8 @@ public class RuntimeManager : MonoBehaviour
 
     void Start()
     {
+        Random.InitState(0);
+
         // Set
         for (int x = -1; x <= 1; x++)
         {

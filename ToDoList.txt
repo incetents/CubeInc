@@ -1,6 +1,26 @@
 
 CubeInc Unity Project to do list:
 
--> FPS movement needs some tweaking
+Phase 1:
+
+-> noclip mode
+-> wireframe mode for chunks
 -> raycast blocks to add or delete
+-> import cubeinc textures
 -> texturing (sprite atlas generated)
+-> base perlin noise
+-> create chunks around camera
+-> only make chunks in view active
+-> custom block data for textures
+-> custom block data imported in dictionary
+
+Phase 2:
+
+-> save changed chunks
+-> transparency pass
+-> custom lighting (store light level in block)
+-> UI selection -> edit/add (Arrow/gunpowder)
+-> commands
+	-> Different tools
+		-> shape: ball, square, line
+		-> selection: (fill, delete, move, rotate, copy, paste)

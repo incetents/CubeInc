@@ -466,7 +466,6 @@ public class Chunk : MonoBehaviour
             m_position.z * MaxSize + HalfMaxSize
             );
         // Draw Around Extents of Chunk
-        DebugExtension.DrawLocalCube(Matrix4x4.Translate(Position), Size);
-        //DebugExtension.DrawLocalCube(transform, Vector3.one);
+        //DebugExtension.DrawLocalCube(Matrix4x4.Translate(Position), Size);
     }
 }
