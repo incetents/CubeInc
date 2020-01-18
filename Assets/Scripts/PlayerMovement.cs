@@ -14,10 +14,13 @@ public class PlayerMovement : MonoBehaviour
     public float SpeedMultOverTime = 5.5f;
     public float GroundDistance = 0.4f;
     public float Gravity = -0.5f;
-    public float JumpHeight = 73.1f;
+    public float JumpVelocity = 70.64f;
     public float TerminalVelocity = -11.63f;
     public float NoclipSpeed = 4.0f;
     public float NoclipSpeedModifier = 2.0f;
+    public float ForgivenessJumpTime = 0.2f;
+    public float DropJumpVeclocity = 10.0f;
+    public float AirSpeedModifier = 0.25f;
     [Header("Floor Collision")]
     public LayerMask GroundMask;
 
@@ -26,9 +29,12 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController m_controller;
     private Vector3             m_velocity = new Vector3();
     private bool                m_isGrounded = false;
+    private bool                m_isMoving = false;
     private Vector3             m_previousPosition = new Vector3();
     private float               m_currentSpeed = 0.0f;
     private float               m_timeMoving = 0.0f;
+    private float               m_fallTime = 0.0f;
+    private float               m_speedTime = 0.0f;
 
 
     void Awake()
@@ -49,20 +55,39 @@ public class PlayerMovement : MonoBehaviour
             // Change in XZ Movement
             Vector3 XZ_Change = new Vector3(m_controller.transform.position.x - m_previousPosition.x, 0, m_controller.transform.position.z - m_previousPosition.z);
             if (XZ_Change.sqrMagnitude > 0.0f)
+            {
+                m_isMoving = true;
                 m_timeMoving += Time.deltaTime;
+            }
             else
+            {
+                m_isMoving = false;
                 m_timeMoving = 0.0f;
+            }
 
             // Record prev position
             m_previousPosition = m_controller.transform.position;
 
             // Speed
-            float t = Mathf.Clamp01(m_timeMoving * SpeedMultOverTime);
+            if (m_isMoving)
+            {
+                if (m_isGrounded)
+                    m_speedTime += m_timeMoving * SpeedMultOverTime;
+                else
+                    m_speedTime += m_timeMoving * SpeedMultOverTime * AirSpeedModifier;
+            }
+            else
+                m_speedTime = 0.0f;
+
+            float t = Mathf.Clamp01(m_speedTime);
             m_currentSpeed = Mathf.Lerp(MinSpeed, TopSpeed, t * t);
 
             // Noclip
             if (m_player.m_noclip)
             {
+                // Remove Velocity
+                m_velocity = Vector3.zero;
+
                 float noclip_speed = (Input.GetKey(m_player.m_key_run)) ? NoclipSpeed * NoclipSpeedModifier : NoclipSpeed;
 
                 // Move Direction
@@ -116,9 +141,14 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 // Jump
-                if (Input.GetKeyDown(m_player.m_key_jump) && m_isGrounded)
+                if (Input.GetKeyDown(m_player.m_key_jump) && (m_isGrounded || m_fallTime < ForgivenessJumpTime))
                 {
-                    m_velocity.y = Mathf.Sqrt(JumpHeight * -2.0f * Gravity);
+                    m_velocity.y = Mathf.Sqrt(JumpVelocity * -2.0f * Gravity);
+                }
+                // Letting go of jump
+                if(!Input.GetKey(m_player.m_key_jump))
+                {
+                    m_velocity.y = Mathf.Min(m_velocity.y, DropJumpVeclocity);
                 }
 
                 // Falling
@@ -140,6 +170,12 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                     m_isGrounded = false;
+
+                // Calc falltime
+                if (!m_isGrounded)
+                    m_fallTime += Time.deltaTime;
+                else
+                    m_fallTime = 0.0f;
 
                 // On Ground
                 if (m_isGrounded && m_velocity.y < 0.1f)

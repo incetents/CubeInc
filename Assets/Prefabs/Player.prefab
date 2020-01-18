@@ -148,6 +148,10 @@ MonoBehaviour:
   m_key_jump: 32
   m_key_crouch: 306
   m_key_run: 304
+  m_paused: 0
+  m_noclip: 0
+  m_debugMenu: 1
+  m_wireframeMode: 0
 --- !u!114 &3455089365732452219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,15 +178,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08a9c19d185abe44fb0f1d2da48c097c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MinSpeed: 3.55
+  MinSpeed: 2.47
   TopSpeed: 4.39
-  SpeedMultOverTime: 4.33
+  SpeedMultOverTime: 1.97
   GroundDistance: 0.4
-  Gravity: -0.5
-  JumpHeight: 73.1
+  Gravity: -0.47
+  JumpVelocity: 70.64
   TerminalVelocity: -11.63
   NoclipSpeed: 4
   NoclipSpeedModifier: 4
+  ForgivenessJumpTime: 0.12
+  DropJumpVeclocity: 4.32
+  AirSpeedModifier: 0.48
   GroundMask:
     serializedVersion: 2
     m_Bits: 256

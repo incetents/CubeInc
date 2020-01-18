@@ -1,10 +1,21 @@
 
 CubeInc Unity Project to do list:
 
+Completed:
+
+-> base chunk generation
+-> base physics
+-> noclip
+-> pause
+-> wireframe
+-> chunks store [][][] blocks
+	-> air block used for empty space
+-> jump forgiveness
+-> letting go of jump will immediately drop down upward velocity
+-> moving in air will have t increase slower
+
 Phase 1:
 
--> noclip mode
--> wireframe mode for chunks
 -> raycast blocks to add or delete
 -> import cubeinc textures
 -> texturing (sprite atlas generated)

@@ -2,33 +2,58 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class BlockDictionary
+public static class BlockAppendix
 {
-    public static List<BlockData> m_blockData = new List<BlockData>();
+    private static Dictionary<uint, BlockData> data = new Dictionary<uint, BlockData>();
+
+    // Special case for air
+    private static BlockData air = new BlockData(0);
+
+    public static BlockData GetData(uint id)
+    {
+        if (id == 0)
+            return air;
+        else if(data.ContainsKey(id))
+            return data[id];
+        else
+            Debug.LogError("Getting missing BlockData, ID: " + id);
+
+        return null;
+    }
+    public static void SetData(BlockData newData)
+    {
+        // Air is specific case
+        if (newData.m_id == 0)
+            air = newData;
+        else
+            data.Add(newData.m_id, newData);
+    }
 }
 
 public class BlockData
 {
     // Data
     public uint m_id;
-    public uint m_subId;
+    public bool m_air;
 
-    BlockData(uint _id, uint _subId)
+    public BlockData(uint _id)
     {
         m_id = _id;
-        m_subId = _subId;
+        m_air = (_id == 0);
     }
 }
 
 public class Block
 {
     public BlockData m_data;
-    public Vector3Int m_localPosition;
+    //public Vector3Int m_localPosition;
+    //public uint m_subId;
 
     // Behaviour
-    public Block(Vector3Int localPosition)
+    public Block(uint id)
     {
-        m_localPosition = localPosition;
+        //m_localPosition = localPosition;
+        m_data = BlockAppendix.GetData(id);
     }
 }
 

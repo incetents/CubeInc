@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     [HideInInspector] public bool m_paused = false;
     [HideInInspector] public bool m_noclip = false;
     [HideInInspector] public bool m_debugMenu = true;
+    [HideInInspector] public bool m_wireframeMode = false;
 
     // Behaviour
     private void Awake()
@@ -43,6 +44,10 @@ public class Player : MonoBehaviour
         // Toggle Debugmenu
         if (Input.GetKeyDown(KeyCode.Tab))
             m_debugMenu = !m_debugMenu;
+
+        // Toggle Wireframe
+        if (Input.GetKeyDown(KeyCode.F1))
+            m_wireframeMode = !m_wireframeMode;
 
         // Toggle Noclip
         if (Input.GetKeyDown(KeyCode.N))

@@ -214,7 +214,7 @@ PrefabInstance:
     - target: {fileID: 3433871980397564887, guid: adf9fb3f82ebd164db848e7ca215bf28,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.5633144
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3433871980397564887, guid: adf9fb3f82ebd164db848e7ca215bf28,
         type: 3}
@@ -224,7 +224,7 @@ PrefabInstance:
     - target: {fileID: 3433871980397564887, guid: adf9fb3f82ebd164db848e7ca215bf28,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.3286457
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3433871980397564887, guid: adf9fb3f82ebd164db848e7ca215bf28,
         type: 3}
@@ -429,7 +429,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &954217840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -558,6 +558,8 @@ MonoBehaviour:
     type: 3}
   globalMaterial_Default: {fileID: 2100000, guid: 04c92974934cec946b8afa1f9b373091,
     type: 2}
+  globalMaterial_Wireframe: {fileID: 2100000, guid: 091024ef26f50f1479c9d5576367bf14,
+    type: 2}
 --- !u!1 &1164013040
 GameObject:
   m_ObjectHideFlags: 0
@@ -617,8 +619,9 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: DebugInfo
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 36974fc6d5913724496c71efd3b6c9bb, type: 2}
+  m_sharedMaterial: {fileID: -5465555206617694775, guid: 36974fc6d5913724496c71efd3b6c9bb,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -643,13 +646,13 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 17
+  m_fontSizeBase: 17
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_textAlignment: 257
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -1164,7 +1167,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2013448349
 Transform:
   m_ObjectHideFlags: 0

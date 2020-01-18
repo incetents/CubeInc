@@ -6,6 +6,7 @@ public static class GlobalData
 {
     public static GameObject prefab_chunk;
     public static Material material_default;
+    public static Material material_wireframe;
 
     public static void NullCheck(Object obj)
     {
@@ -20,23 +21,24 @@ public class RuntimeManager : MonoBehaviour
     // Global Data
     public GameObject globalPrefab_Chunk;
     public Material globalMaterial_Default;
-
-    private Dictionary<int, Dictionary<int, Dictionary<int, Chunk>>> m_chunks;
+    public Material globalMaterial_Wireframe;
 
     void Awake()
     {
+        Random.InitState(0);
+
+        // Block
+        BlockAppendix.SetData(new BlockData(1));
+
         GlobalData.prefab_chunk = globalPrefab_Chunk;
         GlobalData.material_default = globalMaterial_Default;
-    }
-
-    void Start()
-    {
-        Random.InitState(0);
+        GlobalData.material_wireframe = globalMaterial_Wireframe;
 
         // Set
         for (int x = -1; x <= 1; x++)
         {
-            for (int y = -1; y <= 1; y++)
+            int y = 0;
+            //for (int y = -1; y <= 1; y++)
             {
                 for (int z = -1; z <= 1; z++)
                 {
@@ -44,7 +46,7 @@ public class RuntimeManager : MonoBehaviour
                     Chunk chunk = chunkObject.GetComponent<Chunk>();
                     chunk.m_position = new Vector3Int(x, y, z);
                     ChunkManager.add(chunk);
-
+        
                     chunk.generateTest();
                 }
             }
@@ -52,7 +54,8 @@ public class RuntimeManager : MonoBehaviour
         // Build
         for (int x = -1; x <= 1; x++)
         {
-            for (int y = -1; y <= 1; y++)
+            int y = 0;
+            //for (int y = -1; y <= 1; y++)
             {
                 for (int z = -1; z <= 1; z++)
                 {

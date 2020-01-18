@@ -186,41 +186,42 @@ public class ChunkBuilder
 
     public ChunkBuilder(Vector3Int index)
     {
-        
-
         Chunk chunk = ChunkManager.getChunk(index);
         if (chunk == null)
+        {
+            Debug.LogError("Missing Chunk for building: " + index);
             return;
+        }
 
         ChunkData blocks = chunk.m_blocks;
         Vector3 position = index * Chunk.MaxSize;
 
-        foreach (var XYZSection in blocks.data)
+        for(int x = 0; x < Chunk.MaxSize; x++)
         {
-            foreach (var YZSection in XYZSection.Value)
+            for (int y = 0; y < Chunk.MaxSize; y++)
             {
-                foreach (var ZSection in YZSection.Value)
+                for (int z = 0; z < Chunk.MaxSize; z++)
                 {
-                    Block block = ZSection.Value;
+                    Block block = blocks.data[x, y, z];
+                    if (block.m_data.m_air)
+                        continue;
 
-                    offset = new Vector3(
-                        block.m_localPosition.x,
-                        block.m_localPosition.y,
-                        block.m_localPosition.z
-                        ) + position;
+                    Vector3Int localPos = new Vector3Int(x, y, z);
 
-                    Vector3Int RightCheck = block.m_localPosition + vecRight;
-                    Vector3Int LeftCheck  = block.m_localPosition + vecLeft;
-                    Vector3Int UpCheck    = block.m_localPosition + vecUp;
-                    Vector3Int DownCheck  = block.m_localPosition + vecDown;
-                    Vector3Int FrontCheck = block.m_localPosition + vecForward;
-                    Vector3Int BackCheck  = block.m_localPosition + vecBack;
+                    offset = localPos + position;
+
+                    Vector3Int RightCheck = localPos + vecRight;
+                    Vector3Int LeftCheck  = localPos + vecLeft;
+                    Vector3Int UpCheck    = localPos + vecUp;
+                    Vector3Int DownCheck  = localPos + vecDown;
+                    Vector3Int FrontCheck = localPos + vecForward;
+                    Vector3Int BackCheck  = localPos + vecBack;
 
                     // LEFT // Out of bounds check
                     if (LeftCheck.x < 0)
                     {
                         Chunk other = ChunkManager.getChunk(index + vecLeft);
-                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(Chunk.MaxSize - 1, block.m_localPosition.y, block.m_localPosition.z))))
+                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(Chunk.MaxSize - 1, y, z))))
                             AddFace_Left();
                     }
                     // LEFT // Inbounds Check
@@ -234,7 +235,7 @@ public class ChunkBuilder
                     if (RightCheck.x > Chunk.MaxSize - 1)
                     {
                         Chunk other = ChunkManager.getChunk(index + vecRight);
-                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(0, block.m_localPosition.y, block.m_localPosition.z))))
+                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(0, y, z))))
                             AddFace_Right();
                     }
                     // RIGHT // Inbounds Check
@@ -248,7 +249,7 @@ public class ChunkBuilder
                     if (DownCheck.y < 0)
                     {
                         Chunk other = ChunkManager.getChunk(index + vecDown);
-                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(block.m_localPosition.x, Chunk.MaxSize - 1, block.m_localPosition.z))))
+                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(x, Chunk.MaxSize - 1, z))))
                             AddFace_Down();
                     }
                     // DOWN // Inbounds Check
@@ -262,7 +263,7 @@ public class ChunkBuilder
                     if (UpCheck.y > Chunk.MaxSize - 1)
                     {
                         Chunk other = ChunkManager.getChunk(index + vecUp);
-                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(block.m_localPosition.x, 0, block.m_localPosition.z))))
+                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(x, 0, z))))
                             AddFace_Up();
                     }
                     // UP // Inbounds Check
@@ -276,7 +277,7 @@ public class ChunkBuilder
                      if (BackCheck.z < 0)
                      {
                          Chunk other = ChunkManager.getChunk(index + vecBack);
-                         if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(block.m_localPosition.x, block.m_localPosition.y, Chunk.MaxSize - 1))))
+                         if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(x, y, Chunk.MaxSize - 1))))
                              AddFace_Back();
                      }
                      // BACK // Inbounds Check
@@ -290,7 +291,7 @@ public class ChunkBuilder
                      if (FrontCheck.z > Chunk.MaxSize - 1)
                      {
                          Chunk other = ChunkManager.getChunk(index + vecForward);
-                         if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(block.m_localPosition.x, block.m_localPosition.y, 0))))
+                         if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(x, y, 0))))
                              AddFace_Front();
                      }
                      // FRONT // Inbounds Check
@@ -308,41 +309,38 @@ public class ChunkBuilder
 
 public class ChunkData
 {
-    public Dictionary<int, Dictionary<int, Dictionary<int, Block>>> data = new Dictionary<int, Dictionary<int, Dictionary<int, Block>>>(); //
+    public Block[,,] data = new Block[Chunk.MaxSize, Chunk.MaxSize, Chunk.MaxSize];
 
-    public void add(Block block)
+    public ChunkData()
     {
-        Vector3Int index = block.m_localPosition;
+        for(int x = 0; x < Chunk.MaxSize; x++)
+        {
+            for (int y = 0; y < Chunk.MaxSize; y++)
+            {
+                for (int z = 0; z < Chunk.MaxSize; z++)
+                {
+                    data[x, y, z] = new Block(0);
+                }
+            }
+        }
+    }
 
-        // Check if X section is missing
-        if (!data.ContainsKey(index.x))
-            data.Add(index.x, new Dictionary<int, Dictionary<int, Block>>());
-
-        // Check if Y section is missing
-        if (!data[index.x].ContainsKey(index.y))
-            data[index.x].Add(index.y, new Dictionary<int, Block>());
-
-        // Edit Z Section
-        data[index.x][index.y][index.z] = block;
+    public void add(Vector3Int index, Block block)
+    {
+        data[index.x, index.y, index.z] = block;
     }
 
     public Block getBlock(Vector3Int index)
     {
         if (!checkEmpty(index))
-            return data[index.x][index.y][index.z];
+            return data[index.x, index.y, index.z];
 
         return null;
     }
 
     public bool checkEmpty(Vector3Int index)
     {
-        if (!data.ContainsKey(index.x))
-            return true;
-
-        if (!data[index.x].ContainsKey(index.y))
-            return true;
-
-        if (!data[index.x][index.y].ContainsKey(index.z))
+        if (data[index.x, index.y, index.z].m_data.m_air)
             return true;
 
         return false;
@@ -367,8 +365,6 @@ public static class ChunkManager
 
         // Edit Z Section
         data[index.x][index.y][index.z] = chunk;
-
-        //Debug.Log("new chunk:" + index);
     }
 
     public static Chunk getChunk(Vector3Int index)
@@ -400,8 +396,11 @@ public class Chunk : MonoBehaviour
     // Constants
     public static readonly int MaxSize = 5;
 
+    // Object
+    private Player m_player;
+
     // Data
-    public ChunkData m_blocks = new ChunkData(); //
+    public ChunkData  m_blocks = new ChunkData(); //
     public Vector3Int m_position = new Vector3Int(0, 0, 0);
 
     // Components
@@ -411,9 +410,9 @@ public class Chunk : MonoBehaviour
     MeshCollider m_meshCollider;
 
     // Utility
-    public void add(Block block)
+    public void add(Vector3Int index, Block block)
     {
-        m_blocks.add(block);
+        m_blocks.add(index, block);
     }
     public void generateTest()
     {
@@ -422,11 +421,10 @@ public class Chunk : MonoBehaviour
             for (int z = 0; z < MaxSize; z++)
             {
                 int randomHeight = Random.Range(0, 6);
-
                 for (int y = 0; y < randomHeight; y++)
                 //for (int y = 0; y < MaxSize; y++)
                 {
-                    add(new Block(new Vector3Int(x, y, z)));
+                    add(new Vector3Int(x, y, z), new Block(1));
                 }
             }
         }
@@ -442,18 +440,21 @@ public class Chunk : MonoBehaviour
         m_mesh.triangles = builder.indices.ToArray();
 
         m_meshFilter.mesh = m_mesh;
-        m_meshRenderer.material = GlobalData.material_default;
         m_meshCollider.sharedMesh = m_mesh;
     }
 
     // Behaviour
     private void Awake()
     {
+        m_player = FindObjectOfType<Player>();
+
         m_mesh = new Mesh();
         m_mesh.name = "ChunkMesh";
         m_meshFilter = GetComponent<MeshFilter>();
         m_meshRenderer = GetComponent<MeshRenderer>();
         m_meshCollider = GetComponent<MeshCollider>();
+
+        m_meshRenderer.material = GlobalData.material_default;
     }
 
     private void OnDrawGizmos()
@@ -467,5 +468,14 @@ public class Chunk : MonoBehaviour
             );
         // Draw Around Extents of Chunk
         //DebugExtension.DrawLocalCube(Matrix4x4.Translate(Position), Size);
+    }
+
+    private void Update()
+    {
+        // Wireframe Mode
+        if(m_player.m_wireframeMode)
+            m_meshRenderer.material = GlobalData.material_wireframe;
+        else
+            m_meshRenderer.material = GlobalData.material_default;
     }
 }

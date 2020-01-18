@@ -21,16 +21,19 @@ public class UIDebugMenu : MonoBehaviour
     }
     private void Update()
     {
-        //string result = "";
-        //foreach(string line in m_display)
-        //{
-        //    result += line;
-        //}
-        //m_textMesh.text = result;
+        string result = "Debug Info:\n";
 
         if (m_player.m_noclip)
-            m_textMesh.text = "Debug:\nNoclip";
+            result += "[N] Noclip: ON\n";
         else
-            m_textMesh.text = "Debug:\n";
+            result += "[N] Noclip: OFF\n";
+
+        if (m_player.m_wireframeMode)
+            result += "[F1] Wireframe: ON";
+        else
+            result += "[F1] Wireframe: OFF";
+
+        // Result
+        m_textMesh.text = result;
     }
 }
