@@ -141,6 +141,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CameraObject: {fileID: 1810527345228513317}
+  m_key_forward: 119
+  m_key_backwards: 115
+  m_key_left: 97
+  m_key_right: 100
+  m_key_jump: 32
+  m_key_crouch: 306
+  m_key_run: 304
 --- !u!114 &3455089365732452219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,6 +181,8 @@ MonoBehaviour:
   Gravity: -0.5
   JumpHeight: 73.1
   TerminalVelocity: -11.63
+  NoclipSpeed: 4
+  NoclipSpeedModifier: 4
   GroundMask:
     serializedVersion: 2
     m_Bits: 256

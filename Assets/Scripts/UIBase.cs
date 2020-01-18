@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class UIBase : MonoBehaviour
 {
-    public GameObject m_master;
     private Player m_player;
+
+    public GameObject m_master;
+    public GameObject m_pauseMenu;
+    public GameObject m_debugInfo;
 
     private void Awake()
     {
@@ -15,6 +18,17 @@ public class UIBase : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        m_master.SetActive(m_player.isPaused());
+        bool allInactive =
+            !m_player.m_debugMenu &&
+            !m_player.m_paused
+            ;
+
+        m_master.SetActive(!allInactive);
+
+        if(!allInactive)
+        {
+            m_debugInfo.SetActive(m_player.m_debugMenu);
+            m_pauseMenu.SetActive(m_player.m_paused);
+        }
     }
 }

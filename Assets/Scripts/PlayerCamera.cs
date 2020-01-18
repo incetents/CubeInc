@@ -8,6 +8,7 @@ public class PlayerCamera : MonoBehaviour
     private Player m_player;
 
     // Settings
+    [Header("Settings")]
     public float X_Sensitivity = 1.0f;
     public float Y_Sensitivity = 1.0f;
 
@@ -23,7 +24,7 @@ public class PlayerCamera : MonoBehaviour
 
     void Update()
     {
-        if (!m_player.isPaused())
+        if (!m_player.m_paused)
         {
             // Get Mouse Values
             Vector2 mouse = new Vector2(Input.GetAxis("Mouse X") * X_Sensitivity, Input.GetAxis("Mouse Y") * Y_Sensitivity);
