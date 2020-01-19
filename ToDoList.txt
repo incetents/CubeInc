@@ -13,15 +13,18 @@ Completed:
 -> jump forgiveness
 -> letting go of jump will immediately drop down upward velocity
 -> moving in air will have t increase slower
+-> outline effect around selected voxel
+-> raycast basic blocks to add or delete
 
 Phase 1:
 
--> raycast blocks to add or delete
+-> create chunks around camera
+-> only make chunks in view active
+
 -> import cubeinc textures
 -> texturing (sprite atlas generated)
 -> base perlin noise
--> create chunks around camera
--> only make chunks in view active
+
 -> custom block data for textures
 -> custom block data imported in dictionary
 

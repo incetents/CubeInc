@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // Objects to control
+    // References
     public GameObject CameraObject;
+
+    // Objects to control
+    [System.NonSerialized] public GameObject m_blockOutline;
 
     // Components
     private PlayerMovement m_playerMovement;
@@ -23,11 +26,11 @@ public class Player : MonoBehaviour
     public KeyCode m_key_run = KeyCode.LeftShift;
 
     // Data
-    private bool m_windowFocus = true;
-    [HideInInspector] public bool m_paused = false;
-    [HideInInspector] public bool m_noclip = false;
-    [HideInInspector] public bool m_debugMenu = true;
-    [HideInInspector] public bool m_wireframeMode = false;
+    [System.NonSerialized] public bool m_windowFocus = true;
+    [System.NonSerialized] public bool m_paused = false;
+    [System.NonSerialized] public bool m_noclip = false;
+    [System.NonSerialized] public bool m_debugMenu = true;
+    [System.NonSerialized] public bool m_wireframeMode = false;
 
     // Behaviour
     private void Awake()
@@ -37,6 +40,11 @@ public class Player : MonoBehaviour
         m_playerMovement = GetComponent<PlayerMovement>();
         m_playerCamera = GetComponent<PlayerCamera>();
         m_controller = GetComponent<CharacterController>();
+    }
+    private void Start()
+    {
+        m_blockOutline = (GameObject)Instantiate(GlobalData.prefab_blockOutline);
+        m_blockOutline.SetActive(false);
     }
 
     private void Update()
@@ -54,21 +62,18 @@ public class Player : MonoBehaviour
             m_noclip = !m_noclip;
 
         // Toggle Pause
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyUp(KeyCode.Escape))
             m_paused = !m_paused;
+
+        // Lock Mouse
+        if (m_windowFocus && !m_paused)
+            Cursor.lockState = CursorLockMode.Locked;
+        else
+            Cursor.lockState = CursorLockMode.None;
 
         // Collision
         m_controller.enabled = !m_noclip;
 
-        // Cursor
-        if (m_windowFocus && !m_paused)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.None;
-        }
     }
 
     void OnApplicationFocus(bool hasFocus)

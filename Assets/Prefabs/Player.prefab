@@ -166,6 +166,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   X_Sensitivity: 1
   Y_Sensitivity: 1
+  ChunkMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &8332870904102310759
 MonoBehaviour:
   m_ObjectHideFlags: 0

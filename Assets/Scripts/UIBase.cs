@@ -9,6 +9,7 @@ public class UIBase : MonoBehaviour
     public GameObject m_master;
     public GameObject m_pauseMenu;
     public GameObject m_debugInfo;
+    public GameObject m_userInfo;
 
     private void Awake()
     {
@@ -18,14 +19,14 @@ public class UIBase : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool allInactive =
-            !m_player.m_debugMenu &&
-            !m_player.m_paused
-            ;
-
-        m_master.SetActive(!allInactive);
-
-        if(!allInactive)
+        //  bool allInactive =
+        //      !m_player.m_debugMenu &&
+        //      !m_player.m_paused
+        //      ;
+        //  
+        //  m_master.SetActive(!allInactive);
+        //  
+        //  if(!allInactive)
         {
             m_debugInfo.SetActive(m_player.m_debugMenu);
             m_pauseMenu.SetActive(m_player.m_paused);
