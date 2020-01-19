@@ -36,43 +36,32 @@ public class RuntimeManager : MonoBehaviour
         GlobalData.prefab_blockOutline = globalPrefab_BlockOutline;
         GlobalData.material_default = globalMaterial_Default;
         GlobalData.material_wireframe = globalMaterial_Wireframe;
-
-        GameObject chunkObject = (GameObject)Instantiate(globalPrefab_Chunk);
-        Chunk chunk = chunkObject.GetComponent<Chunk>();
-        chunk.m_position = new Vector3Int(0, 0, 0);
-        ChunkManager.add(chunk);
-
-        chunk.generateTest();
-        chunk.m_meshDirty = true;
-
-        //  // Set
-        //  for (int x = -1; x <= 1; x++)
-        //  {
-        //      for (int y = -1; y <= 1; y++)
-        //      {
-        //          for (int z = -1; z <= 1; z++)
-        //          {
-        //              GameObject chunkObject = (GameObject)Instantiate(globalPrefab_Chunk);
-        //              Chunk chunk = chunkObject.GetComponent<Chunk>();
-        //              chunk.m_position = new Vector3Int(x, y, z);
-        //              ChunkManager.add(chunk);
         //  
-        //              chunk.generateTest();
-        //          }
-        //      }
-        //  }
-        //  // Build
-        //  for (int x = -1; x <= 1; x++)
-        //  {
-        //      for (int y = -1; y <= 1; y++)
-        //      {
-        //          for (int z = -1; z <= 1; z++)
-        //          {
-        //              Chunk chunk = ChunkManager.getChunk(new Vector3Int(x, y, z));
-        //              chunk.buildMesh();
-        //          }
-        //      }
-        //  }
+        //  GameObject chunkObject = (GameObject)Instantiate(globalPrefab_Chunk);
+        //  Chunk chunk = chunkObject.GetComponent<Chunk>();
+        //  chunk.m_position = new Vector3Int(0, 0, 0);
+        //  ChunkManager.add(chunk);
+        //  
+        //  chunk.generateTest();
+        //  chunk.m_meshDirty = true;
+
+        // Set
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                for (int z = -1; z <= 1; z++)
+                {
+                    GameObject chunkObject = (GameObject)Instantiate(globalPrefab_Chunk);
+                    Chunk chunk = chunkObject.GetComponent<Chunk>();
+                    chunk.m_index = new Vector3Int(x, y, z);
+                    ChunkManager.add(chunk);
+        
+                    chunk.generateTest();
+                    chunk.makeDirty();
+                }
+            }
+        }
     }
 
     void Update()

@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     public GameObject CameraObject;
 
     // Objects to control
-    [System.NonSerialized] public GameObject m_blockOutline;
+    private BlockOutline m_blockOutline;
 
     // Components
     private PlayerMovement m_playerMovement;
@@ -24,6 +24,8 @@ public class Player : MonoBehaviour
     public KeyCode m_key_jump = KeyCode.Space;
     public KeyCode m_key_crouch = KeyCode.LeftControl;
     public KeyCode m_key_run = KeyCode.LeftShift;
+    [Header("Raycast Collision")]
+    public LayerMask m_chunkMask;
 
     // Data
     [System.NonSerialized] public bool m_windowFocus = true;
@@ -43,12 +45,35 @@ public class Player : MonoBehaviour
     }
     private void Start()
     {
-        m_blockOutline = (GameObject)Instantiate(GlobalData.prefab_blockOutline);
-        m_blockOutline.SetActive(false);
+        GameObject gameObject = (GameObject)Instantiate(GlobalData.prefab_blockOutline);
+        m_blockOutline = gameObject.GetComponent<BlockOutline>();
+        //m_blockOutline.gameObject.SetActive(false);
     }
 
     private void Update()
     {
+        // Destroy Block
+        if (Input.GetMouseButtonDown(0) && m_blockOutline.m_block != null)
+        {
+            // Become Air
+            m_blockOutline.m_block.m_data = BlockAppendix.GetData(0);
+            // Dirty chunk
+            ChunkManager.updateBlocksNearby(m_blockOutline.m_position);
+        }
+        // Add Block
+        if (Input.GetMouseButtonDown(1) && m_blockOutline.m_block != null)
+        {
+            // Update new block
+            Block newBlock = ChunkManager.getBlock(m_blockOutline.m_position + m_blockOutline.m_normal);
+            if (newBlock != null)
+            {
+                newBlock.m_data = BlockAppendix.GetData(1);
+                // Update relative chunk
+                ChunkManager.updateBlocksNearby(m_blockOutline.m_position + m_blockOutline.m_normal);
+            }
+        }
+
+
         // Toggle Debugmenu
         if (Input.GetKeyDown(KeyCode.Tab))
             m_debugMenu = !m_debugMenu;

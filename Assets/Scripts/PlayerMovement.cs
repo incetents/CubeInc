@@ -21,8 +21,6 @@ public class PlayerMovement : MonoBehaviour
     public float ForgivenessJumpTime = 0.2f;
     public float DropJumpVeclocity = 10.0f;
     public float AirSpeedModifier = 0.25f;
-    [Header("Floor Collision")]
-    public LayerMask GroundMask;
 
     // Data
     private Camera              m_camera;
@@ -159,7 +157,7 @@ public class PlayerMovement : MonoBehaviour
                     Vector3 controllerBottom = transform.position + m_controller.center + Vector3.down * m_controller.height * 0.5f;
                     Vector3 sphereCastPoint = controllerBottom + Vector3.up * (m_controller.radius + 0.05f);
 
-                    if (Physics.SphereCast(sphereCastPoint, m_controller.radius - 0.01f, Vector3.down, out hit, Mathf.Infinity, GroundMask.value))
+                    if (Physics.SphereCast(sphereCastPoint, m_controller.radius - 0.01f, Vector3.down, out hit, Mathf.Infinity, m_player.m_chunkMask.value))
                     {
                         Debug.DrawLine(controllerBottom, hit.point, Color.red);
                         float distance = (controllerBottom.y - hit.point.y);

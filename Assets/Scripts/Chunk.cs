@@ -196,11 +196,11 @@ public class ChunkBuilder
         ChunkData blocks = chunk.m_blocks;
         Vector3 position = index * Chunk.MaxSize;
 
-        for(int x = 0; x < Chunk.MaxSize; x++)
+        for(int x = 0; x < Chunk.MaxSize.x; x++)
         {
-            for (int y = 0; y < Chunk.MaxSize; y++)
+            for (int y = 0; y < Chunk.MaxSize.y; y++)
             {
-                for (int z = 0; z < Chunk.MaxSize; z++)
+                for (int z = 0; z < Chunk.MaxSize.z; z++)
                 {
                     Block block = blocks.data[x, y, z];
                     if (block.m_data.m_air)
@@ -221,7 +221,7 @@ public class ChunkBuilder
                     if (LeftCheck.x < 0)
                     {
                         Chunk other = ChunkManager.getChunkIndex(index + vecLeft);
-                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(Chunk.MaxSize - 1, y, z))))
+                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(Chunk.MaxSize.x - 1, y, z))))
                             AddFace_Left();
                     }
                     // LEFT // Inbounds Check
@@ -232,7 +232,7 @@ public class ChunkBuilder
                     }
 
                     // RIGHT // Out of bounds check
-                    if (RightCheck.x > Chunk.MaxSize - 1)
+                    if (RightCheck.x > Chunk.MaxSize.x - 1)
                     {
                         Chunk other = ChunkManager.getChunkIndex(index + vecRight);
                         if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(0, y, z))))
@@ -249,7 +249,7 @@ public class ChunkBuilder
                     if (DownCheck.y < 0)
                     {
                         Chunk other = ChunkManager.getChunkIndex(index + vecDown);
-                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(x, Chunk.MaxSize - 1, z))))
+                        if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(x, Chunk.MaxSize.y - 1, z))))
                             AddFace_Down();
                     }
                     // DOWN // Inbounds Check
@@ -260,7 +260,7 @@ public class ChunkBuilder
                     }
 
                     // UP // Out of bounds check
-                    if (UpCheck.y > Chunk.MaxSize - 1)
+                    if (UpCheck.y > Chunk.MaxSize.y - 1)
                     {
                         Chunk other = ChunkManager.getChunkIndex(index + vecUp);
                         if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(x, 0, z))))
@@ -277,7 +277,7 @@ public class ChunkBuilder
                      if (BackCheck.z < 0)
                      {
                          Chunk other = ChunkManager.getChunkIndex(index + vecBack);
-                         if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(x, y, Chunk.MaxSize - 1))))
+                         if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(x, y, Chunk.MaxSize.z - 1))))
                              AddFace_Back();
                      }
                      // BACK // Inbounds Check
@@ -288,7 +288,7 @@ public class ChunkBuilder
                      }
                      
                      // FRONT // Out of bounds check
-                     if (FrontCheck.z > Chunk.MaxSize - 1)
+                     if (FrontCheck.z > Chunk.MaxSize.z - 1)
                      {
                          Chunk other = ChunkManager.getChunkIndex(index + vecForward);
                          if (other == null || (other != null && other.m_blocks.checkEmpty(new Vector3Int(x, y, 0))))
@@ -309,17 +309,17 @@ public class ChunkBuilder
 
 public class ChunkData
 {
-    public Block[,,] data = new Block[Chunk.MaxSize, Chunk.MaxSize, Chunk.MaxSize];
+    public Block[,,] data = new Block[Chunk.MaxSize.x, Chunk.MaxSize.y, Chunk.MaxSize.z];
 
-    public ChunkData()
+    public ChunkData(Chunk chunk)
     {
-        for(int x = 0; x < Chunk.MaxSize; x++)
+        for(int x = 0; x < Chunk.MaxSize.x; x++)
         {
-            for (int y = 0; y < Chunk.MaxSize; y++)
+            for (int y = 0; y < Chunk.MaxSize.y; y++)
             {
-                for (int z = 0; z < Chunk.MaxSize; z++)
+                for (int z = 0; z < Chunk.MaxSize.z; z++)
                 {
-                    data[x, y, z] = new Block(0);
+                    data[x, y, z] = new Block(0, new Vector3Int(x, y, z), chunk);
                 }
             }
         }
@@ -350,7 +350,7 @@ public static class ChunkManager
 
     public static void add(Chunk chunk)
     {
-        Vector3Int index = chunk.m_position;
+        Vector3Int index = chunk.m_index;
 
         // Check if X section is missing
         if (!data.ContainsKey(index.x))
@@ -363,34 +363,75 @@ public static class ChunkManager
         // Edit Z Section
         data[index.x][index.y][index.z] = chunk;
     }
-
-    public static Chunk getChunkPosition(Vector3 position)
+    public static void updateBlocksNearby(Vector3 position)
     {
-        Vector3Int index = new Vector3Int(Mathf.FloorToInt(position.x / Chunk.MaxSize), Mathf.FloorToInt(position.y / Chunk.MaxSize), Mathf.FloorToInt(position.z / Chunk.MaxSize));
-        return getChunkIndex(index);
+        // Get all adjacent blocks
+        Block[] blocks =
+        {
+            getBlock(position),
+            getBlock(position + Vector3.right),
+            getBlock(position + Vector3.left),
+            getBlock(position + Vector3.up),
+            getBlock(position + Vector3.down),
+            getBlock(position + Vector3.forward),
+            getBlock(position + Vector3.back)
+        };
+
+        // Update all chunks they are part of
+        for(int i = 0; i < blocks.Length; i++)
+        {
+            //Debug.Log(blocks[i]);
+            if(blocks[i] != null)
+            {
+                Chunk chunk = blocks[i].m_chunk;
+                chunk.makeDirty();
+                //Debug.Log(chunk.m_position);
+            }
+        }
     }
+
     public static Block getBlock(Vector3 position)
     {
+        // Convert to int
+        Vector3Int index = new Vector3Int(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y), Mathf.FloorToInt(position.z));
+
+        int chunkX = (index.x < 0) ? Mathf.FloorToInt(index.x) - Chunk.MaxSize.x + 1 : Mathf.FloorToInt(index.x);
+        int chunkY = (index.y < 0) ? Mathf.FloorToInt(index.y) - Chunk.MaxSize.y + 1 : Mathf.FloorToInt(index.y);
+        int chunkZ = (index.z < 0) ? Mathf.FloorToInt(index.z) - Chunk.MaxSize.z + 1 : Mathf.FloorToInt(index.z);
+
         // Find Chunk
-        Vector3Int index = new Vector3Int(
-            Mathf.FloorToInt(position.x / Chunk.MaxSize),
-            Mathf.FloorToInt(position.y / Chunk.MaxSize),
-            Mathf.FloorToInt(position.z / Chunk.MaxSize)
+        Vector3Int chunkIndex = new Vector3Int(
+            chunkX / Chunk.MaxSize.x,
+            chunkY / Chunk.MaxSize.y,
+            chunkZ / Chunk.MaxSize.z
             );
-        
-        Chunk chunk = getChunkIndex(index);
+
+        Chunk chunk = getChunkIndex(chunkIndex);
         if (chunk == null)
             return null;
-    
+
+        int modLocalX = (index.x < 0) ? (Chunk.MaxSize.x - (Mathf.Abs(index.x) % Chunk.MaxSize.x)) : index.x;
+        int modLocalY = (index.y < 0) ? (Chunk.MaxSize.y - (Mathf.Abs(index.y) % Chunk.MaxSize.y)) : index.y;
+        int modLocalZ = (index.z < 0) ? (Chunk.MaxSize.z - (Mathf.Abs(index.z) % Chunk.MaxSize.z)) : index.z;
+
         Vector3Int localIndex = new Vector3Int(
-            Mathf.FloorToInt(position.x % Chunk.MaxSize),
-            Mathf.FloorToInt(position.y % Chunk.MaxSize),
-            Mathf.FloorToInt(position.z % Chunk.MaxSize)
+            modLocalX % Chunk.MaxSize.x,
+            modLocalY % Chunk.MaxSize.y,
+            modLocalZ % Chunk.MaxSize.z
             );
 
         return chunk.m_blocks.getBlock(localIndex);
     }
 
+    public static Chunk getChunkPosition(Vector3 position)
+    {
+        Vector3Int index = new Vector3Int(
+            Mathf.FloorToInt(position.x / Chunk.MaxSize.x),
+            Mathf.FloorToInt(position.y / Chunk.MaxSize.y),
+            Mathf.FloorToInt(position.z / Chunk.MaxSize.z)
+            );
+        return getChunkIndex(index);
+    }
     public static Chunk getChunkIndex(Vector3Int index)
     {
         if (!checkEmpty(index))
@@ -418,15 +459,15 @@ public static class ChunkManager
 public class Chunk : MonoBehaviour
 {
     // Constants
-    public static readonly int MaxSize = 5;
+    public static readonly Vector3Int MaxSize = new Vector3Int(5, 5, 5);
 
     // Object
     private Player m_player;
 
     // Data
-    public ChunkData  m_blocks = new ChunkData(); //
-    public Vector3Int m_position = new Vector3Int(0, 0, 0);
-    [System.NonSerialized] public bool m_meshDirty = false;
+    public Vector3Int m_index = new Vector3Int(0, 0, 0);
+    public ChunkData  m_blocks;
+    private bool      m_meshDirty = false;
 
     // Components
     private Mesh m_mesh;
@@ -437,7 +478,7 @@ public class Chunk : MonoBehaviour
     // Utility [local]
     private void buildMesh()
     {
-        ChunkBuilder builder = new ChunkBuilder(m_position);
+        ChunkBuilder builder = new ChunkBuilder(m_index);
 
         m_mesh = new Mesh();
         m_mesh.name = "ChunkMesh";
@@ -456,17 +497,21 @@ public class Chunk : MonoBehaviour
     {
         m_blocks.add(index, block);
     }
+    public void makeDirty()
+    {
+        m_meshDirty = true;
+    }
     public void generateTest()
     {
-        for (int x = 0; x < MaxSize; x++)
+        for (int x = 0; x < MaxSize.x; x++)
         {
-            for (int z = 0; z < MaxSize; z++)
+            for (int z = 0; z < MaxSize.z; z++)
             {
                 int randomHeight = Random.Range(0, 6);
-                for (int y = 0; y < randomHeight; y++)
-                //for (int y = 0; y < MaxSize; y++)
+                //for (int y = 0; y < randomHeight; y++)
+                for (int y = 0; y < MaxSize.y; y++)
                 {
-                    add(new Vector3Int(x, y, z), new Block(1));
+                    add(new Vector3Int(x, y, z), new Block(1, new Vector3Int(x, y, z), this));
                 }
             }
         }
@@ -475,6 +520,8 @@ public class Chunk : MonoBehaviour
     // Behaviour
     private void Awake()
     {
+        m_blocks = new ChunkData(this); //
+
         m_player = FindObjectOfType<Player>();
 
         m_meshFilter = GetComponent<MeshFilter>();
@@ -486,12 +533,11 @@ public class Chunk : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Vector3 Size = new Vector3(MaxSize, MaxSize, MaxSize);
-        float HalfMaxSize = MaxSize * 0.5f;
+        Vector3 Size = new Vector3(MaxSize.x, MaxSize.y, MaxSize.z);
         Vector3 Position = new Vector3(
-            m_position.x * MaxSize + HalfMaxSize,
-            m_position.y * MaxSize + HalfMaxSize,
-            m_position.z * MaxSize + HalfMaxSize
+            m_index.x * MaxSize.x + MaxSize.x * 0.5f,
+            m_index.y * MaxSize.y + MaxSize.y * 0.5f,
+            m_index.z * MaxSize.z + MaxSize.z * 0.5f
             );
         // Draw Around Extents of Chunk
         //DebugExtension.DrawLocalCube(Matrix4x4.Translate(Position), Size);

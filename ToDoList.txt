@@ -15,8 +15,10 @@ Completed:
 -> moving in air will have t increase slower
 -> outline effect around selected voxel
 -> raycast basic blocks to add or delete
+-> m_lookBlock in its own class (code is a bit messy right now)
 
 Phase 1:
+
 
 -> create chunks around camera
 -> only make chunks in view active

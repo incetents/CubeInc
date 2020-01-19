@@ -45,13 +45,17 @@ public class BlockData
 
 public class Block
 {
-    public BlockData m_data;
+    public BlockData    m_data;
+    public Vector3Int   m_localPosition;
+    public Chunk        m_chunk;
     //public uint m_subId;
 
     // Behaviour
-    public Block(uint id)
+    public Block(uint id, Vector3Int localPosition, Chunk chunk)
     {
         m_data = BlockAppendix.GetData(id);
+        m_localPosition = localPosition;
+        m_chunk = chunk;
     }
 }
 
