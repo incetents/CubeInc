@@ -7,8 +7,9 @@ public class BlockOutline : MonoBehaviour
     // Import
     public GameObject m_mesh;
 
-    // References
+    // Components
     private Player m_player;
+    private Camera m_camera;
 
     // Data
     [System.NonSerialized] public Block   m_block = null;
@@ -18,21 +19,18 @@ public class BlockOutline : MonoBehaviour
     private void Awake()
     {
         m_player = FindObjectOfType<Player>();
+        m_camera = m_player.CameraObject.GetComponent<Camera>();
     }
 
     public void Update()
     {
-        // Update Raycast
-        Camera camera = m_player.CameraObject.GetComponent<Camera>();
-        Debug.Log(camera.transform.position);
-
         // Raycast and check which block you are looking at
         RaycastHit hit;
-        Ray ray = new Ray(camera.transform.position, camera.transform.forward);
+        Ray ray = new Ray(m_camera.transform.position, m_camera.transform.forward);
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_player.m_chunkMask.value))
         {
-            m_position = hit.point + camera.transform.forward * 0.01f;
+            m_position = hit.point + m_camera.transform.forward * 0.01f;
             m_normal = hit.normal;
             Debug.Log(m_position);
 

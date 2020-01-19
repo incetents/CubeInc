@@ -19,7 +19,6 @@ Completed:
 
 Phase 1:
 
-
 -> create chunks around camera
 -> only make chunks in view active
 

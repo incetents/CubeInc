@@ -56,7 +56,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 1000
-  field of view: 60
+  field of view: 75
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -148,10 +148,9 @@ MonoBehaviour:
   m_key_jump: 32
   m_key_crouch: 306
   m_key_run: 304
-  m_paused: 0
-  m_noclip: 0
-  m_debugMenu: 1
-  m_wireframeMode: 0
+  m_chunkMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &3455089365732452219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,9 +165,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   X_Sensitivity: 1
   Y_Sensitivity: 1
-  ChunkMask:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!114 &8332870904102310759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,9 +189,6 @@ MonoBehaviour:
   ForgivenessJumpTime: 0.12
   DropJumpVeclocity: 4.32
   AirSpeedModifier: 0.48
-  GroundMask:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!1001 &5849071062760063768
 PrefabInstance:
   m_ObjectHideFlags: 0
