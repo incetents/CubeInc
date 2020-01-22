@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
     [System.NonSerialized] public bool m_noclip = false;
     [System.NonSerialized] public bool m_debugMenu = true;
     [System.NonSerialized] public bool m_wireframeMode = false;
+    [System.NonSerialized] public bool m_bigBreak = true;
 
     // Behaviour
     private void Awake()
@@ -47,32 +48,40 @@ public class Player : MonoBehaviour
     {
         GameObject gameObject = (GameObject)Instantiate(GlobalData.prefab_blockOutline);
         m_blockOutline = gameObject.GetComponent<BlockOutline>();
-        //m_blockOutline.gameObject.SetActive(false);
     }
 
     private void Update()
     {
         // Destroy Block
-        if (Input.GetMouseButtonDown(0) && m_blockOutline.m_block != null)
+        if (Input.GetMouseButtonDown(0) && m_blockOutline.HasHitBlock())
         {
-            // Become Air
-            m_blockOutline.m_block.m_data = BlockDictionary.GetData(0);
-            // Dirty chunk
-            ChunkStorage.UpdatePosition(m_blockOutline.m_position);
+            Block block = ChunkStorage.GetBlock(m_blockOutline.m_position);
+            if(block != null)
+            {
+                if (m_bigBreak)
+                    WorldEdit.SetBlockRegion(
+                        m_blockOutline.m_position + new Vector3(-1, -1, -1),
+                        m_blockOutline.m_position + new Vector3(+1, +1, +1),
+                        new Block(0, block.m_localPosition)
+                        );
+                else
+                    WorldEdit.SetBlock(m_blockOutline.m_position, new Block(0, block.m_localPosition));
+            }
         }
         // Add Block
-        if (Input.GetMouseButtonDown(1) && m_blockOutline.m_block != null)
+        if (Input.GetMouseButtonDown(1) && m_blockOutline.HasHitBlock())
         {
             // Update new block
-            Block newBlock = ChunkStorage.GetBlock(m_blockOutline.m_position + m_blockOutline.m_normal);
-            if (newBlock != null)
+            Block block = ChunkStorage.GetBlock(m_blockOutline.m_position + m_blockOutline.m_normal);
+            if (block != null)
             {
-                newBlock.m_data = BlockDictionary.GetData(1);
-                // Update relative chunk
-                ChunkStorage.UpdatePosition(m_blockOutline.m_position + m_blockOutline.m_normal);
+                WorldEdit.SetBlock(m_blockOutline.m_position + m_blockOutline.m_normal, new Block(1, block.m_localPosition));
             }
         }
 
+        // Toggle BigBream
+        if (Input.GetKeyDown(KeyCode.B))
+            m_bigBreak = !m_bigBreak;
 
         // Toggle Debugmenu
         if (Input.GetKeyDown(KeyCode.Tab))

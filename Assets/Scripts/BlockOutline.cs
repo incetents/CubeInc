@@ -12,10 +12,18 @@ public class BlockOutline : MonoBehaviour
     private Camera m_camera;
 
     // Data
-    [System.NonSerialized] public Block   m_block = null;
+    //[System.NonSerialized] public Block   m_block = null;
+    private bool m_hit = false;
     [System.NonSerialized] public Vector3 m_position = new Vector3();
     [System.NonSerialized] public Vector3 m_normal = new Vector3();
 
+    // Utility
+    public bool HasHitBlock()
+    {
+        return m_hit;
+    }
+
+    // Behaviour
     private void Awake()
     {
         m_player = FindObjectOfType<Player>();
@@ -27,23 +35,14 @@ public class BlockOutline : MonoBehaviour
         // Raycast and check which block you are looking at
         RaycastHit hit;
         Ray ray = new Ray(m_camera.transform.position, m_camera.transform.forward);
-
+        //Debug.Log("HIT");
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_player.m_chunkMask.value))
         {
             m_position = hit.point + m_camera.transform.forward * 0.01f;
             m_normal = hit.normal;
-            Debug.Log(m_position);
+            //Debug.Log(m_position);
 
-            m_block = ChunkStorage.GetBlock(m_position);
-        }
-        else
-        {
-            m_block = null;
-        }
-
-        // Draw Block outline
-        if (m_block != null)
-        {
+            m_hit = true;
             m_mesh.SetActive(true);
             m_mesh.transform.position = new Vector3Int(
                 Mathf.FloorToInt(m_position.x),
@@ -53,7 +52,9 @@ public class BlockOutline : MonoBehaviour
         }
         else
         {
+            m_hit = false;
             m_mesh.SetActive(false);
         }
+
     }
 }

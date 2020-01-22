@@ -17,9 +17,6 @@ public class PlayerCamera : MonoBehaviour
     // Data
     private Vector2 m_mouseLook = new Vector2(0, 0);
     private Camera  m_mainCamera;
-    private Vector3 m_lookBlockPosition = new Vector3();
-    private Block   m_lookBlock = null;
-    private Vector3 m_lookNormal = new Vector3();
 
     void Awake()
     {

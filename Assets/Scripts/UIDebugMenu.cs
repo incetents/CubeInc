@@ -29,9 +29,14 @@ public class UIDebugMenu : MonoBehaviour
             result += "[N] Noclip: OFF\n";
 
         if (m_player.m_wireframeMode)
-            result += "[F1] Wireframe: ON";
+            result += "[F1] Wireframe: ON\n";
         else
-            result += "[F1] Wireframe: OFF";
+            result += "[F1] Wireframe: OFF\n";
+
+        if (m_player.m_bigBreak)
+            result += "[B] BigBreak: ON\n";
+        else
+            result += "[B] BigBreak: OFF\n";
 
         // Result
         m_textMesh.text = result;

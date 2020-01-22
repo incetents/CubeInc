@@ -87,6 +87,20 @@ public static class ChunkStorage
             );
     }
 
+    // Modify an existing block from world space position (no update)
+    public static bool SetBlock(Vector3 position, Block block)
+    {
+        Vector3Int chunkIndex = ChunkStorage.ConvertToChunkIndex(position);
+        Chunk chunk = GetChunk(chunkIndex);
+        if (chunk == null)
+            return false;
+
+        // Check if block exists in chunk
+        Vector3Int blockIndex = ConvertToBlockIndex(position);
+        chunk.m_blocks.Set(blockIndex, block);
+        return true;
+    }
+
     // Acquire block from world space position
     public static Block GetBlock(Vector3 position)
     {
@@ -133,7 +147,7 @@ public static class ChunkStorage
         return new HashSet<Chunk>(chunks);
     }
     // Updates block and adjacent blocks (and their chunks)
-    public static void UpdatePosition(Vector3 position)
+    public static void UpdateAtPosition(Vector3 position)
     {
         HashSet<Chunk> chunks = GetNearbyChunks(position);
         foreach(Chunk chunk in chunks)

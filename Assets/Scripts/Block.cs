@@ -9,7 +9,7 @@ public static class BlockDictionary
     // Special case for air
     private static BlockInfo air = new BlockInfo(0);
 
-    public static BlockInfo GetData(uint id)
+    public static BlockInfo Get(uint id)
     {
         if (id == 0)
             return air;
@@ -20,7 +20,7 @@ public static class BlockDictionary
 
         return null;
     }
-    public static void SetData(BlockInfo newData)
+    public static void Set(BlockInfo newData)
     {
         // Air is specific case
         if (newData.m_id == 0)
@@ -63,14 +63,19 @@ public class BlockStorage
         }
     }
 
+    public static bool IsIndexTooLarge(Vector3Int index)
+    {
+        return
+            (index.x < 0 || index.x >= Chunk.MaxSize.x ||
+            index.y < 0 || index.y >= Chunk.MaxSize.y ||
+            index.z < 0 || index.z >= Chunk.MaxSize.z
+            );
+    }
+
     public void Set(Vector3Int index, Block block)
     {
         // Limit Checks
-        if(
-            index.x < 0 || index.x >= Chunk.MaxSize.x ||
-            index.y < 0 || index.y >= Chunk.MaxSize.y ||
-            index.z < 0 || index.z >= Chunk.MaxSize.z
-            )
+        if(IsIndexTooLarge(index))
             return;
 
         data[index.x, index.y, index.z] = block;
@@ -78,11 +83,7 @@ public class BlockStorage
     public Block Get(Vector3Int index)
     {
         // Limit Checks
-        if (
-            index.x < 0 || index.x >= Chunk.MaxSize.x ||
-            index.y < 0 || index.y >= Chunk.MaxSize.y ||
-            index.z < 0 || index.z >= Chunk.MaxSize.z
-            )
+        if (IsIndexTooLarge(index))
             return null;
 
         return data[index.x, index.y, index.z];
@@ -102,7 +103,7 @@ public class Block
     // Behaviour
     public Block(uint id, Vector3Int localPosition)
     {
-        m_data = BlockDictionary.GetData(id);
+        m_data = BlockDictionary.Get(id);
         m_localPosition = localPosition;
     }
 }

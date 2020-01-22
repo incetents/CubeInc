@@ -30,7 +30,7 @@ public class RuntimeManager : MonoBehaviour
         Random.InitState(0);
 
         // Block
-        BlockDictionary.SetData(new BlockInfo(1));
+        BlockDictionary.Set(new BlockInfo(1));
 
         GlobalData.prefab_chunk = globalPrefab_Chunk;
         GlobalData.prefab_blockOutline = globalPrefab_BlockOutline;
