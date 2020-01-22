@@ -56,20 +56,20 @@ public class Player : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && m_blockOutline.m_block != null)
         {
             // Become Air
-            m_blockOutline.m_block.m_data = BlockAppendix.GetData(0);
+            m_blockOutline.m_block.m_data = BlockDictionary.GetData(0);
             // Dirty chunk
-            ChunkManager.updateBlocksNearby(m_blockOutline.m_position);
+            ChunkStorage.UpdatePosition(m_blockOutline.m_position);
         }
         // Add Block
         if (Input.GetMouseButtonDown(1) && m_blockOutline.m_block != null)
         {
             // Update new block
-            Block newBlock = ChunkManager.getBlock(m_blockOutline.m_position + m_blockOutline.m_normal);
+            Block newBlock = ChunkStorage.GetBlock(m_blockOutline.m_position + m_blockOutline.m_normal);
             if (newBlock != null)
             {
-                newBlock.m_data = BlockAppendix.GetData(1);
+                newBlock.m_data = BlockDictionary.GetData(1);
                 // Update relative chunk
-                ChunkManager.updateBlocksNearby(m_blockOutline.m_position + m_blockOutline.m_normal);
+                ChunkStorage.UpdatePosition(m_blockOutline.m_position + m_blockOutline.m_normal);
             }
         }
 

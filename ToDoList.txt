@@ -16,8 +16,13 @@ Completed:
 -> outline effect around selected voxel
 -> raycast basic blocks to add or delete
 -> m_lookBlock in its own class (code is a bit messy right now)
+-> blocks only store only local position (no chunk/world)
+-> streamline chunk/block classes
 
 Phase 1:
+
+-> chunk has index position but getter for world position
+-> player stores chunk that it is currently in
 
 -> create chunks around camera
 -> only make chunks in view active

@@ -34,7 +34,7 @@ public class BlockOutline : MonoBehaviour
             m_normal = hit.normal;
             Debug.Log(m_position);
 
-            m_block = ChunkManager.getBlock(m_position);
+            m_block = ChunkStorage.GetBlock(m_position);
         }
         else
         {

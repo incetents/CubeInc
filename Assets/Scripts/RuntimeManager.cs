@@ -30,7 +30,7 @@ public class RuntimeManager : MonoBehaviour
         Random.InitState(0);
 
         // Block
-        BlockAppendix.SetData(new BlockData(1));
+        BlockDictionary.SetData(new BlockInfo(1));
 
         GlobalData.prefab_chunk = globalPrefab_Chunk;
         GlobalData.prefab_blockOutline = globalPrefab_BlockOutline;
@@ -55,10 +55,10 @@ public class RuntimeManager : MonoBehaviour
                     GameObject chunkObject = (GameObject)Instantiate(globalPrefab_Chunk);
                     Chunk chunk = chunkObject.GetComponent<Chunk>();
                     chunk.m_index = new Vector3Int(x, y, z);
-                    ChunkManager.add(chunk);
+                    ChunkStorage.SetChunk(chunk);
         
-                    chunk.generateTest();
-                    chunk.makeDirty();
+                    chunk.GenerateTest();
+                    chunk.MakeDirty();
                 }
             }
         }
