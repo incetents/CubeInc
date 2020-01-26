@@ -24,9 +24,9 @@ public class BlockOutline : MonoBehaviour
     }
 
     // Behaviour
-    private void Awake()
+    private void Start()
     {
-        m_player = FindObjectOfType<Player>();
+        m_player = GlobalData.player;
         m_camera = m_player.CameraObject.GetComponent<Camera>();
     }
 

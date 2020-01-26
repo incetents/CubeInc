@@ -15,9 +15,9 @@ public class UIDebugMenu : MonoBehaviour
     //public List<string> m_display;
 
     // Behaviour
-    private void Awake()
+    private void Start()
     {
-        m_player = FindObjectOfType<Player>();
+        m_player = GlobalData.player;
     }
     private void Update()
     {

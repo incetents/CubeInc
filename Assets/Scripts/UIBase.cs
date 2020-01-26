@@ -11,9 +11,9 @@ public class UIBase : MonoBehaviour
     public GameObject m_debugInfo;
     public GameObject m_userInfo;
 
-    private void Awake()
+    private void Start()
     {
-        m_player = FindObjectOfType<Player>();
+        m_player = GlobalData.player;
     }
 
     // Update is called once per frame

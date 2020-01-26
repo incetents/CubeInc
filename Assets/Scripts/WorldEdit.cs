@@ -23,7 +23,6 @@ public static class WorldEdit
             {
                 for (int z = _min.z; z <= _max.z; z++)
                 {
-                    Debug.Log(new Vector3(x, y, z));
                     if (ChunkStorage.SetBlock(new Vector3(x, y, z), block))
                         ChunkStorage.UpdateAtPosition(new Vector3(x, y, z));
                 }

@@ -30,15 +30,31 @@ public class Player : MonoBehaviour
     // Data
     [System.NonSerialized] public bool m_windowFocus = true;
     [System.NonSerialized] public bool m_paused = false;
-    [System.NonSerialized] public bool m_noclip = false;
+    [System.NonSerialized] public bool m_noclip = true;
     [System.NonSerialized] public bool m_debugMenu = true;
     [System.NonSerialized] public bool m_wireframeMode = false;
-    [System.NonSerialized] public bool m_bigBreak = true;
+    [System.NonSerialized] public bool m_bigBreak = false;
+
+    // Current Chunk the player resides in
+    [System.NonSerialized] public Vector3Int m_chunkIndex = new Vector3Int(0, 0, 0);
+    private void UpdateCurentInternalChunk()
+    {
+        Vector3 playerPositionGrounded = new Vector3(transform.position.x, 0, transform.position.z);
+        m_chunkIndex = ChunkStorage.ConvertToChunkIndex(playerPositionGrounded);
+    }
+
+    // Get Camera
+    public Camera GetCamera()
+    {
+        return m_playerCamera.GetCamera();
+    }
 
     // Behaviour
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
+
+        UpdateCurentInternalChunk();
 
         m_playerMovement = GetComponent<PlayerMovement>();
         m_playerCamera = GetComponent<PlayerCamera>();
@@ -52,6 +68,9 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        // Update Chunk the player is in
+        UpdateCurentInternalChunk();
+
         // Destroy Block
         if (Input.GetMouseButtonDown(0) && m_blockOutline.HasHitBlock())
         {

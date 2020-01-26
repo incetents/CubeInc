@@ -11,13 +11,18 @@ public class PlayerCamera : MonoBehaviour
     [Header("Settings")]
     public float X_Sensitivity = 1.0f;
     public float Y_Sensitivity = 1.0f;
-    //[Header("Raycast Collision")]
-    //public LayerMask ChunkMask;
 
     // Data
     private Vector2 m_mouseLook = new Vector2(0, 0);
     private Camera  m_mainCamera;
 
+    // Utilty
+    public Camera GetCamera()
+    {
+        return m_mainCamera;
+    }
+
+    // Behaviour
     void Awake()
     {
         m_player = GetComponent<Player>();
