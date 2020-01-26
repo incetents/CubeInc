@@ -9,7 +9,7 @@ public class ChunkManager : MonoBehaviour
     private Player m_player;
 
     // Global
-    public static int m_ChunkDistance = 4;
+    public static int m_ChunkDistance = 2;
 
     // Data
     private Chunk m_constructingChunk = null;
@@ -58,7 +58,7 @@ public class ChunkManager : MonoBehaviour
             {
                 if(chunk.IsMeshConstructed())
                 {
-                    Debug.Log("Complete");
+                   // Debug.Log("Complete");
                     chunk.UpdateMesh();
                     chunk.EndMeshConstruction();
                     chunk.MakeClean();
@@ -67,10 +67,12 @@ public class ChunkManager : MonoBehaviour
                 }
                 else
                 {
-                    if(chunk.BeginMeshConstruction())
-                        Debug.Log("Build");
-                    else
-                        Debug.Log("Wait");
+                    chunk.BeginMeshConstruction();
+
+                    //  if (chunk.BeginMeshConstruction())
+                    //      Debug.Log("Build");
+                    //  else
+                    //      Debug.Log("Wait");
                 }
             }
         

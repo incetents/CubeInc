@@ -19,23 +19,19 @@ Completed:
 -> blocks only store only local position (no chunk/world)
 -> streamline chunk/block classes
 
-<<<<<<< 56576e35d7ec0f162151fb1f14b6cd1db838e64c
-Phase 1:
-
--> player stores chunk that it is currently in
-
--> create chunks around camera
--> only make chunks in view active
-=======
 -> player stores chunk that it is currently in
 -> create chunks around camera
 -> only make chunks in view active
 -> make chunk visibility check faster (just dot product)
 -> use multithreading to generate chunks faster
 
+-> scriptable objects for blocks
+-> convert scriptable blocks to a giant texture atlas
+-> generate uvs for voxels
+
 Phase 1:
 
->>>>>>> Chunk visibility check faster + multithreading for chunk building
+-> fix texture bleeding with padding (with n parameter for custom tweaking)
 
 -> import cubeinc textures
 -> texturing (sprite atlas generated)

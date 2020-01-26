@@ -201,8 +201,6 @@ public class Chunk : MonoBehaviour
         m_mesh = new Mesh();
         m_mesh.name = "ChunkMesh";
 
-        Debug.Log(m_chunkBuilder.vertices.Count);
-
         m_mesh.vertices = m_chunkBuilder.vertices.ToArray();
         m_mesh.uv = m_chunkBuilder.uvs.ToArray();
         m_mesh.normals = m_chunkBuilder.normals.ToArray();
@@ -265,11 +263,14 @@ public class Chunk : MonoBehaviour
             for (int z = 0; z < MaxSize.z; z++)
             {
                 int randomHeight = Random.Range(1, 10);
-                for (int y = 0; y < randomHeight; y++)
-                //for (int y = 0; y < MaxSize.y; y++)
+                //for (int y = 0; y < randomHeight; y++)
+                for (int y = 0; y < MaxSize.y; y++)
                 //for (int y = 0; y < 1; y++)
                 {
-                    SetBlock(new Vector3Int(x, y, z), new Block(1, new Vector3Int(x, y, z)));
+                    uint id = 1;// (uint)((x % 2) + 1);
+                    Block block = new Block(id, new Vector3Int(x, y, z));
+
+                    SetBlock(new Vector3Int(x, y, z), block);
                 }
             }
         }

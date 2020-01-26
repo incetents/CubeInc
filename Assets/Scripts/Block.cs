@@ -25,6 +25,8 @@ public static class BlockDictionary
         // Air is specific case
         if (newData.m_id == 0)
             air = newData;
+        else  if (data.ContainsKey(newData.m_id))
+            Debug.LogError("Setting BlockData ID that already exists: " + newData.m_id);
         else
             data.Add(newData.m_id, newData);
     }
@@ -35,6 +37,9 @@ public class BlockInfo
     // Data
     public uint m_id;
     public bool m_air;
+    public string m_name;
+    public Texture2D m_texture;
+    public Vector4 m_atlasLocation; // u1,u2,v1,v2 on textureatlas
 
     public BlockInfo(uint _id)
     {
