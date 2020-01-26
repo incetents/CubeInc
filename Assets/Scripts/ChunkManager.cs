@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ChunkManager : MonoBehaviour
@@ -45,6 +46,12 @@ public class ChunkManager : MonoBehaviour
 
         // Update all existing chunks
         Chunk[] chunks = FindObjectsOfType<Chunk>();
+        // Make sure chunks update based on distance from player
+
+        chunks = chunks.OrderBy(
+            x => Vector3.Distance(m_player.transform.position, x.GetCenter())
+            ).ToArray();
+
         foreach(Chunk chunk in chunks)
         {
             if(chunk.IsDirty())

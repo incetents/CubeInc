@@ -12,7 +12,6 @@ public class BlockOutline : MonoBehaviour
     private Camera m_camera;
 
     // Data
-    //[System.NonSerialized] public Block   m_block = null;
     private bool m_hit = false;
     [System.NonSerialized] public Vector3 m_position = new Vector3();
     [System.NonSerialized] public Vector3 m_normal = new Vector3();

@@ -213,6 +213,10 @@ public class Chunk : MonoBehaviour
     }
 
     // Utility
+    public Vector3 GetCenter()
+    {
+        return m_center;
+    }
     public Vector3Int GetIndex()
     {
         return m_index;
