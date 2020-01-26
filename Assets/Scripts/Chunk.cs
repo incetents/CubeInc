@@ -168,9 +168,21 @@ public class Chunk : MonoBehaviour
     private Player m_player;
 
     // Data
+<<<<<<< 56576e35d7ec0f162151fb1f14b6cd1db838e64c
     public Vector3Int   m_index = new Vector3Int(0, 0, 0);
     public BlockStorage m_blocks;
     private bool        m_meshDirty = false;
+=======
+    [System.NonSerialized] public  Vector3Int  m_index;
+    [System.NonSerialized] private Vector3     m_center; // Center of chunk position (world space)
+    [System.NonSerialized] private Vector3[]   m_bottomExtents;
+    [System.NonSerialized] private Vector3[]   m_topExtents;
+
+
+[System.NonSerialized] public BlockStorage m_blocks;
+    [System.NonSerialized] private bool        m_visible = true; // Can camera see this chunk
+    [System.NonSerialized] private bool        m_meshDirty = false;
+>>>>>>> Chunk visibility check faster + multithreading for chunk building
 
     // Components
     private Mesh         m_mesh;
@@ -178,18 +190,34 @@ public class Chunk : MonoBehaviour
     private MeshRenderer m_meshRenderer;
     private MeshCollider m_meshCollider;
 
+<<<<<<< 56576e35d7ec0f162151fb1f14b6cd1db838e64c
+=======
+    // Special
+    private ChunkBuilder m_chunkBuilder = null;
+    private bool m_isSetup = false;
+    private LineRenderer[] m_lineRenderers;
+
+>>>>>>> Chunk visibility check faster + multithreading for chunk building
     // Utility [local]
-    private void BuildMesh()
+    private void UpdateMesh()
     {
-        ChunkBuilder builder = new ChunkBuilder(m_index);
+        if (m_chunkBuilder == null)
+        {
+            Debug.LogError("Copying mesh data from null chunkbuilder");
+            return;
+        }
+
+        //ChunkBuilder builder = new ChunkBuilder(m_index);
 
         m_mesh = new Mesh();
         m_mesh.name = "ChunkMesh";
 
-        m_mesh.vertices = builder.vertices.ToArray();
-        m_mesh.uv = builder.uvs.ToArray();
-        m_mesh.normals = builder.normals.ToArray();
-        m_mesh.triangles = builder.indices.ToArray();
+        Debug.Log(m_chunkBuilder.vertices.Count);
+
+        m_mesh.vertices = m_chunkBuilder.vertices.ToArray();
+        m_mesh.uv = m_chunkBuilder.uvs.ToArray();
+        m_mesh.normals = m_chunkBuilder.normals.ToArray();
+        m_mesh.triangles = m_chunkBuilder.indices.ToArray();
 
         m_meshFilter.mesh = m_mesh;
         m_meshCollider.sharedMesh = m_mesh;
@@ -210,15 +238,52 @@ public class Chunk : MonoBehaviour
         {
             for (int z = 0; z < MaxSize.z; z++)
             {
+<<<<<<< 56576e35d7ec0f162151fb1f14b6cd1db838e64c
                 int randomHeight = Random.Range(0, 6);
                 //for (int y = 0; y < randomHeight; y++)
                 for (int y = 0; y < MaxSize.y; y++)
+=======
+                int randomHeight = Random.Range(1, 10);
+                for (int y = 0; y < randomHeight; y++)
+                //for (int y = 0; y < MaxSize.y; y++)
+                //for (int y = 0; y < 1; y++)
+>>>>>>> Chunk visibility check faster + multithreading for chunk building
                 {
                     SetBlock(new Vector3Int(x, y, z), new Block(1, new Vector3Int(x, y, z)));
                 }
             }
         }
     }
+<<<<<<< 56576e35d7ec0f162151fb1f14b6cd1db838e64c
+=======
+    public bool CanCameraSeeChunk()
+    {
+       // If adjacent to player chunk, camera will always see it
+       if (
+           m_index == m_player.m_chunkIndex ||
+           m_index == m_player.m_chunkIndex + new Vector3Int(-1, 0, 0) ||
+           m_index == m_player.m_chunkIndex + new Vector3Int(+1, 0, 0) ||
+           m_index == m_player.m_chunkIndex + new Vector3Int(0, 0, -1) ||
+           m_index == m_player.m_chunkIndex + new Vector3Int(0, 0, +1) ||
+           m_index == m_player.m_chunkIndex + new Vector3Int(-1, 0, -1) ||
+           m_index == m_player.m_chunkIndex + new Vector3Int(+1, 0, -1) ||
+           m_index == m_player.m_chunkIndex + new Vector3Int(-1, 0, +1) ||
+           m_index == m_player.m_chunkIndex + new Vector3Int(+1, 0, +1)
+           )
+           return true;
+
+        // Check if camera can see the center
+        Camera camera = m_player.GetCamera();
+        Vector3 cameraToChunkCenter = m_center - camera.transform.position;
+
+        // Check if in front of camera (more than 90 degress from camera forward = not seen)
+        if (Vector3.Dot(cameraToChunkCenter, camera.transform.forward) > 0)
+            return true;
+
+        // Cannot be seen
+        return false;
+    }
+>>>>>>> Chunk visibility check faster + multithreading for chunk building
 
     // Behaviour
     private void Awake()
@@ -247,17 +312,67 @@ public class Chunk : MonoBehaviour
 
     private void Update()
     {
+<<<<<<< 56576e35d7ec0f162151fb1f14b6cd1db838e64c
         // Wireframe Mode
         if(m_player.m_wireframeMode)
             m_meshRenderer.material = GlobalData.material_wireframe;
         else
             m_meshRenderer.material = GlobalData.material_default;
+=======
+        if (!m_isSetup)
+            return;
+
+        // Destroy Self if too far away from player camera
+        Vector3Int manhattanDistance = (m_index - m_player.m_chunkIndex);
+        if(Mathf.Abs(manhattanDistance.x) > ChunkManager.m_ChunkDistance)
+        {
+            Destroy(this.gameObject);
+        }
+        else if (Mathf.Abs(manhattanDistance.z) > ChunkManager.m_ChunkDistance)
+        {
+            Destroy(this.gameObject);
+        }
+
+        // Check if camera can see chunk
+        m_visible = CanCameraSeeChunk();
+
+        if (m_visible)
+        {
+            m_meshRenderer.enabled = true;
+
+            // Wireframe Mode
+            if (m_player.m_wireframeMode)
+                m_meshRenderer.material = GlobalData.material_wireframe;
+            else
+                m_meshRenderer.material = GlobalData.material_default;
+        }
+        else
+        {
+            m_meshRenderer.enabled = false;
+            //m_meshRenderer.material = GlobalData.material_wireframe;
+        }
+>>>>>>> Chunk visibility check faster + multithreading for chunk building
 
         // Regenerate
         if (m_meshDirty)
         {
-            BuildMesh();
-            m_meshDirty = false;
+            // Start creating chunk
+            if(m_chunkBuilder == null)
+            {
+                Debug.Log("Build");
+                m_chunkBuilder = new ChunkBuilder(m_index);
+            }
+            // Check if chunk is complete
+
+            Debug.Log("Wait");
+            if (m_chunkBuilder.isComplete())
+            {
+                Debug.Log("Complete");
+                UpdateMesh();
+                m_meshDirty = false;
+                // Delete chunk builder
+                m_chunkBuilder = null;
+            }
         }
     }
 }

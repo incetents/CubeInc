@@ -23,6 +23,9 @@ public class UIDebugMenu : MonoBehaviour
     {
         string result = "Debug Info:\n";
 
+        float fps = (1.0f / Time.smoothDeltaTime);
+        result += "FPS: " + fps.ToString() + '\n';
+
         if (m_player.m_noclip)
             result += "[N] Noclip: ON\n";
         else
