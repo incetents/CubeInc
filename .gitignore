@@ -60,4 +60,5 @@ crashlytics-build.properties
 
 # Ignore Progress Report
 !/ProgressReport/*
+*.flv
 
