@@ -30,14 +30,12 @@ Completed:
 -> generate uvs for voxels
 
 -> fix texture bleeding with padding (padding = 1px per mipmap) + fix uvs for voxels with padding
-
-Phase 1:
-
-
-
 -> merge block dictionary inside block manager
 
 -> custom shader material for chunks
+
+Phase 1:
+
 -> figure out how to add custom attributes
 -> ambient occlusion as custom attribute
 

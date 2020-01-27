@@ -21,6 +21,11 @@ public class UIDebugMenu : MonoBehaviour
     }
     private void Update()
     {
+        // Fix Text Rect Transform to always adjust to screen
+        RectTransform textTransform = m_textMesh.GetComponent<RectTransform>();
+        textTransform.sizeDelta = new Vector2(Screen.width, Screen.height);
+
+        // Text
         string result = "Debug Info:\n";
 
         float fps = (1.0f / Time.smoothDeltaTime);

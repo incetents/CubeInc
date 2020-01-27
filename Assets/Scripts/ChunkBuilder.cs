@@ -218,6 +218,10 @@ public class ChunkBuilder
                 for (int z = 0; z < Chunk.MaxSize.z; z++)
                 {
                     Block block = blocks.data[x, y, z];
+
+                    // Broken Block Check
+                    if (block.m_data == null)
+                        return;
                     if (block.m_data.m_air)
                         continue;
 

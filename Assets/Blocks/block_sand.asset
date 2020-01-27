@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: block_sand
   m_EditorClassIdentifier: Assembly-CSharp::BlockInfoImport
   name: sand
-  m_id: 1
+  m_id: 2
   m_texture: {fileID: 2800000, guid: 4ce6b49b5beb3c142a741af8d170a28d, type: 3}

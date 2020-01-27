@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: block_stone
   m_EditorClassIdentifier: Assembly-CSharp::BlockInfoImport
   name: stone
-  m_id: 2
+  m_id: 1
   m_texture: {fileID: 2800000, guid: 3a28706a49c83f846abab309c4d19323, type: 3}

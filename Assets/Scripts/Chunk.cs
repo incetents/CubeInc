@@ -174,7 +174,7 @@ public class Chunk : MonoBehaviour
     [System.NonSerialized] private Vector3[]   m_topExtents;
 
 
-[System.NonSerialized] public BlockStorage m_blocks;
+    [System.NonSerialized] public BlockStorage m_blocks;
     [System.NonSerialized] private bool        m_visible = true; // Can camera see this chunk
     [System.NonSerialized] private bool        m_meshDirty = false;
 
@@ -267,7 +267,7 @@ public class Chunk : MonoBehaviour
                 //for (int y = 0; y < MaxSize.y; y++)
                 for (int y = 0; y < 10; y++)
                 {
-                    uint id = 1;// (uint)((x % 4) + 1);
+                    uint id = (uint)((x % 4) + 1);
                     Block block = new Block(id, new Vector3Int(x, y, z));
 
                     SetBlock(new Vector3Int(x, y, z), block);
@@ -315,7 +315,7 @@ public class Chunk : MonoBehaviour
         m_meshFilter = GetComponent<MeshFilter>();
         m_meshRenderer = GetComponent<MeshRenderer>();
         m_meshCollider = GetComponent<MeshCollider>();
-        m_meshRenderer.material = GlobalData.material_default;
+        m_meshRenderer.material = GlobalData.material_block;
 
         // Update Center
         m_center = new Vector3(
@@ -402,7 +402,7 @@ public class Chunk : MonoBehaviour
             if (m_player.m_wireframeMode)
                 m_meshRenderer.material = GlobalData.material_wireframe;
             else
-                m_meshRenderer.material = GlobalData.material_default;
+                m_meshRenderer.material = GlobalData.material_block;
         }
         else
         {
@@ -410,26 +410,5 @@ public class Chunk : MonoBehaviour
             //m_meshRenderer.material = GlobalData.material_wireframe;
         }
 
-        //  // Regenerate
-        //  if (m_meshDirty)
-        //  {
-        //      // Start creating chunk
-        //      if(m_chunkBuilder == null)
-        //      {
-        //          Debug.Log("Build");
-        //          m_chunkBuilder = new ChunkBuilder(m_index);
-        //      }
-        //      // Check if chunk is complete
-        //  
-        //      Debug.Log("Wait");
-        //      if (m_chunkBuilder.isComplete())
-        //      {
-        //          Debug.Log("Complete");
-        //          UpdateMesh();
-        //          m_meshDirty = false;
-        //          // Delete chunk builder
-        //          m_chunkBuilder = null;
-        //      }
-        //  }
     }
 }

@@ -21,6 +21,7 @@ public class ChunkManager : MonoBehaviour
 
     void Update()
     {
+
         // Nearby chunks that are being check
         for (int x = -m_ChunkDistance; x <= m_ChunkDistance; x++)
         {
@@ -37,9 +38,10 @@ public class ChunkManager : MonoBehaviour
                     Chunk chunk = chunkObject.GetComponent<Chunk>();
                     chunk.Setup(chunkSpot);
 
-                    ChunkStorage.SetChunk(chunk);
                     chunk.GenerateTest();
                     chunk.MakeDirty();
+
+                    ChunkStorage.SetChunk(chunk);
                 }
             }
         }

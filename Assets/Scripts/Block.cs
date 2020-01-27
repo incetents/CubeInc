@@ -2,52 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class BlockDictionary
-{
-    private static Dictionary<uint, BlockInfo> data = new Dictionary<uint, BlockInfo>();
-
-    // Special case for air
-    private static BlockInfo air = new BlockInfo(0);
-
-    public static BlockInfo Get(uint id)
-    {
-        if (id == 0)
-            return air;
-        else if(data.ContainsKey(id))
-            return data[id];
-        else
-            Debug.LogError("Getting missing BlockData, ID: " + id);
-
-        return null;
-    }
-    public static void Set(BlockInfo newData)
-    {
-        // Air is specific case
-        if (newData.m_id == 0)
-            air = newData;
-        else  if (data.ContainsKey(newData.m_id))
-            Debug.LogError("Setting BlockData ID that already exists: " + newData.m_id);
-        else
-            data.Add(newData.m_id, newData);
-    }
-}
-
-public class BlockInfo
-{
-    // Data
-    public uint m_id;
-    public bool m_air;
-    public string m_name;
-    public Texture2D m_texture;
-    public Vector4 m_atlasLocation; // u1,u2,v1,v2 on textureatlas
-
-    public BlockInfo(uint _id)
-    {
-        m_id = _id;
-        m_air = (_id == 0);
-    }
-}
-
 // Stores data of blocks for chunk usage
 public class BlockStorage
 {
@@ -96,6 +50,22 @@ public class BlockStorage
     public bool IsAir(Vector3Int index)
     {
         return data[index.x, index.y, index.z].m_data.m_air;
+    }
+}
+
+public class BlockInfo
+{
+    // Data
+    public uint m_id;
+    public bool m_air;
+    public string m_name;
+    public Texture2D m_texture;
+    public Vector4 m_atlasLocation; // u1,u2,v1,v2 on textureatlas
+
+    public BlockInfo(uint _id)
+    {
+        m_id = _id;
+        m_air = (_id == 0);
     }
 }
 

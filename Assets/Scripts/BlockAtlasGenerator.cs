@@ -40,9 +40,24 @@ public class BlockAtlasGenerator
         int blockCounter = 0;
         foreach (BlockInfoImport info in blocks)
         {
+            if (info == null)
+            {
+                Debug.LogError("BlockInfoImport has a Null value");
+                continue;
+            }
+
+            Debug.Log("Import: " + info.name);
+
             if (info.m_texture == null)
             {
                 Debug.LogError("BlockInfoImport missing Texture: " + info.name);
+                continue;
+            }
+
+            // Error if duplicate ID
+            if(BlockDictionary.Has(info.m_id))
+            {
+                Debug.LogError("BlockInfoImport duplicate ID: " + info.name + ", ID= " + info.m_id.ToString());
                 continue;
             }
 
