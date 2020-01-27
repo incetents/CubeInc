@@ -11,9 +11,9 @@ public static class GlobalData
     public static Material material_default;
     public static Material material_wireframe;
 
-    public static Texture2D texture_blockAtlas;
-    public static int texture_blockAtlasSize;
-    public static int texture_blockPixelSize;
+    //public static Texture2D texture_blockAtlas;
+    //public static int texture_blockAtlasSize;
+    //public static int texture_blockPixelSize;
 
     public static void NullCheck(Object obj)
     {

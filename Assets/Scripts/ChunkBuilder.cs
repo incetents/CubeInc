@@ -208,9 +208,6 @@ public class ChunkBuilder
             return;
         }
 
-        // Texture Atlas
-        atlasSize = (float)GlobalData.texture_blockAtlasSize;
-
         BlockStorage blocks = chunk.m_blocks;
         Vector3 globalPos = m_chunkIndex * Chunk.MaxSize;
 

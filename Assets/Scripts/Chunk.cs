@@ -264,10 +264,10 @@ public class Chunk : MonoBehaviour
             {
                 int randomHeight = Random.Range(1, 10);
                 //for (int y = 0; y < randomHeight; y++)
-                for (int y = 0; y < MaxSize.y; y++)
-                //for (int y = 0; y < 1; y++)
+                //for (int y = 0; y < MaxSize.y; y++)
+                for (int y = 0; y < 10; y++)
                 {
-                    uint id = 1;// (uint)((x % 2) + 1);
+                    uint id = 1;// (uint)((x % 4) + 1);
                     Block block = new Block(id, new Vector3Int(x, y, z));
 
                     SetBlock(new Vector3Int(x, y, z), block);

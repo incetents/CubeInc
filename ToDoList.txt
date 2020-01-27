@@ -29,12 +29,20 @@ Completed:
 -> convert scriptable blocks to a giant texture atlas
 -> generate uvs for voxels
 
+-> fix texture bleeding with padding (padding = 1px per mipmap) + fix uvs for voxels with padding
+
 Phase 1:
 
--> fix texture bleeding with padding (with n parameter for custom tweaking)
+
+
+-> merge block dictionary inside block manager
+
+-> custom shader material for chunks
+-> figure out how to add custom attributes
+-> ambient occlusion as custom attribute
 
 -> import cubeinc textures
--> texturing (sprite atlas generated)
+
 -> base perlin noise
 
 -> custom block data for textures
@@ -50,3 +58,9 @@ Phase 2:
 	-> Different tools
 		-> shape: ball, square, line
 		-> selection: (fill, delete, move, rotate, copy, paste)
+		
+-> Debug show vertex/face count per chunk
+-> Logger class to keep track of how long specific actions took to complete
+-> Profile
+		
+		
