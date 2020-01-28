@@ -71,30 +71,34 @@ public class Player : MonoBehaviour
         // Update Chunk the player is in
         UpdateCurentInternalChunk();
 
-        // Destroy Block
-        if (Input.GetMouseButtonDown(0) && m_blockOutline.HasHitBlock())
+        // Game Functionality
+        if (!m_paused)
         {
-            Block block = ChunkStorage.GetBlock(m_blockOutline.m_position);
-            if(block != null)
+            // Destroy Block
+            if (Input.GetMouseButtonDown(0) && m_blockOutline.HasHitBlock())
             {
-                if (m_bigBreak)
-                    WorldEdit.SetBlockRegion(
-                        m_blockOutline.m_position + new Vector3(-1, -1, -1),
-                        m_blockOutline.m_position + new Vector3(+1, +1, +1),
-                        new Block(0, block.m_localPosition)
-                        );
-                else
-                    WorldEdit.SetBlock(m_blockOutline.m_position, new Block(0, block.m_localPosition));
+                Block block = ChunkStorage.GetBlock(m_blockOutline.m_position);
+                if (block != null)
+                {
+                    if (m_bigBreak)
+                        WorldEdit.SetBlockRegion(
+                            m_blockOutline.m_position + new Vector3(-1, -1, -1),
+                            m_blockOutline.m_position + new Vector3(+1, +1, +1),
+                            new Block(0, block.m_localPosition)
+                            );
+                    else
+                        WorldEdit.SetBlock(m_blockOutline.m_position, new Block(0, block.m_localPosition));
+                }
             }
-        }
-        // Add Block
-        if (Input.GetMouseButtonDown(1) && m_blockOutline.HasHitBlock())
-        {
-            // Update new block
-            Block block = ChunkStorage.GetBlock(m_blockOutline.m_position + m_blockOutline.m_normal);
-            if (block != null)
+            // Add Block
+            if (Input.GetMouseButtonDown(1) && m_blockOutline.HasHitBlock())
             {
-                WorldEdit.SetBlock(m_blockOutline.m_position + m_blockOutline.m_normal, new Block(1, block.m_localPosition));
+                // Update new block
+                Block block = ChunkStorage.GetBlock(m_blockOutline.m_position + m_blockOutline.m_normal);
+                if (block != null)
+                {
+                    WorldEdit.SetBlock(m_blockOutline.m_position + m_blockOutline.m_normal, new Block(1, block.m_localPosition));
+                }
             }
         }
 

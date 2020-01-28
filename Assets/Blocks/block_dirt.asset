@@ -10,8 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: block_sand
+  m_Name: block_dirt
   m_EditorClassIdentifier: Assembly-CSharp::BlockInfoImport
-  name: sand
+  name: 
   m_id: 2
-  m_texture: {fileID: 2800000, guid: 4ce6b49b5beb3c142a741af8d170a28d, type: 3}
+  m_baseTextureID: {fileID: 11400000, guid: 773a7d9a1180d1f488b53c86a7a454fb, type: 2}
+  m_textureOverride: 0
+  m_texture_top: {fileID: 0}
+  m_texture_left: {fileID: 0}
+  m_texture_right: {fileID: 0}
+  m_texture_front: {fileID: 0}
+  m_texture_back: {fileID: 0}
+  m_texture_bottom: {fileID: 0}

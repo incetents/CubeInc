@@ -33,20 +33,22 @@ Completed:
 -> merge block dictionary inside block manager
 
 -> custom shader material for chunks
+-> 2D texture array instead of atlas
+
+-> block import setting, custom texture placement
+	-> custom id per face potentially
 
 Phase 1: [Block Generation]
 
--> 2D texture array instead of atlas
-
 -> import cubeinc textures
-
--> block import setting, custom texture placement
 
 -> base perlin noise
 	-> show on cube
 	-> generate chunks with it
 	
 -> UI selection -> edit/add (Arrow/gunpowder)
+	-> Block type selection
+	-> simple way of showing texture icon
 
 -> commands (UI displays previous commands along with info on current command)
 	-> Different tools

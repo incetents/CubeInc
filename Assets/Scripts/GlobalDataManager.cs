@@ -31,9 +31,6 @@ public class GlobalDataManager : MonoBehaviour
 
     void Awake()
     {
-        // Air added manually
-        BlockDictionary.Set(new BlockInfo(0));
-
         Random.InitState(0);
 
         GlobalData.player = globalPlayer;

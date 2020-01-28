@@ -10,8 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: block_iron
-  m_EditorClassIdentifier: Assembly-CSharp::BlockInfoImport
-  name: iron
-  m_id: 4
-  m_texture: {fileID: 2800000, guid: 5c241a609905fae469712445ed33f5e1, type: 3}
+  m_Name: texture_grass_top
+  m_EditorClassIdentifier: Assembly-CSharp::BlockTextureImport
+  name: 
+  m_texture: {fileID: 2800000, guid: 0d908e0f3ed1de74598fbd2efe563cd1, type: 3}

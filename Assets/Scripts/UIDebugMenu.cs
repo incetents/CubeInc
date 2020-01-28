@@ -23,13 +23,17 @@ public class UIDebugMenu : MonoBehaviour
     {
         // Fix Text Rect Transform to always adjust to screen
         RectTransform textTransform = m_textMesh.GetComponent<RectTransform>();
-        textTransform.sizeDelta = new Vector2(Screen.width, Screen.height);
+        textTransform.sizeDelta = new Vector2(Screen.width - 12, Screen.height);
 
         // Text
         string result = "Debug Info:\n";
 
         float fps = (1.0f / Time.smoothDeltaTime);
         result += "FPS: " + fps.ToString() + '\n';
+
+        result += "X: " + m_player.transform.position.x.ToString() + '\n';
+        result += "Y: " + m_player.transform.position.y.ToString() + '\n';
+        result += "Z: " + m_player.transform.position.z.ToString() + '\n';
 
         if (m_player.m_noclip)
             result += "[N] Noclip: ON\n";

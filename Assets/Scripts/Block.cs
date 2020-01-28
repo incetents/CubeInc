@@ -49,8 +49,21 @@ public class BlockStorage
     }
     public bool IsAir(Vector3Int index)
     {
+        if (data[index.x, index.y, index.z].m_data == null)
+            return true;
+
         return data[index.x, index.y, index.z].m_data.m_air;
     }
+}
+
+public enum BlockFace
+{
+    TOP = 0,
+    LEFT = 1,
+    RIGHT = 2,
+    FRONT = 3,
+    BACK = 4,
+    BOTTOM = 5
 }
 
 public class BlockInfo
@@ -59,14 +72,33 @@ public class BlockInfo
     public uint m_id;
     public bool m_air;
     public string m_name;
-    public Texture2D m_texture;
-    //public Vector4 m_atlasLocation; // u1,u2,v1,v2 on textureatlas
-    public uint m_textureID;
+    public List<uint> m_textureIDs = new List<uint>();
 
     public BlockInfo(uint _id)
     {
         m_id = _id;
         m_air = (_id == 0);
+    }
+
+    public void AddTextureID(BlockTextureImport info, uint fallbackID)
+    {
+        if (info == null || info.m_failedToLoad)
+        {
+            m_textureIDs.Add(fallbackID);
+            return;
+        }
+       
+        m_textureIDs.Add(info.m_id);
+    }
+
+    public uint GetTextureID(BlockFace face)
+    {
+        if (m_textureIDs.Count == 0)
+            return 0;
+        else if (m_textureIDs.Count == 1)
+            return m_textureIDs[0];
+
+        return m_textureIDs[(int)face];
     }
 }
 
