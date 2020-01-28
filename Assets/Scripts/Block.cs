@@ -60,7 +60,8 @@ public class BlockInfo
     public bool m_air;
     public string m_name;
     public Texture2D m_texture;
-    public Vector4 m_atlasLocation; // u1,u2,v1,v2 on textureatlas
+    //public Vector4 m_atlasLocation; // u1,u2,v1,v2 on textureatlas
+    public uint m_textureID;
 
     public BlockInfo(uint _id)
     {

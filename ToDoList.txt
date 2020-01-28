@@ -34,31 +34,80 @@ Completed:
 
 -> custom shader material for chunks
 
-Phase 1:
+Phase 1: [Block Generation]
+
+-> 2D texture array instead of atlas
+
+-> import cubeinc textures
+
+-> block import setting, custom texture placement
+
+-> base perlin noise
+	-> show on cube
+	-> generate chunks with it
+	
+-> UI selection -> edit/add (Arrow/gunpowder)
+
+-> commands (UI displays previous commands along with info on current command)
+	-> Different tools
+		-> shape: ball, square, line
+		-> selection: (fill, delete, move, rotate, copy, paste)
+
+(fun) -> particle effect when destroying a block
+
+-> save changed chunks
+	-> pre-emptively add subid in saving for future
+
+Phase 2: [Basic Light]
 
 -> figure out how to add custom attributes
 -> ambient occlusion as custom attribute
 
--> import cubeinc textures
-
--> base perlin noise
-
--> custom block data for textures
--> custom block data imported in dictionary
-
-Phase 2:
-
--> save changed chunks
--> transparency pass
 -> custom lighting (store light level in block)
--> UI selection -> edit/add (Arrow/gunpowder)
--> commands
-	-> Different tools
-		-> shape: ball, square, line
-		-> selection: (fill, delete, move, rotate, copy, paste)
-		
--> Debug show vertex/face count per chunk
+-> store channels seperately for colored light
+
+-> transparency pass
+	-> transparent or cutout objects as an import option
+	-> transparent ice and cutout glass for test
+
+-> Debug show vertex/face count per chunk or in total
 -> Logger class to keep track of how long specific actions took to complete
--> Profile
+	-> time to create atlas, time to create chunk
 		
+Phase 3: [Intermediate Light + Post Process]
+
+-> emission map texture possibility for import
+-> 2nd atlas for emissions maps generated (default = black)
+
+-> sunlight
+
+-> skybox ; gradient colors ; day night cycle ???
+
+-> environment mapping on blocks
+	-> blocks get color of sky
+
+-> unity post processing effects
+
+-> colored fog possibility
+
+-> other light effects?
+
+Phase 4: [???]
+
+-> weirdly shaped objects (life fences or half blocks)
+	-> based on subid
+	-> face cull system based on shape
+	-> ambient occlusion custom based on shape
+
+-> commands can modify subid now
+
+-> Do some profiling to find any bottlenecks
+
+
+
+
+
+
+
+
 		

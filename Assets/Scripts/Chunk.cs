@@ -203,6 +203,7 @@ public class Chunk : MonoBehaviour
 
         m_mesh.vertices = m_chunkBuilder.vertices.ToArray();
         m_mesh.uv = m_chunkBuilder.uvs.ToArray();
+        m_mesh.uv2 = m_chunkBuilder.id.ToArray();
         m_mesh.normals = m_chunkBuilder.normals.ToArray();
         m_mesh.triangles = m_chunkBuilder.indices.ToArray();
 

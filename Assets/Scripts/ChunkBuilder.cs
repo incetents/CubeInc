@@ -22,6 +22,7 @@ public class ChunkBuilder
     // Read Data
     public List<Vector3> vertices = new List<Vector3>();
     public List<Vector2> uvs = new List<Vector2>();
+    public List<Vector2> id = new List<Vector2>();
     public List<Vector3> normals = new List<Vector3>();
     public List<int> indices = new List<int>();
     public int quadCount = 0;
@@ -30,7 +31,7 @@ public class ChunkBuilder
     private float atlasSize;
 
     // Utility
-    public void AddFace_Up(Vector3 position, Vector4 uvData)
+    public void AddFace_Up(Vector3 position, uint texID)
     {
         // +Y Face
         vertices.Add(new Vector3(position.x + 0, position.y + 1, position.z + 0)); // 3
@@ -38,10 +39,15 @@ public class ChunkBuilder
         vertices.Add(new Vector3(position.x + 1, position.y + 1, position.z + 1)); // 2
         vertices.Add(new Vector3(position.x + 1, position.y + 1, position.z + 0)); // 1
 
-        uvs.Add(new Vector2(uvData.x, uvData.z)); // 4
-        uvs.Add(new Vector2(uvData.x, uvData.w)); // 2
-        uvs.Add(new Vector2(uvData.y, uvData.w)); // 1
-        uvs.Add(new Vector2(uvData.y, uvData.z)); // 3
+        uvs.Add(new Vector2(0, 0)); // 4
+        uvs.Add(new Vector2(0, 1)); // 2
+        uvs.Add(new Vector2(1, 1)); // 1
+        uvs.Add(new Vector2(1, 0)); // 3
+
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
 
         normals.Add(Vector3.up);
         normals.Add(Vector3.up);
@@ -57,7 +63,7 @@ public class ChunkBuilder
 
         quadCount++;
     }
-    public void AddFace_Down(Vector3 position, Vector4 uvData)
+    public void AddFace_Down(Vector3 position, uint texID)
     {
         // -Y Face
         vertices.Add(new Vector3(position.x + 0, position.y + 0, position.z + 0)); // 3
@@ -65,10 +71,15 @@ public class ChunkBuilder
         vertices.Add(new Vector3(position.x + 1, position.y + 0, position.z + 1)); // 2
         vertices.Add(new Vector3(position.x + 1, position.y + 0, position.z + 0)); // 1
 
-        uvs.Add(new Vector2(uvData.x, uvData.z)); // 4
-        uvs.Add(new Vector2(uvData.x, uvData.w)); // 2
-        uvs.Add(new Vector2(uvData.y, uvData.w)); // 1
-        uvs.Add(new Vector2(uvData.y, uvData.z)); // 3
+        uvs.Add(new Vector3(0, 0)); // 4
+        uvs.Add(new Vector3(0, 1)); // 2
+        uvs.Add(new Vector3(1, 1)); // 1
+        uvs.Add(new Vector3(1, 0)); // 3
+
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
 
         normals.Add(Vector3.down);
         normals.Add(Vector3.down);
@@ -84,7 +95,7 @@ public class ChunkBuilder
 
         quadCount++;
     }
-    public void AddFace_Right(Vector3 position, Vector4 uvData)
+    public void AddFace_Right(Vector3 position, uint texID)
     {
         // +X Face
         vertices.Add(new Vector3(position.x + 1, position.y + 0, position.z + 0)); // 3
@@ -92,10 +103,15 @@ public class ChunkBuilder
         vertices.Add(new Vector3(position.x + 1, position.y + 1, position.z + 1)); // 2
         vertices.Add(new Vector3(position.x + 1, position.y + 1, position.z + 0)); // 1
 
-        uvs.Add(new Vector2(uvData.y, uvData.z)); // 3
-        uvs.Add(new Vector2(uvData.x, uvData.z)); // 4
-        uvs.Add(new Vector2(uvData.x, uvData.w)); // 2
-        uvs.Add(new Vector2(uvData.y, uvData.w)); // 1
+        uvs.Add(new Vector3(1, 0)); // 3
+        uvs.Add(new Vector3(0, 0)); // 4
+        uvs.Add(new Vector3(0, 1)); // 2
+        uvs.Add(new Vector3(1, 1)); // 1
+
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
 
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
@@ -111,7 +127,7 @@ public class ChunkBuilder
 
         quadCount++;
     }
-    public void AddFace_Left(Vector3 position, Vector4 uvData)
+    public void AddFace_Left(Vector3 position, uint texID)
     {
         // -X Face
         vertices.Add(new Vector3(position.x + 0, position.y + 0, position.z + 0)); // 3
@@ -119,10 +135,15 @@ public class ChunkBuilder
         vertices.Add(new Vector3(position.x + 0, position.y + 1, position.z + 1)); // 2
         vertices.Add(new Vector3(position.x + 0, position.y + 1, position.z + 0)); // 1
 
-        uvs.Add(new Vector2(uvData.y, uvData.z)); // 3
-        uvs.Add(new Vector2(uvData.x, uvData.z)); // 4
-        uvs.Add(new Vector2(uvData.x, uvData.w)); // 2
-        uvs.Add(new Vector2(uvData.y, uvData.w)); // 1
+        uvs.Add(new Vector3(1, 0)); // 3
+        uvs.Add(new Vector3(0, 0)); // 4
+        uvs.Add(new Vector3(0, 1)); // 2
+        uvs.Add(new Vector3(1, 1)); // 1
+
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
 
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
@@ -138,7 +159,7 @@ public class ChunkBuilder
 
         quadCount++;
     }
-    public void AddFace_Front(Vector3 position, Vector4 uvData)
+    public void AddFace_Front(Vector3 position, uint texID)
     {
         // +Z Face
         vertices.Add(new Vector3(position.x + 0, position.y + 0, position.z + 1)); // 3
@@ -146,10 +167,15 @@ public class ChunkBuilder
         vertices.Add(new Vector3(position.x + 1, position.y + 1, position.z + 1)); // 2
         vertices.Add(new Vector3(position.x + 0, position.y + 1, position.z + 1)); // 1
 
-        uvs.Add(new Vector2(uvData.y, uvData.z)); // 3
-        uvs.Add(new Vector2(uvData.x, uvData.z)); // 4
-        uvs.Add(new Vector2(uvData.x, uvData.w)); // 2
-        uvs.Add(new Vector2(uvData.y, uvData.w)); // 1
+        uvs.Add(new Vector3(1, 0)); // 3
+        uvs.Add(new Vector3(0, 0)); // 4
+        uvs.Add(new Vector3(0, 1)); // 2
+        uvs.Add(new Vector3(1, 1)); // 1
+
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
 
         normals.Add(Vector3.forward);
         normals.Add(Vector3.forward);
@@ -165,7 +191,7 @@ public class ChunkBuilder
 
         quadCount++;
     }
-    public void AddFace_Back(Vector3 position, Vector4 uvData)
+    public void AddFace_Back(Vector3 position, uint texID)
     {
         // -Z Face
         vertices.Add(new Vector3(position.x + 0, position.y + 1, position.z + 0));
@@ -173,10 +199,15 @@ public class ChunkBuilder
         vertices.Add(new Vector3(position.x + 0, position.y + 0, position.z + 0));
         vertices.Add(new Vector3(position.x + 1, position.y + 0, position.z + 0));
 
-        uvs.Add(new Vector2(uvData.x, uvData.w)); // 2
-        uvs.Add(new Vector2(uvData.y, uvData.w)); // 1
-        uvs.Add(new Vector2(uvData.x, uvData.z)); // 4
-        uvs.Add(new Vector2(uvData.y, uvData.z)); // 3
+        uvs.Add(new Vector3(0, 1)); // 2
+        uvs.Add(new Vector3(1, 1)); // 1
+        uvs.Add(new Vector3(0, 0)); // 4
+        uvs.Add(new Vector3(1, 0)); // 3
+
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
+        id.Add(new Vector2(texID, 0));
 
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
@@ -240,13 +271,13 @@ public class ChunkBuilder
                     {
                         Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecLeft);
                         if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(Chunk.MaxSize.x - 1, y, z))))
-                            AddFace_Left(position, block.m_data.m_atlasLocation);
+                            AddFace_Left(position, block.m_data.m_textureID);
                     }
                     // LEFT // Inbounds Check
                     else
                     {
                         if (blocks.IsAir(LeftCheck))
-                            AddFace_Left(position, block.m_data.m_atlasLocation);
+                            AddFace_Left(position, block.m_data.m_textureID);
                     }
 
                     // RIGHT // Out of bounds check
@@ -254,13 +285,13 @@ public class ChunkBuilder
                     {
                         Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecRight);
                         if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(0, y, z))))
-                            AddFace_Right(position, block.m_data.m_atlasLocation);
+                            AddFace_Right(position, block.m_data.m_textureID);
                     }
                     // RIGHT // Inbounds Check
                     else
                     {
                         if (blocks.IsAir(RightCheck))
-                            AddFace_Right(position, block.m_data.m_atlasLocation);
+                            AddFace_Right(position, block.m_data.m_textureID);
                     }
 
                     // DOWN // Out of bounds check
@@ -268,13 +299,13 @@ public class ChunkBuilder
                     {
                         Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecDown);
                         if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(x, Chunk.MaxSize.y - 1, z))))
-                            AddFace_Down(position, block.m_data.m_atlasLocation);
+                            AddFace_Down(position, block.m_data.m_textureID);
                     }
                     // DOWN // Inbounds Check
                     else
                     {
                         if (blocks.IsAir(DownCheck))
-                            AddFace_Down(position, block.m_data.m_atlasLocation);
+                            AddFace_Down(position, block.m_data.m_textureID);
                     }
 
                     // UP // Out of bounds check
@@ -282,13 +313,13 @@ public class ChunkBuilder
                     {
                         Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecUp);
                         if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(x, 0, z))))
-                            AddFace_Up(position, block.m_data.m_atlasLocation);
+                            AddFace_Up(position, block.m_data.m_textureID);
                     }
                     // UP // Inbounds Check
                     else
                     {
                         if (blocks.IsAir(UpCheck))
-                            AddFace_Up(position, block.m_data.m_atlasLocation);
+                            AddFace_Up(position, block.m_data.m_textureID);
                     }
 
                     // BACK // Out of bounds check
@@ -296,13 +327,13 @@ public class ChunkBuilder
                     {
                         Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecBack);
                         if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(x, y, Chunk.MaxSize.z - 1))))
-                            AddFace_Back(position, block.m_data.m_atlasLocation);
+                            AddFace_Back(position, block.m_data.m_textureID);
                     }
                     // BACK // Inbounds Check
                     else
                     {
                         if (blocks.IsAir(BackCheck))
-                            AddFace_Back(position, block.m_data.m_atlasLocation);
+                            AddFace_Back(position, block.m_data.m_textureID);
                     }
 
                     // FRONT // Out of bounds check
@@ -310,13 +341,13 @@ public class ChunkBuilder
                     {
                         Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecForward);
                         if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(x, y, 0))))
-                            AddFace_Front(position, block.m_data.m_atlasLocation);
+                            AddFace_Front(position, block.m_data.m_textureID);
                     }
                     // FRONT // Inbounds Check
                     else
                     {
                         if (blocks.IsAir(FrontCheck))
-                            AddFace_Front(position, block.m_data.m_atlasLocation);
+                            AddFace_Front(position, block.m_data.m_textureID);
                     }
 
                 }

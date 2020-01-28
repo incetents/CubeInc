@@ -41,15 +41,68 @@ public class BlockManager : MonoBehaviour
     public BlockInfoImport[] blocks;
     public int blockPixelSize = 16;
 
-    [System.NonSerialized] public BlockAtlasGenerator atlasMaker;
+    [System.NonSerialized] public Texture2DArray blockTextureArray;
 
     // Behaviour
     void Start()
     {
-        // Create atlas of all imported blocks
-        atlasMaker = new BlockAtlasGenerator(blocks, 16, 8);
+        List<Texture2D> blockTextures = new List<Texture2D>();
 
-        // Give Chunk this texture
-        GlobalData.material_block.mainTexture = atlasMaker.GetAtlasTexture();
+        foreach (BlockInfoImport info in blocks)
+        {
+            if (info == null)
+            {
+                Debug.LogError("BlockInfoImport has a Null value");
+                continue;
+            }
+
+            Debug.Log("Import: " + info.name);
+
+            if (info.m_texture == null)
+            {
+                Debug.LogError("BlockInfoImport missing Texture: " + info.name);
+                continue;
+            }
+
+            // Error if duplicate ID
+            if (BlockDictionary.Has(info.m_id))
+            {
+                Debug.LogError("BlockInfoImport duplicate ID: " + info.name + ", ID= " + info.m_id.ToString());
+                continue;
+            }
+
+            Debug.Assert(info.m_texture.width == blockPixelSize,
+                "Block Texture Size does not match specified size (Block Size= " + info.m_texture.width.ToString() + ")(Target Size: " + blockPixelSize.ToString()
+                );
+
+            // Add block to dictionary
+            BlockInfo block = new BlockInfo(info.m_id);
+            block.m_name = info.name;
+            block.m_texture = info.m_texture;
+            block.m_textureID = (uint)blockTextures.Count;
+
+            // Store Texture
+            blockTextures.Add(info.m_texture);
+
+            BlockDictionary.Set(block);
+
+        }
+
+        // Create Texture Array
+        blockTextureArray = new Texture2DArray(16, 16, blockTextures.Count, TextureFormat.RGB24, true, false);
+        blockTextureArray.filterMode = FilterMode.Point;
+        blockTextureArray.wrapMode = TextureWrapMode.Clamp;
+
+        // Store Textures
+        for (int i = 0; i < blockTextures.Count; i++)
+        {
+            blockTextureArray.SetPixels(blockTextures[i].GetPixels(0), i, 0);
+        }
+
+        //
+        blockTextureArray.Apply();
+
+        // Apply
+        GlobalData.material_block.SetTexture("_TextureArray", blockTextureArray);
     }
 }
