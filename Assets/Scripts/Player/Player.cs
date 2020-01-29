@@ -53,6 +53,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         UpdateCurentInternalChunk();
 
@@ -97,7 +98,7 @@ public class Player : MonoBehaviour
                 Block block = ChunkStorage.GetBlock(m_blockOutline.m_position + m_blockOutline.m_normal);
                 if (block != null)
                 {
-                    WorldEdit.SetBlock(m_blockOutline.m_position + m_blockOutline.m_normal, new Block(1, block.m_localPosition));
+                    WorldEdit.SetBlock(m_blockOutline.m_position + m_blockOutline.m_normal, new Block(2, block.m_localPosition));
                 }
             }
         }
@@ -124,9 +125,15 @@ public class Player : MonoBehaviour
 
         // Lock Mouse
         if (m_windowFocus && !m_paused)
+        {
             Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
         else
+        {
             Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
 
         // Collision
         m_controller.enabled = !m_noclip;

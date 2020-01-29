@@ -364,13 +364,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ab193a57c58f954c9b3db15611bdbeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockInfo:
-  - {fileID: 11400000, guid: bbcbea35b393924479ab58dc3091a70f, type: 2}
-  - {fileID: 11400000, guid: ad6b082c130abf346a60a9ae49012bd4, type: 2}
-  blockTextures:
-  - {fileID: 11400000, guid: 773a7d9a1180d1f488b53c86a7a454fb, type: 2}
-  - {fileID: 11400000, guid: 0c7fd79007a943b40be72905ef1cfdbb, type: 2}
-  - {fileID: 11400000, guid: 61c7f5b48b955ec43bc4029f9935e32c, type: 2}
   blockPixelSize: 16
 --- !u!114 &809324291
 MonoBehaviour:
@@ -1212,7 +1205,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2013448349
 Transform:
   m_ObjectHideFlags: 0

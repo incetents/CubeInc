@@ -269,7 +269,7 @@ public class Chunk : MonoBehaviour
                 for (int y = 0; y < 10; y++)
                 {
                     //uint id = (uint)((x % 4) + 1);
-                    uint id = 2;
+                    uint id = 1;
                     Block block = new Block(id, new Vector3Int(x, y, z));
 
                     SetBlock(new Vector3Int(x, y, z), block);

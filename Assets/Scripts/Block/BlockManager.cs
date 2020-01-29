@@ -28,43 +28,9 @@ public static class BlockDictionary
     }
 }
 
-[CreateAssetMenu(fileName = "New BlockInfoImport", menuName = "BlockInfoImport")]
-public class BlockInfoImport : ScriptableObject
-{
-    // Base Settings
-    [Header("Base")]
-    public new string   name;
-    public uint         m_id;
-
-    [Header("Base Texture")]
-    public BlockTextureImport m_baseTextureID;
-    // Special Overrides
-    [Header("Texture Override")]
-    public bool m_textureOverride;
-    public BlockTextureImport m_texture_top    = null;
-    public BlockTextureImport m_texture_left   = null;
-    public BlockTextureImport m_texture_right  = null;
-    public BlockTextureImport m_texture_front  = null;
-    public BlockTextureImport m_texture_back   = null;
-    public BlockTextureImport m_texture_bottom = null;
-}
-
-[CreateAssetMenu(fileName = "New BlockTextureImport", menuName = "BlockTextureImport")]
-public class BlockTextureImport : ScriptableObject
-{
-    // Base Settings
-    [Header("Base")]
-    public new string   name;
-    public Texture2D    m_texture;
-    [System.NonSerialized ] public uint m_id = 0; // Generated based on storage
-    [System.NonSerialized] public bool m_failedToLoad = false;
-}
-
 public class BlockManager : MonoBehaviour
 {
     // Import
-    public BlockInfoImport[] blockInfo;
-    public BlockTextureImport[] blockTextures;
     public int blockPixelSize = 16;
 
     [System.NonSerialized] public Texture2DArray blockTextureArray;
@@ -78,13 +44,14 @@ public class BlockManager : MonoBehaviour
 
     void Start()
     {
-        // Import all textures
-        //BlockTextureImport[] test = FindObjectsOfType<BlockTextureImport>();
-        //Debug.Log(test.Length);
+        // Get all block data
+        BlockInfoImport[] importBlockInfo = Resources.LoadAll<BlockInfoImport>("Blocks");
+        BlockTextureImport[] importBlockTextures = Resources.LoadAll< BlockTextureImport>("BlockTextures");
 
-        List<Texture2D> textureList = new List<Texture2D>();
+        // Import Textures
+        List<Texture2D> blockTextures = new List<Texture2D>();
 
-        foreach (BlockTextureImport info in blockTextures)
+        foreach (BlockTextureImport info in importBlockTextures)
         {
             if (info == null)
             {
@@ -109,24 +76,24 @@ public class BlockManager : MonoBehaviour
 
             Debug.Log("Import: " + info.name);
 
-            info.m_id = (uint)textureList.Count;
-            textureList.Add(info.m_texture);
+            info.m_id = (uint)blockTextures.Count;
+            blockTextures.Add(info.m_texture);
 
         }
 
         // Finish 2D Texture Array
-        if (textureList.Count > 0)
+        if (blockTextures.Count > 0)
         {
 
             // Create Texture Array
-            blockTextureArray = new Texture2DArray(16, 16, textureList.Count, TextureFormat.RGB24, true, false);
+            blockTextureArray = new Texture2DArray(16, 16, blockTextures.Count, TextureFormat.RGB24, true, false);
             blockTextureArray.filterMode = FilterMode.Point;
             blockTextureArray.wrapMode = TextureWrapMode.Clamp;
 
             // Store Textures
-            for (int i = 0; i < textureList.Count; i++)
+            for (int i = 0; i < blockTextures.Count; i++)
             {
-                blockTextureArray.SetPixels(textureList[i].GetPixels(0), i, 0);
+                blockTextureArray.SetPixels(blockTextures[i].GetPixels(0), i, 0);
             }
             //
             blockTextureArray.Apply();
@@ -136,7 +103,7 @@ public class BlockManager : MonoBehaviour
         }
 
         // Import all Blocks
-        foreach (BlockInfoImport info in blockInfo)
+        foreach (BlockInfoImport info in importBlockInfo)
         {
             // Error if duplicate ID
             if (BlockDictionary.Has(info.m_id))
@@ -167,8 +134,6 @@ public class BlockManager : MonoBehaviour
                 block.AddTextureID(info.m_texture_front, fallbackID);
                 block.AddTextureID(info.m_texture_back, fallbackID);
                 block.AddTextureID(info.m_texture_bottom, fallbackID);
-                //
-                Debug.Log("fallback: " + fallbackID);
                 //
                 foreach (uint id in block.m_textureIDs)
                     Debug.Log(id);

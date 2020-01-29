@@ -9,7 +9,7 @@ public class ChunkManager : MonoBehaviour
     private Player m_player;
 
     // Global
-    public static int m_ChunkDistance = 0;
+    public static int m_ChunkDistance = 1;
 
     // Data
     private Chunk m_constructingChunk = null;

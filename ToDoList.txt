@@ -38,12 +38,18 @@ Completed:
 -> block import setting, custom texture placement
 	-> custom id per face potentially
 
+-> block import settings go in resources
+	-> doesn't require drag and drop in runtime manager if it can grabbed from there
+
+
+
 Phase 1: [Block Generation]
 
 -> import cubeinc textures
 
 -> base perlin noise
 	-> show on cube
+	-> master switch to stop chunks from generating, easier to test unrelated stuff
 	-> generate chunks with it
 	
 -> UI selection -> edit/add (Arrow/gunpowder)
@@ -57,6 +63,7 @@ Phase 1: [Block Generation]
 
 (fun) -> particle effect when destroying a block
 
+-> flag if chunk has never been edited (if no, don't save it)
 -> save changed chunks
 	-> pre-emptively add subid in saving for future
 
