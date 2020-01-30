@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class Pair<T, U>
 {
-    public Pair()
-    {
-    }
+    public Pair(){}
 
     public Pair(T first, U second)
     {
@@ -20,6 +18,24 @@ public class Pair<T, U>
 
 public static class Utility
 {
+    public static float Perlin3D(Vector3 pos)
+    {
+        return Perlin3D(pos.x, pos.y, pos.z);
+    }
+    public static float Perlin3D(float x, float y, float z)
+    {
+        float AB = Mathf.PerlinNoise(x, y);
+        float BC = Mathf.PerlinNoise(y, z);
+        float AC = Mathf.PerlinNoise(x, z);
+
+        float BA = Mathf.PerlinNoise(y, x);
+        float CB = Mathf.PerlinNoise(z, y);
+        float CA = Mathf.PerlinNoise(z, x);
+
+        float ABC = AB + BC + AC + BA + CB + CA; ;
+        return ABC / 6.0f;
+    }
+
     public static void Swap<T>(ref T lhs, ref T rhs)
     {
         T temp = lhs;

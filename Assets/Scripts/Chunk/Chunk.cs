@@ -30,7 +30,7 @@ public static class ChunkStorage
     }
     public static Chunk GetChunk(Vector3 position)
     {
-        Vector3Int index = ConvertToChunkIndex(position);
+        Vector3Int index = Chunk.ConvertToChunkIndex(position);
 
         if (IsEmpty(index))
             return null;
@@ -54,50 +54,16 @@ public static class ChunkStorage
         return false;
     }
 
-    // Index Conversion
-    public static Vector3Int ConvertToChunkIndex(Vector3 position)
-    {
-        Vector3Int index = new Vector3Int(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y), Mathf.FloorToInt(position.z));
-
-        // Account for negative indices
-        int chunkX = (index.x < 0) ? Mathf.FloorToInt(index.x) - Chunk.MaxSize.x + 1 : Mathf.FloorToInt(index.x);
-        int chunkY = (index.y < 0) ? Mathf.FloorToInt(index.y) - Chunk.MaxSize.y + 1 : Mathf.FloorToInt(index.y);
-        int chunkZ = (index.z < 0) ? Mathf.FloorToInt(index.z) - Chunk.MaxSize.z + 1 : Mathf.FloorToInt(index.z);
-
-        // Result
-        return new Vector3Int(
-            chunkX / Chunk.MaxSize.x,
-            chunkY / Chunk.MaxSize.y,
-            chunkZ / Chunk.MaxSize.z
-            );
-    }
-    // Index Conversion
-    public static Vector3Int ConvertToBlockIndex(Vector3 position)
-    {
-        Vector3Int index = new Vector3Int(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y), Mathf.FloorToInt(position.z));
-
-        int modLocalX = (index.x < 0) ? (Chunk.MaxSize.x - (Mathf.Abs(index.x) % Chunk.MaxSize.x)) : index.x;
-        int modLocalY = (index.y < 0) ? (Chunk.MaxSize.y - (Mathf.Abs(index.y) % Chunk.MaxSize.y)) : index.y;
-        int modLocalZ = (index.z < 0) ? (Chunk.MaxSize.z - (Mathf.Abs(index.z) % Chunk.MaxSize.z)) : index.z;
-
-        return new Vector3Int(
-            modLocalX % Chunk.MaxSize.x,
-            modLocalY % Chunk.MaxSize.y,
-            modLocalZ % Chunk.MaxSize.z
-            );
-    }
-
     // Modify an existing block from world space position (no update)
     public static bool SetBlock(Vector3 position, Block block)
     {
-        Vector3Int chunkIndex = ChunkStorage.ConvertToChunkIndex(position);
+        Vector3Int chunkIndex = Chunk.ConvertToChunkIndex(position);
         Chunk chunk = GetChunk(chunkIndex);
         if (chunk == null)
             return false;
 
         // Check if block exists in chunk
-        Vector3Int blockIndex = ConvertToBlockIndex(position);
-        chunk.m_blocks.Set(blockIndex, block);
+        chunk.m_blocks.Set(block);
         return true;
     }
 
@@ -105,13 +71,13 @@ public static class ChunkStorage
     public static Block GetBlock(Vector3 position)
     {
         // Check if chunk exists
-        Vector3Int chunkIndex = ConvertToChunkIndex(position);
+        Vector3Int chunkIndex = Chunk.ConvertToChunkIndex(position);
         Chunk chunk = GetChunk(chunkIndex);
         if (chunk == null)
             return null;
 
         // Check if block exists in chunk
-        Vector3Int blockIndex = ConvertToBlockIndex(position);
+        Vector3Int blockIndex = Chunk.ConvertToBlockIndex(position);
         return chunk.m_blocks.Get(blockIndex);
     }
     // Get all adjacent blocks from position (includes position block)
@@ -165,6 +131,7 @@ public class Chunk : MonoBehaviour
     public static readonly Vector3Int MaxSize = new Vector3Int(16, 16, 16);
 
     // Object
+    private ChunkManager m_chunkManager;
     private Player m_player;
 
     // Data
@@ -212,6 +179,44 @@ public class Chunk : MonoBehaviour
     }
 
     // Utility
+    // Index Conversion
+    public static Vector3Int ConvertToChunkIndex(Vector3 position)
+    {
+        Vector3Int index = new Vector3Int(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y), Mathf.FloorToInt(position.z));
+
+        // Account for negative indices
+        int chunkX = (index.x < 0) ? Mathf.FloorToInt(index.x) - Chunk.MaxSize.x + 1 : Mathf.FloorToInt(index.x);
+        int chunkY = (index.y < 0) ? Mathf.FloorToInt(index.y) - Chunk.MaxSize.y + 1 : Mathf.FloorToInt(index.y);
+        int chunkZ = (index.z < 0) ? Mathf.FloorToInt(index.z) - Chunk.MaxSize.z + 1 : Mathf.FloorToInt(index.z);
+
+        // Result
+        return new Vector3Int(
+            chunkX / Chunk.MaxSize.x,
+            chunkY / Chunk.MaxSize.y,
+            chunkZ / Chunk.MaxSize.z
+            );
+    }
+    // Index Conversion
+    public static Vector3Int ConvertToBlockIndex(Vector3 position)
+    {
+        Vector3Int index = new Vector3Int(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y), Mathf.FloorToInt(position.z));
+
+        int modLocalX = (index.x < 0) ? (Chunk.MaxSize.x - (Mathf.Abs(index.x) % Chunk.MaxSize.x)) : index.x;
+        int modLocalY = (index.y < 0) ? (Chunk.MaxSize.y - (Mathf.Abs(index.y) % Chunk.MaxSize.y)) : index.y;
+        int modLocalZ = (index.z < 0) ? (Chunk.MaxSize.z - (Mathf.Abs(index.z) % Chunk.MaxSize.z)) : index.z;
+
+        return new Vector3Int(
+            modLocalX % Chunk.MaxSize.x,
+            modLocalY % Chunk.MaxSize.y,
+            modLocalZ % Chunk.MaxSize.z
+            );
+    }
+    // Convert Local To World
+    public Vector3Int ConvertFromLocalToWorld(Vector3Int localPosition)
+    {
+        return localPosition + (m_index * Chunk.MaxSize);
+    }
+
     public Vector3 GetCenter()
     {
         return m_center;
@@ -220,9 +225,9 @@ public class Chunk : MonoBehaviour
     {
         return m_index;
     }
-    public void SetBlock(Vector3Int index, Block block)
+    public void SetBlock(Block block)
     {
-        m_blocks.Set(index, block);
+        m_blocks.Set(block);
     }
     public void MakeDirty()
     {
@@ -257,6 +262,38 @@ public class Chunk : MonoBehaviour
         m_chunkBuilder = null;
     }
 
+    public void GenerateTerrain()
+    {
+        for (int x = 0; x < MaxSize.x; x++)
+        {
+            for (int y = 0; y < MaxSize.z; y++)
+            {
+                for (int z = 0; z < MaxSize.z; z++)
+                {
+                    Vector3 WorldPos = ConvertFromLocalToWorld(new Vector3Int(x, y, z));
+                    Vector3 WorldPosUp = new Vector3(WorldPos.x, WorldPos.y + 1, WorldPos.z);
+                    WorldPos /= m_player.PerlinScale;
+                    WorldPosUp /= m_player.PerlinScale;
+
+                    float perlin = Utility.Perlin3D(WorldPos);
+                    if (perlin > m_player.PerlinAlpha)
+                    {
+                        float perlinUp = Utility.Perlin3D(WorldPosUp);
+
+                        if (perlinUp > m_player.PerlinAlpha)
+                            SetBlock(new Block(1, new Vector3Int(x, y, z)));
+                        else
+                            SetBlock(new Block(2, new Vector3Int(x, y, z)));
+
+                    }
+                    else
+                    {
+                        SetBlock(new Block(0, new Vector3Int(x, y, z)));
+                    }
+                }
+            }
+        }
+    }
     public void GenerateTest()
     {
         for (int x = 0; x < MaxSize.x; x++)
@@ -272,26 +309,24 @@ public class Chunk : MonoBehaviour
                     uint id = 1;
                     Block block = new Block(id, new Vector3Int(x, y, z));
 
-                    SetBlock(new Vector3Int(x, y, z), block);
+                    SetBlock(block);
                 }
             }
         }
     }
     public bool CanCameraSeeChunk()
     {
-       // If adjacent to player chunk, camera will always see it
-       if (
-           m_index == m_player.m_chunkIndex ||
-           m_index == m_player.m_chunkIndex + new Vector3Int(-1, 0, 0) ||
-           m_index == m_player.m_chunkIndex + new Vector3Int(+1, 0, 0) ||
-           m_index == m_player.m_chunkIndex + new Vector3Int(0, 0, -1) ||
-           m_index == m_player.m_chunkIndex + new Vector3Int(0, 0, +1) ||
-           m_index == m_player.m_chunkIndex + new Vector3Int(-1, 0, -1) ||
-           m_index == m_player.m_chunkIndex + new Vector3Int(+1, 0, -1) ||
-           m_index == m_player.m_chunkIndex + new Vector3Int(-1, 0, +1) ||
-           m_index == m_player.m_chunkIndex + new Vector3Int(+1, 0, +1)
-           )
-           return true;
+        if (
+            m_index.x >= m_player.m_chunkIndex.x - 1 &&
+            m_index.x <= m_player.m_chunkIndex.x + 1 &&
+
+            m_index.y >= m_player.m_chunkIndex.y - 1 &&
+            m_index.y <= m_player.m_chunkIndex.y + 1 &&
+
+            m_index.z >= m_player.m_chunkIndex.z - 1 &&
+            m_index.z <= m_player.m_chunkIndex.z + 1
+            )
+            return true;
 
         // Check if camera can see the center
         Camera camera = m_player.GetCamera();
@@ -368,6 +403,7 @@ public class Chunk : MonoBehaviour
         m_isSetup = true;
     }
 
+
     //  private void OnDrawGizmos()
     //  {
     //      if (!m_isSetup)
@@ -377,20 +413,28 @@ public class Chunk : MonoBehaviour
     //      DebugExtension.DrawLocalCube(Matrix4x4.Translate(m_center), Chunk.MaxSize);
     //  }
 
+    private void Awake()
+    {
+        m_chunkManager = FindObjectOfType<ChunkManager>();
+    }
+
     private void Update()
     {
         if (!m_isSetup)
             return;
 
         // Destroy Self if too far away from player camera
-        Vector3Int manhattanDistance = (m_index - m_player.m_chunkIndex);
-        if(Mathf.Abs(manhattanDistance.x) > ChunkManager.m_ChunkDistance)
+        if (m_chunkManager.m_generateChunks)
         {
-            Destroy(this.gameObject);
-        }
-        else if (Mathf.Abs(manhattanDistance.z) > ChunkManager.m_ChunkDistance)
-        {
-            Destroy(this.gameObject);
+            Vector3Int manhattanDistance = (m_index - m_player.m_chunkIndex);
+            if (Mathf.Abs(manhattanDistance.x) > ChunkManager.m_ChunkDistance)
+            {
+                Destroy(this.gameObject);
+            }
+            else if (Mathf.Abs(manhattanDistance.z) > ChunkManager.m_ChunkDistance)
+            {
+                Destroy(this.gameObject);
+            }
         }
 
         // Check if camera can see chunk

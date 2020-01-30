@@ -41,16 +41,22 @@ Completed:
 -> block import settings go in resources
 	-> doesn't require drag and drop in runtime manager if it can grabbed from there
 
+-> import cubeinc textures
 
+-> CanCameraSeeChunk()
+	-> use range instead of a bajillion == checks
+
+-> base perlin noise
+	-> show on quad
+	-> master switch to stop chunks from generating, easier to test unrelated stuff
+	-> generate chunks with it
+	-> 3D perlin noise
 
 Phase 1: [Block Generation]
 
--> import cubeinc textures
-
--> base perlin noise
-	-> show on cube
-	-> master switch to stop chunks from generating, easier to test unrelated stuff
-	-> generate chunks with it
+-> Improve Chunk Mesh Generation Speed
+	
+-> UI Debug, make colored text for on/off
 	
 -> UI selection -> edit/add (Arrow/gunpowder)
 	-> Block type selection

@@ -10,6 +10,7 @@ public static class GlobalData
     public static GameObject prefab_line;
     public static Material material_block;
     public static Material material_wireframe;
+    public static Material material_debug;
 
     public static void NullCheck(Object obj)
     {
@@ -28,6 +29,7 @@ public class GlobalDataManager : MonoBehaviour
     public GameObject globalPrefab_Line;
     public Material globalMaterial_Block;
     public Material globalMaterial_Wireframe;
+    public Material globalMaterial_Debug;
 
     void Awake()
     {
@@ -39,5 +41,6 @@ public class GlobalDataManager : MonoBehaviour
         GlobalData.prefab_line = globalPrefab_Line;
         GlobalData.material_block = globalMaterial_Block;
         GlobalData.material_wireframe = globalMaterial_Wireframe;
+        GlobalData.material_debug = globalMaterial_Debug;
     }
 }

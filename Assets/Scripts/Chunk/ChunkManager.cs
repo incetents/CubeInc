@@ -14,6 +14,9 @@ public class ChunkManager : MonoBehaviour
     // Data
     private Chunk m_constructingChunk = null;
 
+    // Settings
+    public bool m_generateChunks = true;
+
     private void Start()
     {
         m_player = GlobalData.player;
@@ -21,27 +24,37 @@ public class ChunkManager : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.L))
+            m_generateChunks = !m_generateChunks;
 
-        // Nearby chunks that are being check
-        for (int x = -m_ChunkDistance; x <= m_ChunkDistance; x++)
+        if (m_generateChunks)
         {
-            for (int z = -m_ChunkDistance; z <= m_ChunkDistance; z++)
+            // Create Chunks at necessary spots
+            for (int x = -m_ChunkDistance; x <= m_ChunkDistance; x++)
             {
-                Vector3Int chunkSpot = m_player.m_chunkIndex + new Vector3Int(x, 0, z);
-
-                Chunk chunkCheck = ChunkStorage.GetChunk(chunkSpot);
-                if (chunkCheck == null)
+                for (int y = -m_ChunkDistance; y <= m_ChunkDistance; y++)
                 {
-                    // Create chunk at location
-                    GameObject chunkObject = (GameObject)Instantiate(GlobalData.prefab_chunk);
-                    chunkObject.name = "Chunk: " + chunkSpot.x.ToString() + ", " + chunkSpot.z.ToString();
-                    Chunk chunk = chunkObject.GetComponent<Chunk>();
-                    chunk.Setup(chunkSpot);
+                    for (int z = -m_ChunkDistance; z <= m_ChunkDistance; z++)
+                    {
+                        Vector3Int chunkSpot = m_player.m_chunkIndex + new Vector3Int(x, y, z);
 
-                    chunk.GenerateTest();
-                    chunk.MakeDirty();
+                        Chunk chunkCheck = ChunkStorage.GetChunk(chunkSpot);
+                        if (chunkCheck == null)
+                        {
+                            // Create chunk at location
+                            GameObject chunkObject = (GameObject)Instantiate(GlobalData.prefab_chunk);
+                            chunkObject.name = "Chunk: " + chunkSpot.x.ToString() + ", " + chunkSpot.y.ToString() + ", " + chunkSpot.z.ToString();
+                            Chunk chunk = chunkObject.GetComponent<Chunk>();
+                            chunk.Setup(chunkSpot);
 
-                    ChunkStorage.SetChunk(chunk);
+                            ChunkStorage.SetChunk(chunk);
+                            
+                            //chunk.GenerateTest();
+                            chunk.GenerateTerrain();
+                            chunk.MakeDirty();
+
+                        }
+                    }
                 }
             }
         }
@@ -56,6 +69,13 @@ public class ChunkManager : MonoBehaviour
 
         foreach(Chunk chunk in chunks)
         {
+            // Reload Chunks
+            if(Input.GetKeyDown(KeyCode.G))
+            {
+                chunk.GenerateTerrain();
+                chunk.MakeDirty();
+            }
+
             if(chunk.IsDirty())
             {
                 if(chunk.IsMeshConstructed())

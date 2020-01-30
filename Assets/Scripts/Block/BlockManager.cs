@@ -44,6 +44,25 @@ public class BlockManager : MonoBehaviour
 
     void Start()
     {
+        // Debug Texture
+        //  Texture2D perlinTest = new Texture2D(100, 100);
+        //  
+        //  for(int x = 0; x < 100; x++)
+        //  {
+        //      for (int y = 0; y < 100; y++)
+        //      {
+        //          float perlin = Mathf.PerlinNoise((float)x / 10.0f, (float)y / 10.0f);
+        //          Debug.Log(perlin);
+        //          perlinTest.SetPixel(x, y, new Color(perlin, perlin, perlin));
+        //      }
+        //  }
+        //  
+        //  perlinTest.Apply();
+        //  perlinTest.filterMode = FilterMode.Point;
+        //  perlinTest.wrapMode = TextureWrapMode.Clamp;
+        //  
+        //  GlobalData.material_debug.SetTexture("_MainTex", perlinTest);
+
         // Get all block data
         BlockInfoImport[] importBlockInfo = Resources.LoadAll<BlockInfoImport>("Blocks");
         BlockTextureImport[] importBlockTextures = Resources.LoadAll< BlockTextureImport>("BlockTextures");
@@ -135,8 +154,6 @@ public class BlockManager : MonoBehaviour
                 block.AddTextureID(info.m_texture_back, fallbackID);
                 block.AddTextureID(info.m_texture_bottom, fallbackID);
                 //
-                foreach (uint id in block.m_textureIDs)
-                    Debug.Log(id);
             }
 
             BlockDictionary.Set(block);

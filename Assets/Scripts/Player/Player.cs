@@ -27,6 +27,10 @@ public class Player : MonoBehaviour
     [Header("Raycast Collision")]
     public LayerMask m_chunkMask;
 
+    public float PerlinScale = 30.0f;
+    [Range(0.0f, 1.0f)]
+    public float PerlinAlpha = 0.5f;
+
     // Data
     [System.NonSerialized] public bool m_windowFocus = true;
     [System.NonSerialized] public bool m_paused = false;
@@ -39,8 +43,8 @@ public class Player : MonoBehaviour
     [System.NonSerialized] public Vector3Int m_chunkIndex = new Vector3Int(0, 0, 0);
     private void UpdateCurentInternalChunk()
     {
-        Vector3 playerPositionGrounded = new Vector3(transform.position.x, 0, transform.position.z);
-        m_chunkIndex = ChunkStorage.ConvertToChunkIndex(playerPositionGrounded);
+        Vector3 playerPositionGrounded = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        m_chunkIndex = Chunk.ConvertToChunkIndex(playerPositionGrounded);
     }
 
     // Get Camera

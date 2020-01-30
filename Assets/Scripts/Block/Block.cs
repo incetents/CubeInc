@@ -31,13 +31,13 @@ public class BlockStorage
             );
     }
 
-    public void Set(Vector3Int index, Block block)
+    public void Set(Block block)
     {
         // Limit Checks
-        if(IsIndexTooLarge(index))
+        if(IsIndexTooLarge(block.m_localPosition))
             return;
 
-        data[index.x, index.y, index.z] = block;
+        data[block.m_localPosition.x, block.m_localPosition.y, block.m_localPosition.z] = block;
     }
     public Block Get(Vector3Int index)
     {
@@ -112,6 +112,8 @@ public class Block
     public Block(uint id, Vector3Int localPosition)
     {
         m_data = BlockDictionary.Get(id);
+        if (m_data == null)
+            Debug.LogError("err");
         m_localPosition = localPosition;
     }
 }

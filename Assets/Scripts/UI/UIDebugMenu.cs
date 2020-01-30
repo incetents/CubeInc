@@ -7,6 +7,7 @@ public class UIDebugMenu : MonoBehaviour
 {
     // Objects
     private Player m_player;
+    private ChunkManager m_chunkManager;
 
     // Objects to control
     public TextMeshProUGUI m_textMesh;
@@ -18,6 +19,7 @@ public class UIDebugMenu : MonoBehaviour
     private void Start()
     {
         m_player = GlobalData.player;
+        m_chunkManager = FindObjectOfType<ChunkManager>();
     }
     private void Update()
     {
@@ -34,6 +36,13 @@ public class UIDebugMenu : MonoBehaviour
         result += "X: " + m_player.transform.position.x.ToString() + '\n';
         result += "Y: " + m_player.transform.position.y.ToString() + '\n';
         result += "Z: " + m_player.transform.position.z.ToString() + '\n';
+
+        result += "[G] reGenerate Chunks\n";
+
+        if (m_chunkManager.m_generateChunks)
+            result += "[L] Load Chunks: ON\n";
+        else
+            result += "[L] Load Chunks: OFF\n";
 
         if (m_player.m_noclip)
             result += "[N] Noclip: ON\n";
