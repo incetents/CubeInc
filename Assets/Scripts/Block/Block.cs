@@ -114,7 +114,16 @@ public class Block
         m_data = BlockDictionary.Get(id);
         if (m_data == null)
             Debug.LogError("err");
+
         m_localPosition = localPosition;
+    }
+    public Block(uint id, Vector3 worldPosition)
+    {
+        m_data = BlockDictionary.Get(id);
+        if (m_data == null)
+            Debug.LogError("err");
+
+        m_localPosition = Chunk.ConvertToBlockIndex(worldPosition);
     }
 }
 

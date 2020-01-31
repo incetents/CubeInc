@@ -40,8 +40,8 @@ Camera:
   m_GameObject: {fileID: 1810527345228513317}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -151,6 +151,8 @@ MonoBehaviour:
   m_chunkMask:
     serializedVersion: 2
     m_Bits: 256
+  PerlinScale: 8.9
+  PerlinAlpha: 0.5
 --- !u!114 &3455089365732452219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,8 +184,8 @@ MonoBehaviour:
   SpeedMultOverTime: 1.97
   GroundDistance: 0.4
   Gravity: -0.47
-  JumpVelocity: 70.64
-  TerminalVelocity: -11.63
+  JumpVelocity: 72.2
+  TerminalVelocity: -26.2
   NoclipSpeed: 4
   NoclipSpeedModifier: 4
   ForgivenessJumpTime: 0.12

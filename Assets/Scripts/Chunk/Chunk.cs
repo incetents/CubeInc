@@ -431,6 +431,10 @@ public class Chunk : MonoBehaviour
             {
                 Destroy(this.gameObject);
             }
+            else if (Mathf.Abs(manhattanDistance.y) > ChunkManager.m_ChunkDistance)
+            {
+                Destroy(this.gameObject);
+            }
             else if (Mathf.Abs(manhattanDistance.z) > ChunkManager.m_ChunkDistance)
             {
                 Destroy(this.gameObject);

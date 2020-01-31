@@ -12,7 +12,7 @@ public static class WorldEdit
     }
 
     // [UPDATE OCCURS] Modify an existing block from world space position
-    public static void SetBlockRegion(Vector3 min, Vector3 max, Block block)
+    public static void SetBlockRegion(Vector3 min, Vector3 max, uint id)
     {
         Vector3Int _min = new Vector3Int(Mathf.FloorToInt(min.x), Mathf.FloorToInt(min.y), Mathf.FloorToInt(min.z));
         Vector3Int _max = new Vector3Int(Mathf.FloorToInt(max.x), Mathf.FloorToInt(max.y), Mathf.FloorToInt(max.z));
@@ -23,7 +23,8 @@ public static class WorldEdit
             {
                 for (int z = _min.z; z <= _max.z; z++)
                 {
-                    if (ChunkStorage.SetBlock(new Vector3(x, y, z), block))
+                    Vector3 worldPosition = new Vector3(x, y, z);
+                    if (ChunkStorage.SetBlock(worldPosition, new Block(id, worldPosition)))
                         ChunkStorage.UpdateAtPosition(new Vector3(x, y, z));
                 }
             }

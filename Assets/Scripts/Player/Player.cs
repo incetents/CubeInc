@@ -89,7 +89,7 @@ public class Player : MonoBehaviour
                         WorldEdit.SetBlockRegion(
                             m_blockOutline.m_position + new Vector3(-1, -1, -1),
                             m_blockOutline.m_position + new Vector3(+1, +1, +1),
-                            new Block(0, block.m_localPosition)
+                            0
                             );
                     else
                         WorldEdit.SetBlock(m_blockOutline.m_position, new Block(0, block.m_localPosition));

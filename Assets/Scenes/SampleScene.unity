@@ -292,6 +292,16 @@ PrefabInstance:
       propertyPath: PerlinScale
       value: 8.9
       objectReference: {fileID: 0}
+    - target: {fileID: 8332870904102310759, guid: adf9fb3f82ebd164db848e7ca215bf28,
+        type: 3}
+      propertyPath: JumpVelocity
+      value: 72.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8332870904102310759, guid: adf9fb3f82ebd164db848e7ca215bf28,
+        type: 3}
+      propertyPath: TerminalVelocity
+      value: -26.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: adf9fb3f82ebd164db848e7ca215bf28, type: 3}
 --- !u!1 &731992856
@@ -1199,7 +1209,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2013448349
 Transform:
   m_ObjectHideFlags: 0
