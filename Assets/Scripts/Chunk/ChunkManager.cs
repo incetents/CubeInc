@@ -37,6 +37,7 @@ public class ChunkManager : MonoBehaviour
                     for (int z = -m_ChunkDistance; z <= m_ChunkDistance; z++)
                     {
                         Vector3Int chunkSpot = m_player.m_chunkIndex + new Vector3Int(x, y, z);
+                        //chunkSpot.y = 0;
 
                         Chunk chunkCheck = ChunkStorage.GetChunk(chunkSpot);
                         if (chunkCheck == null)
@@ -46,13 +47,20 @@ public class ChunkManager : MonoBehaviour
                             chunkObject.name = "Chunk: " + chunkSpot.x.ToString() + ", " + chunkSpot.y.ToString() + ", " + chunkSpot.z.ToString();
                             Chunk chunk = chunkObject.GetComponent<Chunk>();
                             chunk.Setup(chunkSpot);
-
+                            // Add New Chunk
                             ChunkStorage.SetChunk(chunk);
                             
                             //chunk.GenerateTest();
                             chunk.GenerateTerrain();
                             chunk.MakeDirty();
 
+                            // Redraw all nearby chunks that may be modified from the new chunk existing
+                            Chunk[] nearbyChunks = ChunkStorage.GetNeighborChunks(chunk);
+                            foreach (Chunk c in nearbyChunks)
+                            {
+                                if (c != null)
+                                    c.MakeDirty();
+                            }
                         }
                     }
                 }

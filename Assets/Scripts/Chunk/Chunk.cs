@@ -81,7 +81,7 @@ public static class ChunkStorage
         return chunk.m_blocks.Get(blockIndex);
     }
     // Get all adjacent blocks from position (includes position block)
-    public static Block[] GetNearbyBlocks(Vector3 position)
+    public static Block[] GetBlocksNearPosition(Vector3 position)
     {
         Block[] blocks =
         {
@@ -97,7 +97,7 @@ public static class ChunkStorage
         return blocks;
     }
     // Check all adjacent spots and return all unique Chunks
-    public static HashSet<Chunk> GetNearbyChunks(Vector3 position)
+    public static HashSet<Chunk> GetChunksNearPosition(Vector3 position)
     {
         Chunk[] chunks =
         {
@@ -112,10 +112,27 @@ public static class ChunkStorage
 
         return new HashSet<Chunk>(chunks);
     }
-    // Updates block and adjacent blocks (and their chunks)
-    public static void UpdateAtPosition(Vector3 position)
+    // Get all chunks around given chunk
+    public static Chunk[] GetNeighborChunks(Chunk chunk)
     {
-        HashSet<Chunk> chunks = GetNearbyChunks(position);
+        Chunk[] chunks =
+        {
+            GetChunk(chunk.m_index + Vector3Int.right),
+            GetChunk(chunk.m_index + Vector3Int.left),
+            GetChunk(chunk.m_index + Vector3Int.up),
+            GetChunk(chunk.m_index + Vector3Int.down),
+            GetChunk(chunk.m_index + new Vector3Int(0,0,1)),
+            GetChunk(chunk.m_index + new Vector3Int(0,0,-1))
+        };
+
+        return chunks;
+    }
+
+    // Updates block and adjacent blocks (and their chunks)
+    public static void MakePositionDirty(Vector3 position)
+    {
+        // Make all chunks near block dirty
+        HashSet<Chunk> chunks = GetChunksNearPosition(position);
         foreach(Chunk chunk in chunks)
         {
             if(chunk != null)
@@ -303,7 +320,7 @@ public class Chunk : MonoBehaviour
                 int randomHeight = Random.Range(1, 10);
                 //for (int y = 0; y < randomHeight; y++)
                 //for (int y = 0; y < MaxSize.y; y++)
-                for (int y = 0; y < 10; y++)
+                for (int y = 0; y < x + 1; y++)
                 {
                     //uint id = (uint)((x % 4) + 1);
                     uint id = 1;

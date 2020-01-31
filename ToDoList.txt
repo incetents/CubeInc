@@ -54,6 +54,9 @@ Completed:
 
 Phase 1: [Block Generation]
 
+-> Separate Chunk into non monobehaviour class
+	-> mono behaviour is a chunkID class instead
+
 -> UI Debug, make colored text for on/off
 	
 -> UI selection -> edit/add (Arrow/gunpowder)

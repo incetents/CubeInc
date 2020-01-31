@@ -8,7 +8,7 @@ public static class WorldEdit
     public static void SetBlock(Vector3 position, Block block)
     {
         if(ChunkStorage.SetBlock(position, block))
-            ChunkStorage.UpdateAtPosition(position);
+            ChunkStorage.MakePositionDirty(position);
     }
 
     // [UPDATE OCCURS] Modify an existing block from world space position
@@ -25,7 +25,7 @@ public static class WorldEdit
                 {
                     Vector3 worldPosition = new Vector3(x, y, z);
                     if (ChunkStorage.SetBlock(worldPosition, new Block(id, worldPosition)))
-                        ChunkStorage.UpdateAtPosition(new Vector3(x, y, z));
+                        ChunkStorage.MakePositionDirty(worldPosition);
                 }
             }
         }
