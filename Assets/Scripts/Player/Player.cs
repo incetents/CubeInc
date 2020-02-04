@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum MenuState
+{
+    NONE,
+    PAUSED,
+    COMMAND
+}
+
 public class Player : MonoBehaviour
 {
     // References
@@ -32,12 +39,13 @@ public class Player : MonoBehaviour
     public float PerlinAlpha = 0.5f;
 
     // Data
+    [System.NonSerialized] public MenuState m_menuState = MenuState.COMMAND;
     [System.NonSerialized] public bool m_windowFocus = true;
-    [System.NonSerialized] public bool m_paused = false;
     [System.NonSerialized] public bool m_noclip = true;
     [System.NonSerialized] public bool m_debugMenu = true;
     [System.NonSerialized] public bool m_wireframeMode = false;
     [System.NonSerialized] public bool m_bigBreak = false;
+    [System.NonSerialized] public bool m_showChunkLines = true;
 
     // Current Chunk the player resides in
     [System.NonSerialized] public Vector3Int m_chunkIndex = new Vector3Int(0, 0, 0);
@@ -47,7 +55,11 @@ public class Player : MonoBehaviour
         m_chunkIndex = Chunk.ConvertToChunkIndex(playerPositionGrounded);
     }
 
-    // Get Camera
+    // Utility
+    public bool UsingMenu()
+    {
+        return m_menuState != MenuState.NONE;
+    }
     public Camera GetCamera()
     {
         return m_playerCamera.GetCamera();
@@ -76,8 +88,8 @@ public class Player : MonoBehaviour
         // Update Chunk the player is in
         UpdateCurentInternalChunk();
 
-        // Game Functionality
-        if (!m_paused)
+        // Game Functionality [ No Menu ]
+        if (m_menuState == MenuState.NONE)
         {
             // Destroy Block
             if (Input.GetMouseButtonDown(0) && m_blockOutline.HasHitBlock())
@@ -105,30 +117,57 @@ public class Player : MonoBehaviour
                     WorldEdit.SetBlock(m_blockOutline.m_position + m_blockOutline.m_normal, new Block(2, block.m_localPosition));
                 }
             }
+
+            // Toggle BigBreak
+            if (Input.GetKeyDown(KeyCode.B))
+                m_bigBreak = !m_bigBreak;
+
+            // Toggle Chunk Lines
+            if (Input.GetKeyDown(KeyCode.F2))
+                m_showChunkLines = !m_showChunkLines;
+
+            // Toggle Debugmenu
+            if (Input.GetKeyDown(KeyCode.Tab))
+                m_debugMenu = !m_debugMenu;
+
+            // Toggle Wireframe
+            if (Input.GetKeyDown(KeyCode.F1))
+                m_wireframeMode = !m_wireframeMode;
+
+            // Toggle Noclip
+            if (Input.GetKeyDown(KeyCode.N))
+                m_noclip = !m_noclip;
+
+            // Enter Commands
+            if (Input.GetKeyDown(KeyCode.Return))
+                m_menuState = MenuState.COMMAND;
+
+            // Enter Pause
+            if (Input.GetKeyDown(KeyCode.Escape))
+                m_menuState = MenuState.PAUSED;
+
         }
-
-        // Toggle BigBream
-        if (Input.GetKeyDown(KeyCode.B))
-            m_bigBreak = !m_bigBreak;
-
-        // Toggle Debugmenu
-        if (Input.GetKeyDown(KeyCode.Tab))
-            m_debugMenu = !m_debugMenu;
-
-        // Toggle Wireframe
-        if (Input.GetKeyDown(KeyCode.F1))
-            m_wireframeMode = !m_wireframeMode;
-
-        // Toggle Noclip
-        if (Input.GetKeyDown(KeyCode.N))
-            m_noclip = !m_noclip;
-
-        // Toggle Pause
-        if (Input.GetKeyUp(KeyCode.Escape))
-            m_paused = !m_paused;
+        // Pause
+        else if (m_menuState == MenuState.PAUSED)
+        {
+            // Exit
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                m_menuState = MenuState.NONE;
+            }
+        }
+        else if (m_menuState == MenuState.COMMAND)
+        {
+            // Exit Commands
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                m_menuState = MenuState.NONE;
+            }
+        }
+         
 
         // Lock Mouse
-        if (m_windowFocus && !m_paused)
+        if (m_windowFocus && !UsingMenu())
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

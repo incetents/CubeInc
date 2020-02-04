@@ -52,21 +52,33 @@ Completed:
 	-> generate chunks with it
 	-> 3D perlin noise
 
+-> Separate Chunk into non monobehaviour class
+	-> mono behaviour is a chunkComponent class instead
+
+-> UI Debug, make colored text for special variables
+
+-> toggle chunk lines
+
+-> basic text input system
+
 Phase 1: [Block Generation]
 
--> Separate Chunk into non monobehaviour class
-	-> mono behaviour is a chunkID class instead
-
--> UI Debug, make colored text for on/off
-	
--> UI selection -> edit/add (Arrow/gunpowder)
-	-> Block type selection
-	-> simple way of showing texture icon
+-> command input
+	-> shift selection
+	-> scroll to previous text
+		-> mini scrollbar
+	-> ability to easily color code text
 
 -> commands (UI displays previous commands along with info on current command)
 	-> Different tools
 		-> shape: ball, square, line
 		-> selection: (fill, delete, move, rotate, copy, paste)
+
+-> UI selection -> edit/add (Arrow/gunpowder)
+	-> Block type selection
+	-> simple way of showing texture icon
+
+
 
 (fun) -> particle effect when destroying a block
 

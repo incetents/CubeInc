@@ -5,6 +5,7 @@ using UnityEngine;
 public static class ChunkStorage
 {
     public static Dictionary<int, Dictionary<int, Dictionary<int, Chunk>>> data = new Dictionary<int, Dictionary<int, Dictionary<int, Chunk>>>(); //
+    public static HashSet<Chunk> allData = new HashSet<Chunk>();
 
     public static void SetChunk(Chunk chunk)
     {
@@ -19,7 +20,22 @@ public static class ChunkStorage
             data[index.x].Add(index.y, new Dictionary<int, Chunk>());
 
         // Edit at Z section
-        data[chunk.m_index.x][chunk.m_index.y][chunk.m_index.z] = chunk;
+        data[index.x][index.y][index.z] = chunk;
+    }
+    public static void RemoveChunk(Chunk chunk)
+    {
+        Vector3Int index = chunk.m_index;
+
+        // Check if X section is missing
+        if (!data.ContainsKey(index.x))
+            data.Add(index.x, new Dictionary<int, Dictionary<int, Chunk>>());
+
+        // Check if Y section is missing
+        if (!data[index.x].ContainsKey(index.y))
+            data[index.x].Add(index.y, new Dictionary<int, Chunk>());
+
+        // Edit at Z section
+        data[index.x][index.y][index.z] = null;
     }
     public static Chunk GetChunk(Vector3Int index)
     {
@@ -141,8 +157,8 @@ public static class ChunkStorage
     }
 }
 
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-public class Chunk : MonoBehaviour
+//[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+public class Chunk //: MonoBehaviour
 {
     // Constants
     public static readonly Vector3Int MaxSize = new Vector3Int(16, 16, 16);
@@ -150,52 +166,22 @@ public class Chunk : MonoBehaviour
     // Object
     private ChunkManager m_chunkManager;
     private Player m_player;
+    private ChunkComponent m_component;
+
+    // Construction
+    private ChunkBuilder m_chunkBuilder = null;
 
     // Data
-    [System.NonSerialized] public  Vector3Int  m_index;
-    [System.NonSerialized] private Vector3     m_center; // Center of chunk position (world space)
-    [System.NonSerialized] private Vector3[]   m_bottomExtents;
-    [System.NonSerialized] private Vector3[]   m_topExtents;
-
+    [System.NonSerialized] public Vector3Int  m_index;
+    [System.NonSerialized] public Vector3     m_center; // Center of chunk position (world space)
+    [System.NonSerialized] public Vector3[]   m_bottomExtents;
+    [System.NonSerialized] public Vector3[]   m_topExtents;
 
     [System.NonSerialized] public BlockStorage m_blocks;
-    [System.NonSerialized] private bool        m_visible = true; // Can camera see this chunk
     [System.NonSerialized] private bool        m_meshDirty = false;
 
-    // Components
-    private Mesh         m_mesh;
-    private MeshFilter   m_meshFilter;
-    private MeshRenderer m_meshRenderer;
-    private MeshCollider m_meshCollider;
+    // Utility //
 
-    // Special
-    private ChunkBuilder m_chunkBuilder = null;
-    private bool m_isSetup = false;
-    private LineRenderer[] m_lineRenderers;
-
-    // Utility [local]
-    public void UpdateMesh()
-    {
-        if (m_chunkBuilder == null)
-        {
-            Debug.LogError("Copying mesh data from null chunkbuilder");
-            return;
-        }
-
-        m_mesh = new Mesh();
-        m_mesh.name = "ChunkMesh";
-
-        m_mesh.vertices = m_chunkBuilder.vertices.ToArray();
-        m_mesh.uv = m_chunkBuilder.uvs.ToArray();
-        m_mesh.uv2 = m_chunkBuilder.id.ToArray();
-        m_mesh.normals = m_chunkBuilder.normals.ToArray();
-        m_mesh.triangles = m_chunkBuilder.indices.ToArray();
-
-        m_meshFilter.mesh = m_mesh;
-        m_meshCollider.sharedMesh = m_mesh;
-    }
-
-    // Utility
     // Index Conversion
     public static Vector3Int ConvertToChunkIndex(Vector3 position)
     {
@@ -260,7 +246,11 @@ public class Chunk : MonoBehaviour
     }
     public bool BeginMeshConstruction()
     {
-        if(m_chunkBuilder == null)
+        // Check if object is destroyed
+        if (m_component == null)
+            return false;
+
+        if (m_chunkBuilder == null)
         {
             m_chunkBuilder = new ChunkBuilder(m_index);
             return true;
@@ -269,6 +259,10 @@ public class Chunk : MonoBehaviour
     }
     public bool IsMeshConstructed()
     {
+        // Check if object is destroyed
+        if (m_component == null)
+            return false;
+
         if (m_chunkBuilder == null)
             return false;
 
@@ -276,7 +270,15 @@ public class Chunk : MonoBehaviour
     }
     public void EndMeshConstruction()
     {
-        m_chunkBuilder = null;
+        // Check if object is destroyed
+        if (m_component == null)
+            return;
+
+        if (m_chunkBuilder != null)
+        {
+            m_component.UpdateMesh(m_chunkBuilder);
+            m_chunkBuilder = null;
+        }
     }
 
     public void GenerateTerrain()
@@ -331,47 +333,23 @@ public class Chunk : MonoBehaviour
             }
         }
     }
-    public bool CanCameraSeeChunk()
-    {
-        if (
-            m_index.x >= m_player.m_chunkIndex.x - 1 &&
-            m_index.x <= m_player.m_chunkIndex.x + 1 &&
-
-            m_index.y >= m_player.m_chunkIndex.y - 1 &&
-            m_index.y <= m_player.m_chunkIndex.y + 1 &&
-
-            m_index.z >= m_player.m_chunkIndex.z - 1 &&
-            m_index.z <= m_player.m_chunkIndex.z + 1
-            )
-            return true;
-
-        // Check if camera can see the center
-        Camera camera = m_player.GetCamera();
-        Vector3 cameraToChunkCenter = m_center - camera.transform.position;
-
-        // Check if in front of camera (more than 90 degress from camera forward = not seen)
-        if (Vector3.Dot(cameraToChunkCenter, camera.transform.forward) > 0)
-            return true;
-
-        // Cannot be seen
-        return false;
-    }
+    
 
     // Behaviour
-    public void Setup(Vector3Int index)
+    public Chunk(ChunkComponent component, Vector3Int index)
     {
-        //
-        m_index = index;
+        // Remember master list of chunks used
+        ChunkStorage.allData.Add(this);
+
+        // References stored
+        component.SetChunk(this);
+        m_component = component;
 
         // Data
+        m_index = index;
         m_blocks = new BlockStorage(); //
         m_player = GlobalData.player;
-        m_meshFilter = GetComponent<MeshFilter>();
-        m_meshRenderer = GetComponent<MeshRenderer>();
-        m_meshCollider = GetComponent<MeshCollider>();
-        m_meshRenderer.material = GlobalData.material_block;
 
-        // Update Center
         m_center = new Vector3(
             (float)m_index.x * (float)MaxSize.x + (float)MaxSize.x * 0.5f,
             (float)m_index.y * (float)MaxSize.y + (float)MaxSize.y * 0.5f,
@@ -392,32 +370,10 @@ public class Chunk : MonoBehaviour
             m_index * MaxSize + new Vector3(0, MaxSize.y, MaxSize.z)
         };
 
-        // Line Rendering
-        m_lineRenderers = new LineRenderer[4];
-        for(int i = 0; i < 4; i++)
-        {
-            GameObject g = (GameObject)Instantiate(GlobalData.prefab_line);
-            g.transform.SetParent(transform);
-            m_lineRenderers[i] = g.GetComponent<LineRenderer>();
-            m_lineRenderers[i].startColor = Color.red;
-            m_lineRenderers[i].endColor = Color.green;
-            m_lineRenderers[i].positionCount = 2;
-        }
-        
-        m_lineRenderers[0].SetPosition(0, m_bottomExtents[0]);
-        m_lineRenderers[0].SetPosition(1, m_topExtents[0]);
-        
-        m_lineRenderers[1].SetPosition(0, m_bottomExtents[1]);
-        m_lineRenderers[1].SetPosition(1, m_topExtents[1]);
-
-        m_lineRenderers[2].SetPosition(0, m_bottomExtents[2]);
-        m_lineRenderers[2].SetPosition(1, m_topExtents[2]);
-
-        m_lineRenderers[3].SetPosition(0, m_bottomExtents[3]);
-        m_lineRenderers[3].SetPosition(1, m_topExtents[3]);
-
-        // done
-        m_isSetup = true;
+    }
+    ~Chunk()
+    {
+        ChunkStorage.allData.Remove(this);
     }
 
 
@@ -432,50 +388,34 @@ public class Chunk : MonoBehaviour
 
     private void Awake()
     {
-        m_chunkManager = FindObjectOfType<ChunkManager>();
+        //m_chunkManager = FindObjectOfType<ChunkManager>();
     }
 
     private void Update()
     {
-        if (!m_isSetup)
-            return;
 
-        // Destroy Self if too far away from player camera
-        if (m_chunkManager.m_generateChunks)
-        {
-            Vector3Int manhattanDistance = (m_index - m_player.m_chunkIndex);
-            if (Mathf.Abs(manhattanDistance.x) > ChunkManager.m_ChunkDistance)
-            {
-                Destroy(this.gameObject);
-            }
-            else if (Mathf.Abs(manhattanDistance.y) > ChunkManager.m_ChunkDistance)
-            {
-                Destroy(this.gameObject);
-            }
-            else if (Mathf.Abs(manhattanDistance.z) > ChunkManager.m_ChunkDistance)
-            {
-                Destroy(this.gameObject);
-            }
-        }
+
+        
 
         // Check if camera can see chunk
-        m_visible = CanCameraSeeChunk();
+       
 
-        if (m_visible)
-        {
-            m_meshRenderer.enabled = true;
 
-            // Wireframe Mode
-            if (m_player.m_wireframeMode)
-                m_meshRenderer.material = GlobalData.material_wireframe;
-            else
-                m_meshRenderer.material = GlobalData.material_block;
-        }
-        else
-        {
-            m_meshRenderer.enabled = false;
-            //m_meshRenderer.material = GlobalData.material_wireframe;
-        }
+        //  if (m_visible)
+        //  {
+        //      m_meshRenderer.enabled = true;
+        //  
+        //      // Wireframe Mode
+        //      if (m_player.m_wireframeMode)
+        //          m_meshRenderer.material = GlobalData.material_wireframe;
+        //      else
+        //          m_meshRenderer.material = GlobalData.material_block;
+        //  }
+        //  else
+        //  {
+        //      m_meshRenderer.enabled = false;
+        //      //m_meshRenderer.material = GlobalData.material_wireframe;
+        //  }
 
     }
 }

@@ -45,8 +45,10 @@ public class ChunkManager : MonoBehaviour
                             // Create chunk at location
                             GameObject chunkObject = (GameObject)Instantiate(GlobalData.prefab_chunk);
                             chunkObject.name = "Chunk: " + chunkSpot.x.ToString() + ", " + chunkSpot.y.ToString() + ", " + chunkSpot.z.ToString();
-                            Chunk chunk = chunkObject.GetComponent<Chunk>();
-                            chunk.Setup(chunkSpot);
+                            ChunkComponent chunkComponent = chunkObject.GetComponent<ChunkComponent>();
+
+                            Chunk chunk = new Chunk(chunkComponent, chunkSpot);
+                            
                             // Add New Chunk
                             ChunkStorage.SetChunk(chunk);
                             
@@ -68,7 +70,8 @@ public class ChunkManager : MonoBehaviour
         }
 
         // Update all existing chunks
-        Chunk[] chunks = FindObjectsOfType<Chunk>();
+        //Chunk[] chunks = FindObjectsOfType<Chunk>();
+        Chunk[] chunks = ChunkStorage.allData.ToArray();
         // Make sure chunks update based on distance from player
 
         chunks = chunks.OrderBy(
@@ -89,7 +92,6 @@ public class ChunkManager : MonoBehaviour
                 if(chunk.IsMeshConstructed())
                 {
                    // Debug.Log("Complete");
-                    chunk.UpdateMesh();
                     chunk.EndMeshConstruction();
                     chunk.MakeClean();
                     // Only create 1 Mesh per frame

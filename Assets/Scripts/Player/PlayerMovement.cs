@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!m_player.m_paused)
+        if (!m_player.UsingMenu())
         {
             // Move
             Vector3 XZ_Forward = new Vector3(m_camera.transform.forward.x, 0, m_camera.transform.forward.z);

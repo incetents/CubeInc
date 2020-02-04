@@ -31,7 +31,7 @@ public class PlayerCamera : MonoBehaviour
 
     void Update()
     {
-        if (m_player.m_windowFocus && !m_player.m_paused)
+        if (m_player.m_windowFocus && !m_player.UsingMenu())
         {
             // Get Mouse Values
             Vector2 mouse = new Vector2(Input.GetAxis("Mouse X") * X_Sensitivity, Input.GetAxis("Mouse Y") * Y_Sensitivity);
