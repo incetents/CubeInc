@@ -61,32 +61,41 @@ Completed:
 
 -> basic text input system
 
+-> command input
+	-> scroll to previous text
+		-> mini scrollbar
+
 Phase 1: [Block Generation]
 
 -> command input
-	-> shift selection
-	-> scroll to previous text
-		-> mini scrollbar
-	-> ability to easily color code text
-
--> commands (UI displays previous commands along with info on current command)
 	-> Different tools
+		[ADD TOOL, PAINT TOOL, SELECTION TOOL]
+	
 		-> shape: ball, square, line
 		-> selection: (fill, delete, move, rotate, copy, paste)
 
 -> UI selection -> edit/add (Arrow/gunpowder)
 	-> Block type selection
 	-> simple way of showing texture icon
-
-
+	-> show selected texture near arrow/gunpowder
+	-> menu showing list of all available blocks by their texture
+		-> gui menu
 
 (fun) -> particle effect when destroying a block
+
+-> Blocks have different shapes
+	-> depending on shape/rotation (rotation from subid), hide specific sides
 
 -> Improve Chunk Mesh Generation Speed
 
 -> flag if chunk has never been edited (if no, don't save it)
 -> save changed chunks
 	-> pre-emptively add subid in saving for future
+
+-> command input part 2
+	-> shift selection
+	-> ability to easily color code text
+	-> up and down to re-use previously inputted text
 
 Phase 2: [Basic Light]
 

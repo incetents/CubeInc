@@ -24,8 +24,11 @@ public class ChunkManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
-            m_generateChunks = !m_generateChunks;
+        if (m_player.m_menuState == MenuState.NONE)
+        {
+            if (Input.GetKeyDown(KeyCode.L))
+                m_generateChunks = !m_generateChunks;
+        }
 
         if (m_generateChunks)
         {

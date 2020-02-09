@@ -29,6 +29,14 @@ public class TextProUtility
     {
         text += newText + '\n';
     }
+    public void Write(string newText, string value, Color color)
+    {
+        text += newText + ": ";
+        StartColor(color);
+        text += value;
+        EndColor();
+        text += '\n';
+    }
 
     public void Write(string newText, bool value)
     {
@@ -39,6 +47,32 @@ public class TextProUtility
         text += newText + ": ";
         StartColor(value ? colorOn : colorOff);
         text += (value ? "[ON]" : "[OFF]");
+        EndColor();
+        text += '\n';
+    }
+
+    public void Write(string newText, int value)
+    {
+        text += newText + ": " + value.ToString() + '\n';
+    }
+    public void Write(string newText, int value, Color color)
+    {
+        text += newText + ": ";
+        StartColor(color);
+        text += value.ToString();
+        EndColor();
+        text += '\n';
+    }
+
+    public void Write(string newText, uint value)
+    {
+        text += newText + ": " + value.ToString() + '\n';
+    }
+    public void Write(string newText, uint value, Color color)
+    {
+        text += newText + ": ";
+        StartColor(color);
+        text += value.ToString();
         EndColor();
         text += '\n';
     }

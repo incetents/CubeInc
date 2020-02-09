@@ -9,6 +9,22 @@ public enum MenuState
     COMMAND
 }
 
+public enum ToolType
+{
+    PENCIL,
+    BALL,
+    VOXEL,
+    LINE
+}
+
+public class EditorTool
+{
+    public ToolType m_toolType;
+    public uint     m_size = 1;
+    public uint     m_blockID = 0;
+    public uint     m_blockSubID = 0;
+}
+
 public class Player : MonoBehaviour
 {
     // References
@@ -44,7 +60,7 @@ public class Player : MonoBehaviour
     [System.NonSerialized] public bool m_noclip = true;
     [System.NonSerialized] public bool m_debugMenu = true;
     [System.NonSerialized] public bool m_wireframeMode = false;
-    [System.NonSerialized] public bool m_bigBreak = false;
+    [System.NonSerialized] public EditorTool m_editorTool = new EditorTool();
     [System.NonSerialized] public bool m_showChunkLines = true;
 
     // Current Chunk the player resides in
@@ -97,13 +113,13 @@ public class Player : MonoBehaviour
                 Block block = ChunkStorage.GetBlock(m_blockOutline.m_position);
                 if (block != null)
                 {
-                    if (m_bigBreak)
-                        WorldEdit.SetBlockRegion(
-                            m_blockOutline.m_position + new Vector3(-1, -1, -1),
-                            m_blockOutline.m_position + new Vector3(+1, +1, +1),
-                            0
-                            );
-                    else
+                    //  if (m_bigBreak)
+                    //      WorldEdit.SetBlockRegion(
+                    //          m_blockOutline.m_position + new Vector3(-1, -1, -1),
+                    //          m_blockOutline.m_position + new Vector3(+1, +1, +1),
+                    //          0
+                    //          );
+                    //  else
                         WorldEdit.SetBlock(m_blockOutline.m_position, new Block(0, block.m_localPosition));
                 }
             }
@@ -117,10 +133,6 @@ public class Player : MonoBehaviour
                     WorldEdit.SetBlock(m_blockOutline.m_position + m_blockOutline.m_normal, new Block(2, block.m_localPosition));
                 }
             }
-
-            // Toggle BigBreak
-            if (Input.GetKeyDown(KeyCode.B))
-                m_bigBreak = !m_bigBreak;
 
             // Toggle Chunk Lines
             if (Input.GetKeyDown(KeyCode.F2))

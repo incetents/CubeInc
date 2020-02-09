@@ -11,15 +11,20 @@ public class UICommands : MonoBehaviour
     // Objects to control
     public TextMeshProUGUI m_text_history;
     public TextMeshProUGUI m_text_input;
+    public RectTransform m_scrollbar;
 
     // Data
     private List<string> m_history = new List<string>();
+    private int m_historyLocalMax = 7;
+    private int m_historyOffset = 0;
     private const int m_historyMaximum = 100;
     private string m_input = "";
     private int m_cursorPosition = 0;
 
     private float m_holdLeftArrowKeyTime = 0.0f;
     private float m_holdRightArrowKeyTime = 0.0f;
+
+    private float m_scrollbarHeightMax;
 
     private void ParseKey(char key)
     {
@@ -46,15 +51,62 @@ public class UICommands : MonoBehaviour
             m_input = m_input.Substring(0, m_input.Length - 1);
         }
     }
+    private string ParseCommand(string str)
+    {
+        string[] pieces = str.Split(' ');
+
+        // Set Brush
+        if(pieces[0].Length == 1 && pieces[0][0] == 'b')
+        {
+            switch(pieces[1])
+            {
+                case "pencil":
+                case "p":
+                    m_player.m_editorTool.m_toolType = ToolType.PENCIL;
+                    return "[Tool = PENCIL]";
+
+                case "ball":
+                case "b":
+                     m_player.m_editorTool.m_toolType = ToolType.BALL;
+                    return "[Tool = BALL]";
+
+                case "voxel":
+                case "v":
+                    m_player.m_editorTool.m_toolType = ToolType.VOXEL;
+                    return "[Tool = VOXEL]";
+
+                case "line":
+                case "l":
+                    m_player.m_editorTool.m_toolType = ToolType.LINE;
+                    return "[Tool = LINE]";
+            }
+        }
+
+        return "";
+    }
 
     // Behaviour
     void Start()
     {
         m_player = GlobalData.player;
+
+        m_scrollbarHeightMax = m_scrollbar.sizeDelta.y;
+
+        for(int i = 0; i < 10; i++)
+            m_history.Add(i.ToString());
     }
 
     void Update()
     {
+        // Move cursor position
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || m_holdLeftArrowKeyTime > 0.7f)
+            m_cursorPosition--;
+
+        else if (Input.GetKeyDown(KeyCode.RightArrow) || m_holdRightArrowKeyTime > 0.7f)
+            m_cursorPosition++;
+
+        m_cursorPosition = Mathf.Clamp(m_cursorPosition, 0, m_input.Length);
+
         // Check input
         if (Input.inputString.Length > 0)
         {
@@ -75,21 +127,47 @@ public class UICommands : MonoBehaviour
         else
             m_holdRightArrowKeyTime = 0;
 
-        // Move cursor position
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || m_holdLeftArrowKeyTime > 0.7f)
-            m_cursorPosition--;
+        // Scroll up/down
+        float scrollDelta = Input.GetAxis("Mouse ScrollWheel");
 
-        else if (Input.GetKeyDown(KeyCode.RightArrow) || m_holdRightArrowKeyTime > 0.7f)
-            m_cursorPosition++;
-
-        m_cursorPosition = Mathf.Clamp(m_cursorPosition, 0, m_input.Length);
+        if (scrollDelta > 0f)
+        {
+            m_historyOffset++;
+            m_historyOffset = Mathf.Clamp(m_historyOffset, 0, m_history.Count - m_historyLocalMax);
+        }
+        else if(scrollDelta < 0f)
+        {
+            m_historyOffset--;
+            m_historyOffset = Mathf.Max(m_historyOffset, 0);
+        }
 
         // History
         string totalHistory = "";
-        int indexStart = Mathf.Max(0, m_history.Count - 7);
-        for(int i = indexStart; i < m_history.Count; i++)
-              totalHistory += m_history[i] + '\n';
+        int indexStart = Mathf.Max(0, m_history.Count - m_historyLocalMax - m_historyOffset);
+        int indexEnd = Mathf.Max(0, m_history.Count - m_historyOffset);
+        for (int i = indexStart; i < indexEnd; i++)
+        {
+            totalHistory += m_history[i] + '\n';
+        }
         m_text_history.text = totalHistory;
+
+        // Scrollbar
+        m_scrollbar.gameObject.SetActive(m_history.Count > m_historyLocalMax);
+        if (m_history.Count > m_historyLocalMax)
+        {
+            // -> Size
+            Vector2 scrollbarSize = m_scrollbar.sizeDelta;
+            scrollbarSize.y = m_scrollbarHeightMax * (float)m_historyLocalMax / (float)m_history.Count;
+            m_scrollbar.sizeDelta = scrollbarSize;
+            // -> Pos
+            Vector3 scrollbarPos = m_scrollbar.localPosition;
+            float scrollbarHalf = 0.5f * (float)m_historyLocalMax / (float)m_history.Count;
+            float botY = -50.0f + 100.0f * (scrollbarHalf);
+            float topY = +50.0f - 100.0f * (scrollbarHalf);
+            float t = (float)m_historyOffset / (float)(m_history.Count - m_historyLocalMax);
+            scrollbarPos.y = Mathf.Lerp(botY, topY, t);
+            m_scrollbar.localPosition = scrollbarPos;
+        }
 
         // Flicker State
         bool flicker = ((Time.time % 1.0f) * 2.0f) < 1.0f;
@@ -115,11 +193,23 @@ public class UICommands : MonoBehaviour
         // Add to history
         if(Input.GetKeyDown(KeyCode.Return))
         {
-            m_history.Add(m_input);
-            if (m_history.Count > m_historyMaximum)
-                m_history.RemoveAt(0);
+            m_input = m_input.Trim();
+            string message = ParseCommand(m_input.ToLower());
+            if (m_input.Length > 0)
+            {
+                // Add Command info
+                m_history.Add(m_input);
 
-            m_input = "";
+                // Add Message
+                if(message.Length > 0)
+                    m_history.Add(message);
+
+                // Remove excess history
+                while (m_history.Count > m_historyMaximum)
+                    m_history.RemoveAt(0);
+
+                m_input = "";
+            }
         }
     }
 

@@ -53,8 +53,16 @@ public class UIDebugMenu : MonoBehaviour
         m_display.Write("[L] Load Chunks", m_chunkManager.m_generateChunks, Color.green, Color.red);
         m_display.Write("[N] Noclip", m_player.m_noclip, Color.green, Color.red);
         m_display.Write("[F1] Wireframe", m_player.m_wireframeMode, Color.green, Color.red);
-        m_display.Write("[B] BigBreak", m_player.m_bigBreak, Color.green, Color.red);
         m_display.Write("[F2] Chunk Outlines", m_player.m_showChunkLines, Color.green, Color.red);
+
+        m_display.NewLine();
+
+        m_display.Write("Tool Info:");
+
+        m_display.Write("Type", System.Enum.GetName(typeof(ToolType), m_player.m_editorTool.m_toolType), Color.yellow);
+        m_display.Write("Size", m_player.m_editorTool.m_size, Color.yellow);
+        m_display.Write("BlockID", m_player.m_editorTool.m_blockID, Color.yellow);
+        m_display.Write("BlockSubID", m_player.m_editorTool.m_blockSubID, Color.yellow);
 
         // Result
         m_textMesh.text = m_display.text;
