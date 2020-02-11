@@ -16,7 +16,7 @@ public class BlockStorage
             {
                 for (int z = 0; z < Chunk.MaxSize.z; z++)
                 {
-                    data[x, y, z] = new Block(0, new Vector3Int(x, y, z));
+                    data[x, y, z] = new Block(0, 0, new Vector3Int(x, y, z));
                 }
             }
         }
@@ -106,23 +106,25 @@ public class Block
 {
     public BlockInfo    m_data;
     public Vector3Int   m_localPosition;
-    //public uint m_subId;
+    public uint         m_subId;
 
     // Behaviour
-    public Block(uint id, Vector3Int localPosition)
+    public Block(uint id, uint subID, Vector3Int localPosition)
     {
         m_data = BlockDictionary.Get(id);
         if (m_data == null)
             Debug.LogError("err");
 
+        m_subId = subID;
         m_localPosition = localPosition;
     }
-    public Block(uint id, Vector3 worldPosition)
+    public Block(uint id, uint subID, Vector3 worldPosition)
     {
         m_data = BlockDictionary.Get(id);
         if (m_data == null)
             Debug.LogError("err");
 
+        m_subId = subID;
         m_localPosition = Chunk.ConvertToBlockIndex(worldPosition);
     }
 }

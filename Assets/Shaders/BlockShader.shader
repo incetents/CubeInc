@@ -28,10 +28,10 @@
 
             struct v2f
             {
+                float4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
 				float1 id : TEXCOORD1;
-                UNITY_FOG_COORDS(1)
-                float4 vertex : SV_POSITION;
+                //UNITY_FOG_COORDS(1)
             };
 
 			UNITY_DECLARE_TEX2DARRAY(_TextureArray);
@@ -43,7 +43,7 @@
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _TextureArray);
 				o.id = v.id;
-                UNITY_TRANSFER_FOG(o,o.vertex);
+                //UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 

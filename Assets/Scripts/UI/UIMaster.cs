@@ -12,6 +12,9 @@ public class UIMaster : MonoBehaviour
     public GameObject object_Commands;
     public GameObject object_DebugText;
     public GameObject object_PauseMenu;
+    public GameObject object_SelectedBlock;
+
+    private BlockDisplayer blockDisplayer;
 
     private void UpdateStates()
     {
@@ -19,12 +22,22 @@ public class UIMaster : MonoBehaviour
         object_DebugText.SetActive(m_player.m_debugMenu);
         object_PauseMenu.SetActive(m_player.m_menuState == MenuState.PAUSED);
         object_Commands.SetActive(m_player.m_menuState == MenuState.COMMAND);
+
+        if(VoxelSniper.m_blockID > 0)
+        {
+            BlockInfo targetBlock = BlockDictionary.Get(VoxelSniper.m_blockID);
+            Debug.Log(targetBlock.m_textureIDs.Count);
+
+            blockDisplayer.id = (int)targetBlock.m_textureIDs[0];
+        }
+        blockDisplayer.m_visible = (VoxelSniper.m_blockID > 0);
     }
 
     // Behaviour
     void Start()
     {
         m_player = GlobalData.player;
+        blockDisplayer = object_SelectedBlock.GetComponent<BlockDisplayer>();
         UpdateStates();
     }
 

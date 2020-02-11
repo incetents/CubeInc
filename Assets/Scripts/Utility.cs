@@ -18,6 +18,15 @@ public class Pair<T, U>
 
 public static class Utility
 {
+    public static string HTMLColorStart(Color color)
+    {
+        return "<color=#" + ColorUtility.ToHtmlStringRGB(color) + ">";
+    }
+    public static string HTMLColorEnd()
+    {
+        return "</color>";
+    }
+
     public static float Perlin3D(Vector3 pos)
     {
         return Perlin3D(pos.x, pos.y, pos.z);

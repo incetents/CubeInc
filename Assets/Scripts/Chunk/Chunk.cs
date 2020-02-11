@@ -219,6 +219,15 @@ public class Chunk //: MonoBehaviour
     {
         return localPosition + (m_index * Chunk.MaxSize);
     }
+    // Convert World to WorldInt
+    public static Vector3Int RoundWorldPosition(Vector3 position)
+    {
+        return new Vector3Int(
+            Mathf.FloorToInt(position.x),
+            Mathf.FloorToInt(position.y),
+            Mathf.FloorToInt(position.z)
+            );
+    }
 
     public Vector3 GetCenter()
     {
@@ -300,14 +309,14 @@ public class Chunk //: MonoBehaviour
                         float perlinUp = Utility.Perlin3D(WorldPosUp);
 
                         if (perlinUp > m_player.PerlinAlpha)
-                            SetBlock(new Block(1, new Vector3Int(x, y, z)));
+                            SetBlock(new Block(1, 0, new Vector3Int(x, y, z)));
                         else
-                            SetBlock(new Block(2, new Vector3Int(x, y, z)));
+                            SetBlock(new Block(2, 0, new Vector3Int(x, y, z)));
 
                     }
                     else
                     {
-                        SetBlock(new Block(0, new Vector3Int(x, y, z)));
+                        SetBlock(new Block(0, 0, new Vector3Int(x, y, z)));
                     }
                 }
             }
@@ -326,7 +335,7 @@ public class Chunk //: MonoBehaviour
                 {
                     //uint id = (uint)((x % 4) + 1);
                     uint id = 1;
-                    Block block = new Block(id, new Vector3Int(x, y, z));
+                    Block block = new Block(id, 0, new Vector3Int(x, y, z));
 
                     SetBlock(block);
                 }

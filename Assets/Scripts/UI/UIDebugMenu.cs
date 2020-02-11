@@ -57,12 +57,19 @@ public class UIDebugMenu : MonoBehaviour
 
         m_display.NewLine();
 
-        m_display.Write("Tool Info:");
+        m_display.Write("[Z] Swap Tool", VoxelSniper.m_sniperToolMode.ToString(), Color.yellow);
+        if (VoxelSniper.m_sniperToolMode == SniperToolMode.PAINT)
+        {
+            m_display.Write("[K] Reset Tool");
 
-        m_display.Write("Type", System.Enum.GetName(typeof(ToolType), m_player.m_editorTool.m_toolType), Color.yellow);
-        m_display.Write("Size", m_player.m_editorTool.m_size, Color.yellow);
-        m_display.Write("BlockID", m_player.m_editorTool.m_blockID, Color.yellow);
-        m_display.Write("BlockSubID", m_player.m_editorTool.m_blockSubID, Color.yellow);
+            m_display.Write("Voxel Sniper:");
+
+            m_display.Write("BrushType", VoxelSniper.m_brushType.ToString(), Color.yellow);
+            m_display.Write("PaintMode", VoxelSniper.m_brushPaintType.ToString(), Color.yellow);
+            m_display.Write("Size", VoxelSniper.m_brushSize, Color.yellow);
+            m_display.Write("BlockID", VoxelSniper.m_blockID, Color.yellow);
+            m_display.Write("BlockSubID", VoxelSniper.m_blockSubID, Color.yellow);
+        }
 
         // Result
         m_textMesh.text = m_display.text;

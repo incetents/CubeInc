@@ -29,6 +29,13 @@ public class TextProUtility
     {
         text += newText + '\n';
     }
+    public void Write(string newText, Color color)
+    {
+        StartColor(color);
+        text += newText.ToString();
+        EndColor();
+        text += '\n';
+    }
     public void Write(string newText, string value, Color color)
     {
         text += newText + ": ";

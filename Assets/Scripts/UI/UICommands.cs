@@ -55,33 +55,86 @@ public class UICommands : MonoBehaviour
     {
         string[] pieces = str.Split(' ');
 
-        // Set Brush
-        if(pieces[0].Length == 1 && pieces[0][0] == 'b')
+        // Set Brush info
+        if (pieces[0].Length == 1 && pieces[0][0] == 'b')
         {
-            switch(pieces[1])
+            // Iterate through selections
+            for (int i = 1; i < pieces.Length; i++)
             {
-                case "pencil":
-                case "p":
-                    m_player.m_editorTool.m_toolType = ToolType.PENCIL;
-                    return "[Tool = PENCIL]";
+                // String
+                switch (pieces[i])
+                {
+                    // -> Change BrushType
+                    case "pencil":
+                    case "p":
+                        VoxelSniper.m_brushType = BrushType.PENCIL;
+                        break;
 
-                case "ball":
-                case "b":
-                     m_player.m_editorTool.m_toolType = ToolType.BALL;
-                    return "[Tool = BALL]";
+                    case "ball":
+                    case "b":
+                        VoxelSniper.m_brushType = BrushType.BALL;
+                        break;
 
-                case "voxel":
-                case "v":
-                    m_player.m_editorTool.m_toolType = ToolType.VOXEL;
-                    return "[Tool = VOXEL]";
+                    case "voxel":
+                    case "v":
+                        VoxelSniper.m_brushType = BrushType.VOXEL;
+                        break;
 
-                case "line":
-                case "l":
-                    m_player.m_editorTool.m_toolType = ToolType.LINE;
-                    return "[Tool = LINE]";
+                    case "disc":
+                    case "d":
+                        VoxelSniper.m_brushType = BrushType.DISC;
+                        break;
+
+                    // -> Change BrushPaintMode
+                    case "m":
+                        VoxelSniper.m_brushPaintType = BrushPaintType.MATERIAL;
+                        break;
+                    case "i":
+                        VoxelSniper.m_brushPaintType = BrushPaintType.INK;
+                        break;
+                    case "c":
+                        VoxelSniper.m_brushPaintType = BrushPaintType.COMBO;
+                        break;
+                }
+                // Number
+                // -> Change BrushSize
+                uint newBrushSize = 0;
+                bool hasNumber = uint.TryParse(pieces[i], out newBrushSize);
+                if (hasNumber)
+                {
+                    newBrushSize = (newBrushSize > 100) ? 100 : newBrushSize;
+                    VoxelSniper.m_brushSize = newBrushSize;
+                }
+            }
+
+            return '[' +
+                "Brush = " + VoxelSniper.m_brushType.ToString() +
+                ", Size = " + VoxelSniper.m_brushSize.ToString() +
+                ", PaintType = " + VoxelSniper.m_brushPaintType.ToString() +
+                ']';
+        }
+        // Set Block ID/SubID
+        else if (pieces[0].Length == 1 && pieces[0][0] == 'v')
+        {
+            // Iterate through selections
+            for (int i = 1; i < pieces.Length; i++)
+            {
+                // Number
+                // -> Change BlockID
+                uint newBlockID = 0;
+                bool hasNumber = uint.TryParse(pieces[i], out newBlockID);
+                if (hasNumber)
+                {
+                    if(BlockDictionary.Has(newBlockID))
+                    {
+                        VoxelSniper.m_blockID = newBlockID;
+                        return "[BlockID = " + VoxelSniper.m_blockID.ToString() + ']';
+                    }
+                }
             }
         }
 
+        // Nothing Parsed
         return "";
     }
 
@@ -91,9 +144,6 @@ public class UICommands : MonoBehaviour
         m_player = GlobalData.player;
 
         m_scrollbarHeightMax = m_scrollbar.sizeDelta.y;
-
-        for(int i = 0; i < 10; i++)
-            m_history.Add(i.ToString());
     }
 
     void Update()
@@ -115,6 +165,8 @@ public class UICommands : MonoBehaviour
                 ParseKey(c);
             }
         }
+
+        m_cursorPosition = Mathf.Clamp(m_cursorPosition, 0, m_input.Length);
 
         // Hold down cursor key
         if (Input.GetKey(KeyCode.LeftArrow))
@@ -197,12 +249,21 @@ public class UICommands : MonoBehaviour
             string message = ParseCommand(m_input.ToLower());
             if (m_input.Length > 0)
             {
-                // Add Command info
-                m_history.Add(m_input);
-
-                // Add Message
-                if(message.Length > 0)
-                    m_history.Add(message);
+                // Unknown Command
+                if (message.Length == 0)
+                {
+                    m_history.Add(m_input);
+                }
+                // Command with message
+                else
+                {
+                    m_history.Add(
+                        m_input + ' ' +
+                        Utility.HTMLColorStart(Color.yellow) +
+                        message +
+                        Utility.HTMLColorEnd()
+                        );
+                }
 
                 // Remove excess history
                 while (m_history.Count > m_historyMaximum)

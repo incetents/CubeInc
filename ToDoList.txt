@@ -64,16 +64,26 @@ Completed:
 -> command input
 	-> scroll to previous text
 		-> mini scrollbar
+	-> shape: ball, square, line
+	-> options
+
+-> block texture displayer shader complete
 
 Phase 1: [Block Generation]
 
+-> texture/block displayer menu
+	-> can select block
+
+-> Start converting vector3's into vector3int's
+	-> prevent loss of precision
+	-> start in worldedit and keep going
+
 -> command input
 	-> Different tools
-		[ADD TOOL, PAINT TOOL, SELECTION TOOL]
-	
-		-> shape: ball, square, line
+		[SELECTION TOOL]
 		-> selection: (fill, delete, move, rotate, copy, paste)
 
+-> select between voxel sniper and selection tool
 -> UI selection -> edit/add (Arrow/gunpowder)
 	-> Block type selection
 	-> simple way of showing texture icon

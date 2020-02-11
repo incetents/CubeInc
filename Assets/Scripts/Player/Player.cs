@@ -9,22 +9,6 @@ public enum MenuState
     COMMAND
 }
 
-public enum ToolType
-{
-    PENCIL,
-    BALL,
-    VOXEL,
-    LINE
-}
-
-public class EditorTool
-{
-    public ToolType m_toolType;
-    public uint     m_size = 1;
-    public uint     m_blockID = 0;
-    public uint     m_blockSubID = 0;
-}
-
 public class Player : MonoBehaviour
 {
     // References
@@ -55,12 +39,11 @@ public class Player : MonoBehaviour
     public float PerlinAlpha = 0.5f;
 
     // Data
-    [System.NonSerialized] public MenuState m_menuState = MenuState.COMMAND;
+    [System.NonSerialized] public MenuState m_menuState = MenuState.NONE;
     [System.NonSerialized] public bool m_windowFocus = true;
     [System.NonSerialized] public bool m_noclip = true;
     [System.NonSerialized] public bool m_debugMenu = true;
     [System.NonSerialized] public bool m_wireframeMode = false;
-    [System.NonSerialized] public EditorTool m_editorTool = new EditorTool();
     [System.NonSerialized] public bool m_showChunkLines = true;
 
     // Current Chunk the player resides in
@@ -107,31 +90,84 @@ public class Player : MonoBehaviour
         // Game Functionality [ No Menu ]
         if (m_menuState == MenuState.NONE)
         {
-            // Destroy Block
-            if (Input.GetMouseButtonDown(0) && m_blockOutline.HasHitBlock())
+            // Paint/Add Block
+            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && m_blockOutline.HasHitBlock())
             {
-                Block block = ChunkStorage.GetBlock(m_blockOutline.m_position);
-                if (block != null)
+
+                Vector3Int hitBlockPosition = Vector3Int.zero;
+
+                // Paint
+                if (Input.GetMouseButtonDown(0))
+                    hitBlockPosition = Chunk.RoundWorldPosition(m_blockOutline.m_position);
+
+                // Add
+                else if (Input.GetMouseButtonDown(1))
+                    hitBlockPosition = Chunk.RoundWorldPosition(m_blockOutline.m_position + m_blockOutline.m_normal);
+
+                Block hitBlock = ChunkStorage.GetBlock(hitBlockPosition);
+                if (hitBlock != null)
                 {
-                    //  if (m_bigBreak)
-                    //      WorldEdit.SetBlockRegion(
-                    //          m_blockOutline.m_position + new Vector3(-1, -1, -1),
-                    //          m_blockOutline.m_position + new Vector3(+1, +1, +1),
-                    //          0
-                    //          );
-                    //  else
-                        WorldEdit.SetBlock(m_blockOutline.m_position, new Block(0, block.m_localPosition));
+                    if (VoxelSniper.m_sniperToolMode == SniperToolMode.PAINT)
+                    {
+                        switch (VoxelSniper.m_brushType)
+                        {
+                            case BrushType.PENCIL:
+                                WorldEdit.SetBlock(hitBlockPosition, VoxelSniper.m_blockID, VoxelSniper.m_blockSubID);
+                                break;
+
+                            case BrushType.VOXEL:
+                                WorldEdit.SetBlockRegion(
+                                    hitBlockPosition + new Vector3((int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize),
+                                    hitBlockPosition + new Vector3((int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize),
+                                    VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                                    );
+                                break;
+
+                            case BrushType.BALL:
+                                WorldEdit.SetBlockSphere(
+                                    hitBlockPosition, VoxelSniper.m_brushSize,
+                                     VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                                    );
+                                break;
+                        }
+                    }
                 }
             }
-            // Add Block
-            if (Input.GetMouseButtonDown(1) && m_blockOutline.HasHitBlock())
+
+            //  // Paint Block
+            //  if (Input.GetMouseButtonDown(0) && m_blockOutline.HasHitBlock())
+            //  {
+            //      Block block = ChunkStorage.GetBlock(m_blockOutline.m_position);
+            //      if (block != null)
+            //      {
+            //          
+            //  
+            //      }
+            //  }
+            //  // Add Block
+            //  if (Input.GetMouseButtonDown(1) && m_blockOutline.HasHitBlock())
+            //  {
+            //      // Update new block
+            //      Block block = ChunkStorage.GetBlock(m_blockOutline.m_position + m_blockOutline.m_normal);
+            //      if (block != null)
+            //      {
+            //          WorldEdit.SetBlock(m_blockOutline.m_position + m_blockOutline.m_normal, 2, 0);
+            //      }
+            //  }
+
+            // Toggle Sniper Tool
+            if (Input.GetKeyDown(KeyCode.Z))
             {
-                // Update new block
-                Block block = ChunkStorage.GetBlock(m_blockOutline.m_position + m_blockOutline.m_normal);
-                if (block != null)
-                {
-                    WorldEdit.SetBlock(m_blockOutline.m_position + m_blockOutline.m_normal, new Block(2, block.m_localPosition));
-                }
+                if (VoxelSniper.m_sniperToolMode == SniperToolMode.PAINT)
+                    VoxelSniper.m_sniperToolMode = SniperToolMode.SELECTION;
+                else
+                    VoxelSniper.m_sniperToolMode = SniperToolMode.PAINT;
+            }
+
+            // Reset Sniper Tool
+            if(Input.GetKeyDown(KeyCode.K))
+            {
+                VoxelSniper.Reset();
             }
 
             // Toggle Chunk Lines
@@ -151,7 +187,7 @@ public class Player : MonoBehaviour
                 m_noclip = !m_noclip;
 
             // Enter Commands
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Slash))
                 m_menuState = MenuState.COMMAND;
 
             // Enter Pause

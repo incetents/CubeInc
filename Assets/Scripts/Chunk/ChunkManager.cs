@@ -15,7 +15,7 @@ public class ChunkManager : MonoBehaviour
     private Chunk m_constructingChunk = null;
 
     // Settings
-    public bool m_generateChunks = true;
+    [System.NonSerialized] public bool m_generateChunks = true;
 
     private void Start()
     {

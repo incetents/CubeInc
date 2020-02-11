@@ -33,17 +33,14 @@ public class BlockManager : MonoBehaviour
     // Import
     public int blockPixelSize = 16;
 
-    [System.NonSerialized] public Texture2DArray blockTextureArray;
+    [System.NonSerialized] public static Texture2DArray blockTextureArray = null;
 
     // Behaviour
     private void Awake()
     {
         // Air added manually
         BlockDictionary.Set(new BlockInfo(0));
-    }
 
-    void Start()
-    {
         // Debug Texture
         //  Texture2D perlinTest = new Texture2D(100, 100);
         //  
@@ -103,7 +100,6 @@ public class BlockManager : MonoBehaviour
         // Finish 2D Texture Array
         if (blockTextures.Count > 0)
         {
-
             // Create Texture Array
             blockTextureArray = new Texture2DArray(16, 16, blockTextures.Count, TextureFormat.RGB24, true, false);
             blockTextureArray.filterMode = FilterMode.Point;
@@ -158,5 +154,7 @@ public class BlockManager : MonoBehaviour
 
             BlockDictionary.Set(block);
         }
+
+        Debug.Log("BLOCK TEXTURES/DATA IMPORTED");
     }
 }
