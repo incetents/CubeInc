@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 [RequireComponent(typeof(Image))]
 public class BlockDisplayer : MonoBehaviour
@@ -42,6 +43,10 @@ public class BlockDisplayer : MonoBehaviour
     private Vector2[] m_quadID;
     private void CalculateNewIDs()
     {
+        uint id = 0;
+        if(internalSelectedBlock != null && !internalSelectedBlock.m_air)
+            id = internalSelectedBlock.m_textureIDs[0];
+
         m_quadID[0] = new Vector2(id, 0);
         m_quadID[1] = new Vector2(id, 0);
         m_quadID[2] = new Vector2(id, 0);
@@ -56,8 +61,14 @@ public class BlockDisplayer : MonoBehaviour
     [System.NonSerialized] public bool m_visible = true;
 
     // Id to display
-    public  int id;
-    private int internalID;
+    //public  int id;
+    //private int internalID;\
+    [System.NonSerialized] public BlockInfo selectedBlock = null;
+    private BlockInfo internalSelectedBlock = null;
+
+    // Text for name
+    public GameObject textBG;
+    public TextMeshProUGUI textMesh;
 
     // Start is called before the first frame update
     void Start()
@@ -73,7 +84,8 @@ public class BlockDisplayer : MonoBehaviour
 
         m_quadID = new Vector2[4];
         CalculateNewIDs();
-        internalID = id;
+        //internalID = id;
+        internalSelectedBlock = selectedBlock;
 
         m_mesh = new Mesh();
         m_mesh.vertices = m_quadVertices;
@@ -100,9 +112,9 @@ public class BlockDisplayer : MonoBehaviour
         }
 
         // Check if ID changes
-        if(internalID != id)
+        if(selectedBlock != null && internalSelectedBlock != selectedBlock)
         {
-            internalID = id;
+            internalSelectedBlock = selectedBlock;
 
             CalculateNewIDs();
             CalculateNewMesh();
@@ -110,11 +122,17 @@ public class BlockDisplayer : MonoBehaviour
             m_setupChecks = 2;
         }
 
-        // Visible
-        if (m_image.enabled != m_visible)
+        // Force invisible if no selectedBlock
+        if (internalSelectedBlock == null)
+            m_image.enabled = false;
+        else
         {
-            m_image.enabled = m_visible;
-            m_setupChecks = 2;
+            // Visible
+            if (m_image.enabled != m_visible)
+            {
+                m_image.enabled = m_visible;
+                m_setupChecks = 2;
+            }
         }
 
         // Update new mesh
@@ -124,6 +142,13 @@ public class BlockDisplayer : MonoBehaviour
             m_setupChecks--;
         }
 
-        
+        // Update Text
+        textMesh.gameObject.SetActive(internalSelectedBlock != null);
+        textBG.gameObject.SetActive(internalSelectedBlock != null);
+
+        if(internalSelectedBlock != null)
+        {
+            textMesh.text = internalSelectedBlock.m_name;
+        }
     }
 }

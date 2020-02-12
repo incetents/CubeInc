@@ -39,7 +39,9 @@ public class BlockManager : MonoBehaviour
     private void Awake()
     {
         // Air added manually
-        BlockDictionary.Set(new BlockInfo(0));
+        BlockInfo airBlock = new BlockInfo(0);
+        airBlock.m_name = "air";
+        BlockDictionary.Set(airBlock);
 
         // Debug Texture
         //  Texture2D perlinTest = new Texture2D(100, 100);

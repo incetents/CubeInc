@@ -50,6 +50,8 @@ public class UIDebugMenu : MonoBehaviour
 
         m_display.NewLine();
 
+        m_display.Write("[/] Commands");
+        m_display.Write("[I] Block Selector");
         m_display.Write("[L] Load Chunks", m_chunkManager.m_generateChunks, Color.green, Color.red);
         m_display.Write("[N] Noclip", m_player.m_noclip, Color.green, Color.red);
         m_display.Write("[F1] Wireframe", m_player.m_wireframeMode, Color.green, Color.red);

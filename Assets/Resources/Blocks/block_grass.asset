@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b8741769eb41f140bb7f5121e15a786, type: 3}
   m_Name: block_grass
   m_EditorClassIdentifier: 
-  name: 
+  name: grass
   m_id: 2
   m_baseTextureID: {fileID: 11400000, guid: 27a4ab8235ea6b34caf7c25bf182daea, type: 2}
   m_textureOverride: 1

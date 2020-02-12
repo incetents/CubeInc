@@ -6,7 +6,8 @@ public enum MenuState
 {
     NONE,
     PAUSED,
-    COMMAND
+    COMMAND,
+    BLOCK_SELECTION
 }
 
 public class Player : MonoBehaviour
@@ -134,27 +135,6 @@ public class Player : MonoBehaviour
                 }
             }
 
-            //  // Paint Block
-            //  if (Input.GetMouseButtonDown(0) && m_blockOutline.HasHitBlock())
-            //  {
-            //      Block block = ChunkStorage.GetBlock(m_blockOutline.m_position);
-            //      if (block != null)
-            //      {
-            //          
-            //  
-            //      }
-            //  }
-            //  // Add Block
-            //  if (Input.GetMouseButtonDown(1) && m_blockOutline.HasHitBlock())
-            //  {
-            //      // Update new block
-            //      Block block = ChunkStorage.GetBlock(m_blockOutline.m_position + m_blockOutline.m_normal);
-            //      if (block != null)
-            //      {
-            //          WorldEdit.SetBlock(m_blockOutline.m_position + m_blockOutline.m_normal, 2, 0);
-            //      }
-            //  }
-
             // Toggle Sniper Tool
             if (Input.GetKeyDown(KeyCode.Z))
             {
@@ -186,6 +166,10 @@ public class Player : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.N))
                 m_noclip = !m_noclip;
 
+            // Enter Block Selector
+            if (Input.GetKeyDown(KeyCode.I))
+                m_menuState = MenuState.BLOCK_SELECTION;
+
             // Enter Commands
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Slash))
                 m_menuState = MenuState.COMMAND;
@@ -204,9 +188,19 @@ public class Player : MonoBehaviour
                 m_menuState = MenuState.NONE;
             }
         }
+        // Commands
         else if (m_menuState == MenuState.COMMAND)
         {
-            // Exit Commands
+            // Exit
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                m_menuState = MenuState.NONE;
+            }
+        }
+        // Block Selector
+        else if(m_menuState == MenuState.BLOCK_SELECTION)
+        {
+            // Exit
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 m_menuState = MenuState.NONE;
