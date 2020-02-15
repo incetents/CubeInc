@@ -77,15 +77,15 @@ Completed:
 -> id value on block selector
 -> text on top of selected block on bottom left
 
-Phase 1: [Block Generation]
-
 -> store blocks also by name so it can be searched by name
 	-> error on duplicate names
 
+-> middle click copies viewed block
+
+Phase 1: [Block Generation]
+
 -> extra mode with Z for manually breaking blocks with left/ placing with right click
 -> paint mode doesn't require click, hold down works instead
-
--> middle click copies viewed block
 
 -> Start converting vector3's into vector3int's
 	-> prevent loss of precision

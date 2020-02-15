@@ -95,8 +95,17 @@ public class Player : MonoBehaviour
         // Game Functionality [ No Menu ]
         if (m_menuState == MenuState.NONE)
         {
+            // Select Target Block [middle click]
+            if (Input.GetMouseButtonDown(2) && m_blockOutline.HasHitBlock())
+            {
+                Vector3Int hitBlockPosition = Chunk.RoundWorldPosition(m_blockOutline.m_position);
+                Block hitBlock = ChunkStorage.GetBlock(hitBlockPosition);
+                // Set Sniper to block player is looking at
+                VoxelSniper.m_blockID = hitBlock.m_data.m_id;
+            }
+
             // Paint/Add Block
-            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && m_blockOutline.HasHitBlock())
+            else if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && m_blockOutline.HasHitBlock())
             {
                 Vector3Int hitBlockPosition = Vector3Int.zero;
 
