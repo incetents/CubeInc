@@ -6,25 +6,46 @@ public static class BlockDictionary
 {
     public static Dictionary<uint, Texture2D> textures = new Dictionary<uint, Texture2D>();
 
-    public static Dictionary<uint, BlockInfo> data = new Dictionary<uint, BlockInfo>();
+    private static Dictionary<uint, BlockInfo> dataID = new Dictionary<uint, BlockInfo>();
+    private static Dictionary<string, BlockInfo> dataName = new Dictionary<string, BlockInfo>();
 
+    // Get by ID
     public static BlockInfo Get(uint id)
     {
-        if (data.ContainsKey(id))
-            return data[id];
+        if (dataID.ContainsKey(id))
+            return dataID[id];
 
         return null;
     }
+    // Get by String
+    public static BlockInfo Get(string id)
+    {
+        if (dataName.ContainsKey(id))
+            return dataName[id];
+
+        return null;
+    }
+
     public static void Set(BlockInfo newData)
     {
-        if (data.ContainsKey(newData.m_id))
+        if (dataID.ContainsKey(newData.m_id))
             Debug.LogError("Setting BlockData ID that already exists: " + newData.m_id);
         else
-            data.Add(newData.m_id, newData);
+        {
+            dataID.Add(newData.m_id, newData);
+            dataName.Add(newData.m_name, newData);
+        }
     }
+
+    // Check by ID
     public static bool Has(uint id)
     {
-        return data.ContainsKey(id);
+        return dataID.ContainsKey(id);
+    }
+    // Check by Name
+    public static bool Has(string id)
+    {
+        return dataName.ContainsKey(id);
     }
 }
 

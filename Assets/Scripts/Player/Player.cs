@@ -129,8 +129,23 @@ public class Player : MonoBehaviour
 
                             case BrushType.BALL:
                                 WorldEdit.SetBlockSphere(
-                                    hitBlockPosition, VoxelSniper.m_brushSize,
+                                    hitBlockPosition, new Vector3(VoxelSniper.m_brushSize, VoxelSniper.m_brushSize, VoxelSniper.m_brushSize),
                                      VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                                    );
+                                break;
+
+                            case BrushType.DISC:
+                                WorldEdit.SetBlockSphere(
+                                    hitBlockPosition, new Vector3(VoxelSniper.m_brushSize, 0.5f, VoxelSniper.m_brushSize),
+                                     VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                                    );
+                                break;
+
+                            case BrushType.VOXEL_DISC:
+                                WorldEdit.SetBlockRegion(
+                                    hitBlockPosition + new Vector3((int)-VoxelSniper.m_brushSize, 0.5f, (int)-VoxelSniper.m_brushSize),
+                                    hitBlockPosition + new Vector3((int)+VoxelSniper.m_brushSize, 0.5f, (int)+VoxelSniper.m_brushSize),
+                                    VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
                                     );
                                 break;
                         }

@@ -16,9 +16,10 @@ public class UIBlockDisplayer : MonoBehaviour
     private UIButtonAABB m_button = null;
 
     // Reference Objects
-    public GameObject textBG;
-    public TextMeshProUGUI textMesh;
+    public GameObject nameTextBG;
+    public TextMeshProUGUI nameTextMesh;
     public GameObject BG;
+    public TextMeshProUGUI idTextMesh;
 
     // Customized Mesh Data
     private Mesh m_mesh = null;
@@ -99,7 +100,7 @@ public class UIBlockDisplayer : MonoBehaviour
         m_rectTransform = GetComponent<RectTransform>();
         m_image = GetComponent<Image>();
         m_BGimage = BG.GetComponent<Image>();
-        m_TextBGImage = textBG.GetComponent<Image>();
+        m_TextBGImage = nameTextBG.GetComponent<Image>();
 
         m_size = m_rectTransform.sizeDelta;
 
@@ -156,12 +157,14 @@ public class UIBlockDisplayer : MonoBehaviour
         }
 
         // Update Text
-        textMesh.gameObject.SetActive(m_block != null);
-        textBG.gameObject.SetActive(m_block != null);
+        nameTextMesh.gameObject.SetActive(m_block != null);
+        nameTextBG.gameObject.SetActive(m_block != null);
+        idTextMesh.gameObject.SetActive(m_block != null);
 
-        if(m_block != null)
+        if (m_block != null)
         {
-            textMesh.text = m_block.m_name;
+            nameTextMesh.text = m_block.m_name;
+            idTextMesh.text = m_block.m_id.ToString();
         }
     }
 }

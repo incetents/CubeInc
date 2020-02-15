@@ -13,7 +13,8 @@ public enum BrushType
     PENCIL,
     BALL,
     VOXEL,
-    DISC
+    DISC,
+    VOXEL_DISC
 }
 public enum BrushPaintType
 {

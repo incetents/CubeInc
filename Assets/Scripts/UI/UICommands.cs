@@ -85,6 +85,11 @@ public class UICommands : MonoBehaviour
                         VoxelSniper.m_brushType = BrushType.DISC;
                         break;
 
+                    case "voxeldisc":
+                    case "vd":
+                        VoxelSniper.m_brushType = BrushType.VOXEL_DISC;
+                        break;
+
                     // -> Change BrushPaintMode
                     case "m":
                         VoxelSniper.m_brushPaintType = BrushPaintType.MATERIAL;
@@ -120,7 +125,7 @@ public class UICommands : MonoBehaviour
             for (int i = 1; i < pieces.Length; i++)
             {
                 // Number
-                // -> Change BlockID
+                // -> Change BlockID by ID
                 uint newBlockID = 0;
                 bool hasNumber = uint.TryParse(pieces[i], out newBlockID);
                 if (hasNumber)
@@ -128,7 +133,17 @@ public class UICommands : MonoBehaviour
                     if(BlockDictionary.Has(newBlockID))
                     {
                         VoxelSniper.m_blockID = newBlockID;
-                        return "[Name = " + BlockDictionary.Get(newBlockID).m_name + ", BlockID = " + VoxelSniper.m_blockID.ToString() + ']';
+                        return "[Name = " + BlockDictionary.Get(VoxelSniper.m_blockID).m_name + ", BlockID = " + VoxelSniper.m_blockID.ToString() + ']';
+                    }
+                }
+                // By Name
+                // -> Change BlockID by string
+                else
+                {
+                    if (BlockDictionary.Has(pieces[i]))
+                    {
+                        VoxelSniper.m_blockID = BlockDictionary.Get(pieces[i]).m_id;
+                        return "[Name = " + BlockDictionary.Get(VoxelSniper.m_blockID).m_name + ", BlockID = " + VoxelSniper.m_blockID.ToString() + ']';
                     }
                 }
             }

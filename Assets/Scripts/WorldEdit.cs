@@ -32,12 +32,12 @@ public static class WorldEdit
     }
 
     // [UPDATE OCCURS] Modify an existing block from world space position
-    public static void SetBlockSphere(Vector3 worldPosition, uint radius, uint id, uint subId)
+    public static void SetBlockSphere(Vector3 worldPosition, Vector3 radius, uint id, uint subId)
     {
         Vector3Int _center = new Vector3Int(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y), Mathf.FloorToInt(worldPosition.z));
 
-        Vector3Int _min = new Vector3Int(Mathf.FloorToInt(worldPosition.x - radius), Mathf.FloorToInt(worldPosition.y - radius), Mathf.FloorToInt(worldPosition.z - radius));
-        Vector3Int _max = new Vector3Int(Mathf.FloorToInt(worldPosition.x + radius), Mathf.FloorToInt(worldPosition.y + radius), Mathf.FloorToInt(worldPosition.z + radius));
+        Vector3Int _min = new Vector3Int(Mathf.FloorToInt(worldPosition.x - radius.x), Mathf.FloorToInt(worldPosition.y - radius.y), Mathf.FloorToInt(worldPosition.z - radius.z));
+        Vector3Int _max = new Vector3Int(Mathf.FloorToInt(worldPosition.x + radius.x), Mathf.FloorToInt(worldPosition.y + radius.y), Mathf.FloorToInt(worldPosition.z + radius.z));
 
         for (int x = _min.x; x <= _max.x; x++)
         {
@@ -46,7 +46,15 @@ public static class WorldEdit
                 for (int z = _min.z; z <= _max.z; z++)
                 {
                     Vector3 newWorldPosition = new Vector3(x, y, z);
-                    if ((_center - new Vector3Int(x, y, z)).magnitude <= radius)
+                    Vector3 offsetPosition = (_center - new Vector3Int(x, y, z));
+
+                    // Check if new position is inside the ellipsoid (Radius)
+                    float ellipsoidCheck =
+                        Mathf.Pow(offsetPosition.x / radius.x, 2.0f) +
+                        Mathf.Pow(offsetPosition.y / radius.y, 2.0f) +
+                        Mathf.Pow(offsetPosition.z / radius.z, 2.0f);
+
+                    if (ellipsoidCheck <= 1.0f)
                     {
                         if (ChunkStorage.SetBlock(newWorldPosition, new Block(id, subId, newWorldPosition)))
                             ChunkStorage.MakePositionDirty(newWorldPosition);

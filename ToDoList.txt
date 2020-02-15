@@ -71,18 +71,19 @@ Completed:
 
 -> texture/block displayer menu
 	-> can select block
+	-> pages
+
+-> disc brush + voxel disc brush
+-> id value on block selector
+-> text on top of selected block on bottom left
 
 Phase 1: [Block Generation]
 
--> disc brush
-
--> text on top of selected block on bottom left
-
--> texture/block displayer menu
-	-> pages
-
 -> store blocks also by name so it can be searched by name
 	-> error on duplicate names
+
+-> extra mode with Z for manually breaking blocks with left/ placing with right click
+-> paint mode doesn't require click, hold down works instead
 
 -> middle click copies viewed block
 
