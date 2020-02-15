@@ -4,13 +4,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-[RequireComponent(typeof(Image))]
-public class BlockDisplayer : MonoBehaviour
+[RequireComponent(typeof(Image), typeof(UIButtonAABB))]
+public class UIBlockDisplayer : MonoBehaviour
 {
     // Reference
     private CanvasRenderer m_render = null;
     private RectTransform m_rectTransform = null;
     private Image m_image = null;
+    private Image m_BGimage = null;
+    private Image m_TextBGImage = null;
+    private UIButtonAABB m_button = null;
+
+    // Reference Objects
+    public GameObject textBG;
+    public TextMeshProUGUI textMesh;
+    public GameObject BG;
 
     // Customized Mesh Data
     private Mesh m_mesh = null;
@@ -44,8 +52,8 @@ public class BlockDisplayer : MonoBehaviour
     private void CalculateNewIDs()
     {
         uint id = 0;
-        if(internalSelectedBlock != null && !internalSelectedBlock.m_air)
-            id = internalSelectedBlock.m_textureIDs[0];
+        if(m_block != null && !m_block.m_air)
+            id = m_block.m_textureIDs[0];
 
         m_quadID[0] = new Vector2(id, 0);
         m_quadID[1] = new Vector2(id, 0);
@@ -54,28 +62,44 @@ public class BlockDisplayer : MonoBehaviour
     }
 
     // Data
-    private int     m_setupChecks = 2; // Unity is finicky with its setup :thonk:
-    private Vector2 m_size;
+    private Vector2     m_size;
+    private BlockInfo   m_block = null;
+    private bool        m_blockDirty = false;
 
     // Settings
     [System.NonSerialized] public bool m_visible = true;
 
-    // Id to display
-    //public  int id;
-    //private int internalID;\
-    [System.NonSerialized] public BlockInfo selectedBlock = null;
-    private BlockInfo internalSelectedBlock = null;
+    // Utility
+    public void SetBlock(BlockInfo data)
+    {
+        if (m_block == data)
+            return;
 
-    // Text for name
-    public GameObject textBG;
-    public TextMeshProUGUI textMesh;
+        m_block = data;
+
+        if(m_block != null)
+        {
+            m_blockDirty = true;
+        }
+    }
+    public BlockInfo GetBlock()
+    {
+        return m_block;
+    }
+    public bool IsPressed()
+    {
+        return m_button.IsPressed();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        m_button = GetComponent<UIButtonAABB>();
         m_render = GetComponent<CanvasRenderer>();
         m_rectTransform = GetComponent<RectTransform>();
         m_image = GetComponent<Image>();
+        m_BGimage = BG.GetComponent<Image>();
+        m_TextBGImage = textBG.GetComponent<Image>();
 
         m_size = m_rectTransform.sizeDelta;
 
@@ -84,8 +108,6 @@ public class BlockDisplayer : MonoBehaviour
 
         m_quadID = new Vector2[4];
         CalculateNewIDs();
-        //internalID = id;
-        internalSelectedBlock = selectedBlock;
 
         m_mesh = new Mesh();
         m_mesh.vertices = m_quadVertices;
@@ -98,7 +120,7 @@ public class BlockDisplayer : MonoBehaviour
     void Update()
     {
         // Check if size changes
-        if(
+        if (
             !Mathf.Approximately(m_rectTransform.sizeDelta.x, m_size.x) ||
             !Mathf.Approximately(m_rectTransform.sizeDelta.y, m_size.y)
             )
@@ -107,48 +129,39 @@ public class BlockDisplayer : MonoBehaviour
 
             CalculateNewVertices();
             CalculateNewMesh();
-           
-            m_setupChecks = 2;
         }
 
         // Check if ID changes
-        if(selectedBlock != null && internalSelectedBlock != selectedBlock)
+        if(m_block != null && m_blockDirty)
         {
-            internalSelectedBlock = selectedBlock;
+            m_blockDirty = false;
 
             CalculateNewIDs();
             CalculateNewMesh();
-
-            m_setupChecks = 2;
         }
 
         // Force invisible if no selectedBlock
-        if (internalSelectedBlock == null)
+        if (m_block == null || m_block.m_air)
             m_image.enabled = false;
         else
         {
             // Visible
-            if (m_image.enabled != m_visible)
-            {
-                m_image.enabled = m_visible;
-                m_setupChecks = 2;
-            }
+            m_image.enabled = m_visible;
         }
 
         // Update new mesh
-        if (m_setupChecks > 0 && m_image.enabled)
+        if (m_image.enabled)
         {
             m_render.SetMesh(m_mesh);
-            m_setupChecks--;
         }
 
         // Update Text
-        textMesh.gameObject.SetActive(internalSelectedBlock != null);
-        textBG.gameObject.SetActive(internalSelectedBlock != null);
+        textMesh.gameObject.SetActive(m_block != null);
+        textBG.gameObject.SetActive(m_block != null);
 
-        if(internalSelectedBlock != null)
+        if(m_block != null)
         {
-            textMesh.text = internalSelectedBlock.m_name;
+            textMesh.text = m_block.m_name;
         }
     }
 }

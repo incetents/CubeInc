@@ -88,13 +88,16 @@ public class Player : MonoBehaviour
         // Update Chunk the player is in
         UpdateCurentInternalChunk();
 
+        // Toggle Debugmenu
+        if (Input.GetKeyDown(KeyCode.Tab))
+            m_debugMenu = !m_debugMenu;
+
         // Game Functionality [ No Menu ]
         if (m_menuState == MenuState.NONE)
         {
             // Paint/Add Block
             if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && m_blockOutline.HasHitBlock())
             {
-
                 Vector3Int hitBlockPosition = Vector3Int.zero;
 
                 // Paint
@@ -154,10 +157,6 @@ public class Player : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F2))
                 m_showChunkLines = !m_showChunkLines;
 
-            // Toggle Debugmenu
-            if (Input.GetKeyDown(KeyCode.Tab))
-                m_debugMenu = !m_debugMenu;
-
             // Toggle Wireframe
             if (Input.GetKeyDown(KeyCode.F1))
                 m_wireframeMode = !m_wireframeMode;
@@ -201,7 +200,7 @@ public class Player : MonoBehaviour
         else if(m_menuState == MenuState.BLOCK_SELECTION)
         {
             // Exit
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.I))
             {
                 m_menuState = MenuState.NONE;
             }

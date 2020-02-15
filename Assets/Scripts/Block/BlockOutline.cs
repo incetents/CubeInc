@@ -37,7 +37,7 @@ public class BlockOutline : MonoBehaviour
         //Debug.Log("HIT");
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, m_player.m_chunkMask.value))
         {
-            m_position = hit.point + m_camera.transform.forward * 0.01f;
+            m_position = hit.point - hit.normal * 0.01f;
             m_normal = hit.normal;
             //Debug.Log(m_position);
 

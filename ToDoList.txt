@@ -69,10 +69,22 @@ Completed:
 
 -> block texture displayer shader complete
 
-Phase 1: [Block Generation]
-
 -> texture/block displayer menu
 	-> can select block
+
+Phase 1: [Block Generation]
+
+-> disc brush
+
+-> text on top of selected block on bottom left
+
+-> texture/block displayer menu
+	-> pages
+
+-> store blocks also by name so it can be searched by name
+	-> error on duplicate names
+
+-> middle click copies viewed block
 
 -> Start converting vector3's into vector3int's
 	-> prevent loss of precision

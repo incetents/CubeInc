@@ -43,7 +43,7 @@ public class UIDebugMenu : MonoBehaviour
 
         // Text
         m_display.Clear();
-        m_display.Write("Debug Info:");
+        m_display.Write("Debug Info: [Tab to Hide]");
         m_display.Write("FPS", m_averageFPS, Color.yellow);
         m_display.Write("Position", m_player.transform.position, Color.yellow);
         m_display.Write("ChunkID", m_player.m_chunkIndex, Color.yellow);

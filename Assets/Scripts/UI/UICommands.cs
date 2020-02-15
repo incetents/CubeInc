@@ -128,7 +128,7 @@ public class UICommands : MonoBehaviour
                     if(BlockDictionary.Has(newBlockID))
                     {
                         VoxelSniper.m_blockID = newBlockID;
-                        return "[BlockID = " + VoxelSniper.m_blockID.ToString() + ']';
+                        return "[Name = " + BlockDictionary.Get(newBlockID).m_name + ", BlockID = " + VoxelSniper.m_blockID.ToString() + ']';
                     }
                 }
             }

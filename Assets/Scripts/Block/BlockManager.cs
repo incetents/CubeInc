@@ -125,7 +125,7 @@ public class BlockManager : MonoBehaviour
             // Error if duplicate ID
             if (BlockDictionary.Has(info.m_id))
             {
-                Debug.LogError("BlockInfoImport duplicate ID: " + info.name + ", ID= " + info.m_id.ToString());
+                Debug.LogError("BlockInfoImport Duplicate Info:\nName: " + info.name + ", ID= " + info.m_id.ToString());
                 continue;
             }
 
@@ -157,6 +157,6 @@ public class BlockManager : MonoBehaviour
             BlockDictionary.Set(block);
         }
 
-        Debug.Log("BLOCK TEXTURES/DATA IMPORTED");
+        Debug.Log("BLOCK TEXTURES/DATA IMPORT COMPLETE");
     }
 }
