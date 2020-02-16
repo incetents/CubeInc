@@ -42,7 +42,7 @@ public class ChunkManager : MonoBehaviour
                         Vector3Int chunkSpot = m_player.m_chunkIndex + new Vector3Int(x, y, z);
                         //chunkSpot.y = 0;
 
-                        Chunk chunkCheck = ChunkStorage.GetChunk(chunkSpot);
+                        Chunk chunkCheck = ChunkStorage.GetChunkFromIndex(chunkSpot);
                         if (chunkCheck == null)
                         {
                             // Create chunk at location

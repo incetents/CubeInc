@@ -231,13 +231,21 @@ public class ChunkBuilder
 
     private void Run()
     {
-        Chunk chunk = ChunkStorage.GetChunk(m_chunkIndex);
+        // Current Chunk
+        Chunk chunk = ChunkStorage.GetChunkFromIndex(m_chunkIndex);
         if (chunk == null)
         {
             Debug.LogError("Missing Chunk for building: " + m_chunkIndex);
             m_threadComplete = true;
             return;
         }
+        // Nearby Chunks
+        Chunk chunk_left = ChunkStorage.GetChunkFromIndex(m_chunkIndex + vecLeft);
+        Chunk chunk_right = ChunkStorage.GetChunkFromIndex(m_chunkIndex + vecRight);
+        Chunk chunk_up = ChunkStorage.GetChunkFromIndex(m_chunkIndex + vecUp);
+        Chunk chunk_down = ChunkStorage.GetChunkFromIndex(m_chunkIndex + vecDown);
+        Chunk chunk_forward = ChunkStorage.GetChunkFromIndex(m_chunkIndex + vecForward);
+        Chunk chunk_back = ChunkStorage.GetChunkFromIndex(m_chunkIndex + vecBack);
 
         BlockStorage blocks = chunk.m_blocks;
         if(blocks == null)
@@ -274,8 +282,7 @@ public class ChunkBuilder
                     // LEFT // Out of bounds check
                     if (LeftCheck.x < 0)
                     {
-                        Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecLeft);
-                        if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(Chunk.MaxSize.x - 1, y, z))))
+                        if (chunk_left == null || (chunk_left != null && chunk_left.m_blocks.IsAir(new Vector3Int(Chunk.MaxSize.x - 1, y, z))))
                             AddFace_Left(position, block.m_data.GetTextureID(BlockFace.LEFT));
                     }
                     // LEFT // Inbounds Check
@@ -288,8 +295,7 @@ public class ChunkBuilder
                     // RIGHT // Out of bounds check
                     if (RightCheck.x > Chunk.MaxSize.x - 1)
                     {
-                        Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecRight);
-                        if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(0, y, z))))
+                        if (chunk_right == null || (chunk_right != null && chunk_right.m_blocks.IsAir(new Vector3Int(0, y, z))))
                             AddFace_Right(position, block.m_data.GetTextureID(BlockFace.RIGHT));
                     }
                     // RIGHT // Inbounds Check
@@ -302,8 +308,7 @@ public class ChunkBuilder
                     // DOWN // Out of bounds check
                     if (DownCheck.y < 0)
                     {
-                        Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecDown);
-                        if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(x, Chunk.MaxSize.y - 1, z))))
+                        if (chunk_down == null || (chunk_down != null && chunk_down.m_blocks.IsAir(new Vector3Int(x, Chunk.MaxSize.y - 1, z))))
                             AddFace_Down(position, block.m_data.GetTextureID(BlockFace.BOTTOM));
                     }
                     // DOWN // Inbounds Check
@@ -316,8 +321,7 @@ public class ChunkBuilder
                     // UP // Out of bounds check
                     if (UpCheck.y > Chunk.MaxSize.y - 1)
                     {
-                        Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecUp);
-                        if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(x, 0, z))))
+                        if (chunk_up == null || (chunk_up != null && chunk_up.m_blocks.IsAir(new Vector3Int(x, 0, z))))
                             AddFace_Up(position, block.m_data.GetTextureID(BlockFace.TOP));
                     }
                     // UP // Inbounds Check
@@ -330,8 +334,7 @@ public class ChunkBuilder
                     // BACK // Out of bounds check
                     if (BackCheck.z < 0)
                     {
-                        Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecBack);
-                        if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(x, y, Chunk.MaxSize.z - 1))))
+                        if (chunk_back == null || (chunk_back != null && chunk_back.m_blocks.IsAir(new Vector3Int(x, y, Chunk.MaxSize.z - 1))))
                             AddFace_Back(position, block.m_data.GetTextureID(BlockFace.BACK));
                     }
                     // BACK // Inbounds Check
@@ -344,8 +347,7 @@ public class ChunkBuilder
                     // FRONT // Out of bounds check
                     if (FrontCheck.z > Chunk.MaxSize.z - 1)
                     {
-                        Chunk other = ChunkStorage.GetChunk(m_chunkIndex + vecForward);
-                        if (other == null || (other != null && other.m_blocks.IsAir(new Vector3Int(x, y, 0))))
+                        if (chunk_forward == null || (chunk_forward != null && chunk_forward.m_blocks.IsAir(new Vector3Int(x, y, 0))))
                             AddFace_Front(position, block.m_data.GetTextureID(BlockFace.FRONT));
                     }
                     // FRONT // Inbounds Check

@@ -51,7 +51,7 @@ public class Player : MonoBehaviour
     [System.NonSerialized] public Vector3Int m_chunkIndex = new Vector3Int(0, 0, 0);
     private void UpdateCurentInternalChunk()
     {
-        Vector3 playerPositionGrounded = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        Vector3Int playerPositionGrounded = Utility.RoundWorldPosition(new Vector3(transform.position.x, transform.position.y, transform.position.z));
         m_chunkIndex = Chunk.ConvertToChunkIndex(playerPositionGrounded);
     }
 
@@ -98,7 +98,7 @@ public class Player : MonoBehaviour
             // Select Target Block [middle click]
             if (Input.GetMouseButtonDown(2) && m_blockOutline.HasHitBlock())
             {
-                Vector3Int hitBlockPosition = Chunk.RoundWorldPosition(m_blockOutline.m_position);
+                Vector3Int hitBlockPosition = Utility.RoundWorldPosition(m_blockOutline.m_position);
                 Block hitBlock = ChunkStorage.GetBlock(hitBlockPosition);
                 // Set Sniper to block player is looking at
                 VoxelSniper.m_blockID = hitBlock.m_data.m_id;
@@ -111,11 +111,11 @@ public class Player : MonoBehaviour
 
                 // Paint
                 if (Input.GetMouseButtonDown(0))
-                    hitBlockPosition = Chunk.RoundWorldPosition(m_blockOutline.m_position);
+                    hitBlockPosition = Utility.RoundWorldPosition(m_blockOutline.m_position);
 
                 // Add
                 else if (Input.GetMouseButtonDown(1))
-                    hitBlockPosition = Chunk.RoundWorldPosition(m_blockOutline.m_position + m_blockOutline.m_normal);
+                    hitBlockPosition = Utility.RoundWorldPosition(m_blockOutline.m_position + m_blockOutline.m_normal);
 
                 Block hitBlock = ChunkStorage.GetBlock(hitBlockPosition);
                 if (hitBlock != null)
@@ -130,30 +130,30 @@ public class Player : MonoBehaviour
 
                             case BrushType.VOXEL:
                                 WorldEdit.SetBlockRegion(
-                                    hitBlockPosition + new Vector3((int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize),
-                                    hitBlockPosition + new Vector3((int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize),
+                                    hitBlockPosition + new Vector3Int((int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize),
+                                    hitBlockPosition + new Vector3Int((int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize),
                                     VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
                                     );
                                 break;
 
                             case BrushType.BALL:
                                 WorldEdit.SetBlockSphere(
-                                    hitBlockPosition, new Vector3(VoxelSniper.m_brushSize, VoxelSniper.m_brushSize, VoxelSniper.m_brushSize),
+                                    hitBlockPosition, new Vector3Int((int)VoxelSniper.m_brushSize, (int)VoxelSniper.m_brushSize, (int)VoxelSniper.m_brushSize),
                                      VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
                                     );
                                 break;
 
                             case BrushType.DISC:
                                 WorldEdit.SetBlockSphere(
-                                    hitBlockPosition, new Vector3(VoxelSniper.m_brushSize, 0.5f, VoxelSniper.m_brushSize),
+                                    hitBlockPosition, new Vector3Int((int)VoxelSniper.m_brushSize, 0, (int)VoxelSniper.m_brushSize),
                                      VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
                                     );
                                 break;
 
                             case BrushType.VOXEL_DISC:
                                 WorldEdit.SetBlockRegion(
-                                    hitBlockPosition + new Vector3((int)-VoxelSniper.m_brushSize, 0.5f, (int)-VoxelSniper.m_brushSize),
-                                    hitBlockPosition + new Vector3((int)+VoxelSniper.m_brushSize, 0.5f, (int)+VoxelSniper.m_brushSize),
+                                    hitBlockPosition + new Vector3Int((int)-VoxelSniper.m_brushSize, 0, (int)-VoxelSniper.m_brushSize),
+                                    hitBlockPosition + new Vector3Int((int)+VoxelSniper.m_brushSize, 0, (int)+VoxelSniper.m_brushSize),
                                     VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
                                     );
                                 break;

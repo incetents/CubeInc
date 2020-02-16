@@ -16,7 +16,7 @@ public class BlockStorage
             {
                 for (int z = 0; z < Chunk.MaxSize.z; z++)
                 {
-                    data[x, y, z] = new Block(0, 0, new Vector3Int(x, y, z));
+                    data[x, y, z] = Block.CreateLocalBlock(0, 0, new Vector3Int(x, y, z));
                 }
             }
         }
@@ -104,28 +104,53 @@ public class BlockInfo
 
 public class Block
 {
+    // Special Creation
+    private Block() { }
+    public static Block CreateLocalBlock(uint id, uint subID, Vector3Int localPosition)
+    {
+        Block newBlock = new Block();
+        newBlock.m_data = BlockDictionary.Get(id);
+        if (newBlock.m_data == null)
+            Debug.LogError("err");
+
+        newBlock.m_subId = subID;
+        newBlock.m_localPosition = localPosition;
+        return newBlock;
+    }
+    public static Block CreateWorldBlock(uint id, uint subID, Vector3Int worldPosition)
+    {
+        Block newBlock = new Block();
+        newBlock.m_data = BlockDictionary.Get(id);
+        if (newBlock.m_data == null)
+            Debug.LogError("err");
+
+        newBlock.m_subId = subID;
+        newBlock.m_localPosition = Chunk.ConvertToBlockIndex(worldPosition);
+        return newBlock;
+    }
+
     public BlockInfo    m_data;
     public Vector3Int   m_localPosition;
     public uint         m_subId;
 
     // Behaviour
-    public Block(uint id, uint subID, Vector3Int localPosition)
-    {
-        m_data = BlockDictionary.Get(id);
-        if (m_data == null)
-            Debug.LogError("err");
-
-        m_subId = subID;
-        m_localPosition = localPosition;
-    }
-    public Block(uint id, uint subID, Vector3 worldPosition)
-    {
-        m_data = BlockDictionary.Get(id);
-        if (m_data == null)
-            Debug.LogError("err");
-
-        m_subId = subID;
-        m_localPosition = Chunk.ConvertToBlockIndex(worldPosition);
-    }
+    //  public Block(uint id, uint subID, Vector3Int localPosition)
+    //  {
+    //      m_data = BlockDictionary.Get(id);
+    //      if (m_data == null)
+    //          Debug.LogError("err");
+    //  
+    //      m_subId = subID;
+    //      m_localPosition = localPosition;
+    //  }
+    //  public Block(uint id, uint subID, Vector3 worldPosition)
+    //  {
+    //      m_data = BlockDictionary.Get(id);
+    //      if (m_data == null)
+    //          Debug.LogError("err");
+    //  
+    //      m_subId = subID;
+    //      m_localPosition = Chunk.ConvertToBlockIndex(worldPosition);
+    //  }
 }
 

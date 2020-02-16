@@ -5,26 +5,25 @@ using UnityEngine;
 public static class WorldEdit
 {
     // [UPDATE OCCURS] Modify an existing block from world space position
-    public static void SetBlock(Vector3 worldPosition, uint id, uint subId)
+    public static void SetBlock(Vector3Int worldPosition, uint id, uint subId)
     {
-        if(ChunkStorage.SetBlock(worldPosition, new Block(id, subId, worldPosition)))
+        if(ChunkStorage.SetBlock(worldPosition, Block.CreateWorldBlock(id, subId, worldPosition)))
+        {
             ChunkStorage.MakePositionDirty(worldPosition);
+        }
     }
 
     // [UPDATE OCCURS] Modify an existing block from world space position
-    public static void SetBlockRegion(Vector3 min, Vector3 max, uint id, uint subId)
+    public static void SetBlockRegion(Vector3Int min, Vector3Int max, uint id, uint subId)
     {
-        Vector3Int _min = new Vector3Int(Mathf.FloorToInt(min.x), Mathf.FloorToInt(min.y), Mathf.FloorToInt(min.z));
-        Vector3Int _max = new Vector3Int(Mathf.FloorToInt(max.x), Mathf.FloorToInt(max.y), Mathf.FloorToInt(max.z));
-
-        for (int x = _min.x; x <= _max.x; x++)
+        for (int x = min.x; x <= max.x; x++)
         {
-            for (int y = _min.y; y <= _max.y; y++)
+            for (int y = min.y; y <= max.y; y++)
             {
-                for (int z = _min.z; z <= _max.z; z++)
+                for (int z = min.z; z <= max.z; z++)
                 {
-                    Vector3 newWorldPosition = new Vector3(x, y, z);
-                    if (ChunkStorage.SetBlock(newWorldPosition, new Block(id, subId, newWorldPosition)))
+                    Vector3Int newWorldPosition = new Vector3Int(x, y, z);
+                    if (ChunkStorage.SetBlock(newWorldPosition, Block.CreateWorldBlock(id, subId, newWorldPosition)))
                         ChunkStorage.MakePositionDirty(newWorldPosition);
                 }
             }
@@ -32,31 +31,32 @@ public static class WorldEdit
     }
 
     // [UPDATE OCCURS] Modify an existing block from world space position
-    public static void SetBlockSphere(Vector3 worldPosition, Vector3 radius, uint id, uint subId)
+    public static void SetBlockSphere(Vector3Int worldPosition, Vector3Int radius, uint id, uint subId)
     {
-        Vector3Int _center = new Vector3Int(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y), Mathf.FloorToInt(worldPosition.z));
+        Vector3Int min = new Vector3Int(Mathf.FloorToInt(worldPosition.x - radius.x), Mathf.FloorToInt(worldPosition.y - radius.y), Mathf.FloorToInt(worldPosition.z - radius.z));
+        Vector3Int max = new Vector3Int(Mathf.FloorToInt(worldPosition.x + radius.x), Mathf.FloorToInt(worldPosition.y + radius.y), Mathf.FloorToInt(worldPosition.z + radius.z));
 
-        Vector3Int _min = new Vector3Int(Mathf.FloorToInt(worldPosition.x - radius.x), Mathf.FloorToInt(worldPosition.y - radius.y), Mathf.FloorToInt(worldPosition.z - radius.z));
-        Vector3Int _max = new Vector3Int(Mathf.FloorToInt(worldPosition.x + radius.x), Mathf.FloorToInt(worldPosition.y + radius.y), Mathf.FloorToInt(worldPosition.z + radius.z));
-
-        for (int x = _min.x; x <= _max.x; x++)
+        for (int x = min.x; x <= max.x; x++)
         {
-            for (int y = _min.y; y <= _max.y; y++)
+            for (int y = min.y; y <= max.y; y++)
             {
-                for (int z = _min.z; z <= _max.z; z++)
+                for (int z = min.z; z <= max.z; z++)
                 {
-                    Vector3 newWorldPosition = new Vector3(x, y, z);
-                    Vector3 offsetPosition = (_center - new Vector3Int(x, y, z));
+                    Vector3Int newWorldPosition = new Vector3Int(x, y, z);
+                    Vector3Int offsetPosition = (worldPosition - new Vector3Int(x, y, z));
 
                     // Check if new position is inside the ellipsoid (Radius)
-                    float ellipsoidCheck =
-                        Mathf.Pow(offsetPosition.x / radius.x, 2.0f) +
-                        Mathf.Pow(offsetPosition.y / radius.y, 2.0f) +
-                        Mathf.Pow(offsetPosition.z / radius.z, 2.0f);
+                    float e_x = (radius.x == 0) ? 0 : ((float)offsetPosition.x / radius.x);
+                    float e_y = (radius.y == 0) ? 0 : ((float)offsetPosition.y / radius.y);
+                    float e_z = (radius.z == 0) ? 0 : ((float)offsetPosition.z / radius.z);
+
+                    float ellipsoidCheck = e_x * e_x + e_y * e_y + e_z * e_z;
+
+                    Debug.Log(offsetPosition + " " + ellipsoidCheck);
 
                     if (ellipsoidCheck <= 1.0f)
                     {
-                        if (ChunkStorage.SetBlock(newWorldPosition, new Block(id, subId, newWorldPosition)))
+                        if (ChunkStorage.SetBlock(newWorldPosition, Block.CreateWorldBlock(id, subId, newWorldPosition)))
                             ChunkStorage.MakePositionDirty(newWorldPosition);
                     }
                 }

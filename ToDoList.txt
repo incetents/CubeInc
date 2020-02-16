@@ -84,12 +84,19 @@ Completed:
 
 Phase 1: [Block Generation]
 
--> extra mode with Z for manually breaking blocks with left/ placing with right click
--> paint mode doesn't require click, hold down works instead
-
 -> Start converting vector3's into vector3int's
 	-> prevent loss of precision
 	-> start in worldedit and keep going
+
+-> mesh builder, store nearby chunks before going through every block
+
+-> safety check, when meshbuilder fails, it keeps trying
+
+-> extra mode with Z for manually breaking blocks with left/ placing with right click
+-> paint mode doesn't require click, hold down works instead
+
+
+-> brush tool -> line [p1, p2] line to aabb intersection
 
 -> command input
 	-> Different tools

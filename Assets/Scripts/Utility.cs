@@ -18,6 +18,15 @@ public class Pair<T, U>
 
 public static class Utility
 {
+    public static Vector3Int RoundWorldPosition(Vector3 pos)
+    {
+        return new Vector3Int(
+            Mathf.FloorToInt(pos.x),
+            Mathf.FloorToInt(pos.y),
+            Mathf.FloorToInt(pos.z)
+            );
+    }
+
     public static string HTMLColorStart(Color color)
     {
         return "<color=#" + ColorUtility.ToHtmlStringRGB(color) + ">";

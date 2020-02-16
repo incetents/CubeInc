@@ -37,14 +37,14 @@ public static class ChunkStorage
         // Edit at Z section
         data[index.x][index.y][index.z] = null;
     }
-    public static Chunk GetChunk(Vector3Int index)
+    public static Chunk GetChunkFromIndex(Vector3Int index)
     {
         if (IsEmpty(index))
             return null;
-
+    
         return data[index.x][index.y][index.z];
     }
-    public static Chunk GetChunk(Vector3 position)
+    public static Chunk GetChunkFromPosition(Vector3Int position)
     {
         Vector3Int index = Chunk.ConvertToChunkIndex(position);
 
@@ -53,6 +53,7 @@ public static class ChunkStorage
 
         return data[index.x][index.y][index.z];
     }
+   
     public static bool IsEmpty(Vector3Int index)
     {
         // Check if X section is missing
@@ -71,10 +72,9 @@ public static class ChunkStorage
     }
 
     // Modify an existing block from world space position (no update)
-    public static bool SetBlock(Vector3 position, Block block)
+    public static bool SetBlock(Vector3Int position, Block block)
     {
-        Vector3Int chunkIndex = Chunk.ConvertToChunkIndex(position);
-        Chunk chunk = GetChunk(chunkIndex);
+        Chunk chunk = GetChunkFromPosition(position);
         if (chunk == null)
             return false;
 
@@ -84,11 +84,10 @@ public static class ChunkStorage
     }
 
     // Acquire block from world space position
-    public static Block GetBlock(Vector3 position)
+    public static Block GetBlock(Vector3Int position)
     {
         // Check if chunk exists
-        Vector3Int chunkIndex = Chunk.ConvertToChunkIndex(position);
-        Chunk chunk = GetChunk(chunkIndex);
+        Chunk chunk = GetChunkFromPosition(position);
         if (chunk == null)
             return null;
 
@@ -97,33 +96,33 @@ public static class ChunkStorage
         return chunk.m_blocks.Get(blockIndex);
     }
     // Get all adjacent blocks from position (includes position block)
-    public static Block[] GetBlocksNearPosition(Vector3 position)
+    public static Block[] GetBlocksNearPosition(Vector3Int position)
     {
         Block[] blocks =
         {
             GetBlock(position),
-            GetBlock(position + Vector3.right),
-            GetBlock(position + Vector3.left),
-            GetBlock(position + Vector3.up),
-            GetBlock(position + Vector3.down),
-            GetBlock(position + Vector3.forward),
-            GetBlock(position + Vector3.back)
+            GetBlock(position + Vector3Int.right),
+            GetBlock(position + Vector3Int.left),
+            GetBlock(position + Vector3Int.up),
+            GetBlock(position + Vector3Int.down),
+            GetBlock(position + new Vector3Int(0, 0, +1)),
+            GetBlock(position + new Vector3Int(0, 0, -1))
         };
 
         return blocks;
     }
     // Check all adjacent spots and return all unique Chunks
-    public static HashSet<Chunk> GetChunksNearPosition(Vector3 position)
+    public static HashSet<Chunk> GetChunksNearPosition(Vector3Int position)
     {
         Chunk[] chunks =
         {
-            GetChunk(position),
-            GetChunk(position + Vector3.right),
-            GetChunk(position + Vector3.left),
-            GetChunk(position + Vector3.up),
-            GetChunk(position + Vector3.down),
-            GetChunk(position + Vector3.forward),
-            GetChunk(position + Vector3.back)
+            GetChunkFromPosition(position),
+            GetChunkFromPosition(position + Vector3Int.right),
+            GetChunkFromPosition(position + Vector3Int.left),
+            GetChunkFromPosition(position + Vector3Int.up),
+            GetChunkFromPosition(position + Vector3Int.down),
+            GetChunkFromPosition(position + new Vector3Int(0, 0, +1)),
+            GetChunkFromPosition(position + new Vector3Int(0, 0, -1))
         };
 
         return new HashSet<Chunk>(chunks);
@@ -133,19 +132,19 @@ public static class ChunkStorage
     {
         Chunk[] chunks =
         {
-            GetChunk(chunk.m_index + Vector3Int.right),
-            GetChunk(chunk.m_index + Vector3Int.left),
-            GetChunk(chunk.m_index + Vector3Int.up),
-            GetChunk(chunk.m_index + Vector3Int.down),
-            GetChunk(chunk.m_index + new Vector3Int(0,0,1)),
-            GetChunk(chunk.m_index + new Vector3Int(0,0,-1))
+            GetChunkFromIndex(chunk.m_index + Vector3Int.right),
+            GetChunkFromIndex(chunk.m_index + Vector3Int.left),
+            GetChunkFromIndex(chunk.m_index + Vector3Int.up),
+            GetChunkFromIndex(chunk.m_index + Vector3Int.down),
+            GetChunkFromIndex(chunk.m_index + new Vector3Int(0,0,1)),
+            GetChunkFromIndex(chunk.m_index + new Vector3Int(0,0,-1))
         };
 
         return chunks;
     }
 
     // Updates block and adjacent blocks (and their chunks)
-    public static void MakePositionDirty(Vector3 position)
+    public static void MakePositionDirty(Vector3Int position)
     {
         // Make all chunks near block dirty
         HashSet<Chunk> chunks = GetChunksNearPosition(position);
@@ -183,7 +182,7 @@ public class Chunk //: MonoBehaviour
     // Utility //
 
     // Index Conversion
-    public static Vector3Int ConvertToChunkIndex(Vector3 position)
+    public static Vector3Int ConvertToChunkIndex(Vector3Int position)
     {
         Vector3Int index = new Vector3Int(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y), Mathf.FloorToInt(position.z));
 
@@ -218,15 +217,6 @@ public class Chunk //: MonoBehaviour
     public Vector3Int ConvertFromLocalToWorld(Vector3Int localPosition)
     {
         return localPosition + (m_index * Chunk.MaxSize);
-    }
-    // Convert World to WorldInt
-    public static Vector3Int RoundWorldPosition(Vector3 position)
-    {
-        return new Vector3Int(
-            Mathf.FloorToInt(position.x),
-            Mathf.FloorToInt(position.y),
-            Mathf.FloorToInt(position.z)
-            );
     }
 
     public Vector3 GetCenter()
@@ -309,14 +299,14 @@ public class Chunk //: MonoBehaviour
                         float perlinUp = Utility.Perlin3D(WorldPosUp);
 
                         if (perlinUp > m_player.PerlinAlpha)
-                            SetBlock(new Block(1, 0, new Vector3Int(x, y, z)));
+                            SetBlock(Block.CreateLocalBlock(1, 0, new Vector3Int(x, y, z)));
                         else
-                            SetBlock(new Block(2, 0, new Vector3Int(x, y, z)));
+                            SetBlock(Block.CreateLocalBlock(2, 0, new Vector3Int(x, y, z)));
 
                     }
                     else
                     {
-                        SetBlock(new Block(0, 0, new Vector3Int(x, y, z)));
+                        SetBlock(Block.CreateLocalBlock(0, 0, new Vector3Int(x, y, z)));
                     }
                 }
             }
@@ -335,7 +325,7 @@ public class Chunk //: MonoBehaviour
                 {
                     //uint id = (uint)((x % 4) + 1);
                     uint id = 1;
-                    Block block = new Block(id, 0, new Vector3Int(x, y, z));
+                    Block block = Block.CreateLocalBlock(id, 0, new Vector3Int(x, y, z));
 
                     SetBlock(block);
                 }
