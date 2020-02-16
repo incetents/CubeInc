@@ -249,11 +249,19 @@ public class Chunk //: MonoBehaviour
         if (m_component == null)
             return false;
 
+        // Init Chunk Builder
         if (m_chunkBuilder == null)
         {
             m_chunkBuilder = new ChunkBuilder(m_index);
             return true;
         }
+
+        // Check if failed
+        if(m_chunkBuilder.hasFailed())
+        {
+            m_chunkBuilder.Restart();
+        }
+
         return false;
     }
     public bool IsMeshConstructed()
@@ -375,46 +383,4 @@ public class Chunk //: MonoBehaviour
         ChunkStorage.allData.Remove(this);
     }
 
-
-    //  private void OnDrawGizmos()
-    //  {
-    //      if (!m_isSetup)
-    //          return;
-    //  
-    //      // Draw Around Extents of Chunk
-    //      DebugExtension.DrawLocalCube(Matrix4x4.Translate(m_center), Chunk.MaxSize);
-    //  }
-
-    private void Awake()
-    {
-        //m_chunkManager = FindObjectOfType<ChunkManager>();
-    }
-
-    private void Update()
-    {
-
-
-        
-
-        // Check if camera can see chunk
-       
-
-
-        //  if (m_visible)
-        //  {
-        //      m_meshRenderer.enabled = true;
-        //  
-        //      // Wireframe Mode
-        //      if (m_player.m_wireframeMode)
-        //          m_meshRenderer.material = GlobalData.material_wireframe;
-        //      else
-        //          m_meshRenderer.material = GlobalData.material_block;
-        //  }
-        //  else
-        //  {
-        //      m_meshRenderer.enabled = false;
-        //      //m_meshRenderer.material = GlobalData.material_wireframe;
-        //  }
-
-    }
 }

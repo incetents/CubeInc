@@ -90,9 +90,9 @@ Completed:
 
 -> tools [discwall DW, voxeldiscwall VDW]
 
-Phase 1: [Block Generation]
-
 -> safety check, when meshbuilder fails, it keeps trying
+
+Phase 1: [Block Generation]
 
 -> extra mode with Z for manually breaking blocks with left/ placing with right click
 -> paint mode doesn't require click, hold down works instead
@@ -119,6 +119,8 @@ Phase 1: [Block Generation]
 	-> shift selection
 	-> ability to easily color code text
 	-> up and down to re-use previously inputted text
+
+-> commands can modify subid now
 
 Phase 2: [Basic Light]
 
@@ -161,11 +163,9 @@ Phase 4: [???]
 	-> face cull system based on shape
 	-> ambient occlusion custom based on shape
 
--> commands can modify subid now
-
 -> Do some profiling to find any bottlenecks
 
-
+-> Use fast voxel traversal instead of normal raycasting
 
 
 

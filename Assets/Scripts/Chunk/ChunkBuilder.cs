@@ -15,9 +15,10 @@ public class ChunkBuilder
     private static Vector3Int vecBack = new Vector3Int(0, 0, -1);
 
     // Data
-    private Vector3Int m_chunkIndex = new Vector3Int();
+    private Vector3Int m_chunkIndex;
     private Thread m_buildThread = null;
     private bool m_threadComplete = false;
+    private bool m_threadFailed = false;
 
     // Read Data
     public List<Vector3> vertices = new List<Vector3>();
@@ -226,17 +227,25 @@ public class ChunkBuilder
 
     public bool isComplete()
     {
-        return m_threadComplete;
+        return m_threadComplete && !m_threadFailed;
+    }
+    public bool hasFailed()
+    {
+        return m_threadFailed;
     }
 
-    private void Run()
+    private void Run(Vector3Int chunkIndex)
     {
+        m_threadComplete = false;
+        m_chunkIndex = chunkIndex;
+
         // Current Chunk
         Chunk chunk = ChunkStorage.GetChunkFromIndex(m_chunkIndex);
         if (chunk == null)
         {
             Debug.LogError("Missing Chunk for building: " + m_chunkIndex);
             m_threadComplete = true;
+            m_threadFailed = true;
             return;
         }
         // Nearby Chunks
@@ -362,13 +371,22 @@ public class ChunkBuilder
         }
 
         m_threadComplete = true;
+        m_threadFailed = false;
     }
 
     public ChunkBuilder(Vector3Int index)
     {
-        m_chunkIndex = index;
-
-        m_buildThread = new Thread(Run);
+        m_buildThread = new Thread(() => Run(index));
         m_buildThread.Start();
+    }
+
+    public void Restart()
+    {
+        if(m_threadComplete && m_threadFailed)
+        {
+            Debug.Log("Fixing Mesh: " + m_chunkIndex);
+            m_buildThread = new Thread(() => Run(m_chunkIndex));
+            m_buildThread.Start();
+        }
     }
 }
