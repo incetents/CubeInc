@@ -85,9 +85,19 @@ public class UICommands : MonoBehaviour
                         VoxelSniper.m_brushType = BrushType.DISC;
                         break;
 
+                    case "discwall":
+                    case "dw":
+                        VoxelSniper.m_brushType = BrushType.DISC_WALL;
+                        break;
+
                     case "voxeldisc":
                     case "vd":
                         VoxelSniper.m_brushType = BrushType.VOXEL_DISC;
+                        break;
+
+                    case "voxeldiscwall":
+                    case "vdw":
+                        VoxelSniper.m_brushType = BrushType.VOXEL_DISC_WALL;
                         break;
 
                     // -> Change BrushPaintMode

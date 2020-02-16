@@ -82,19 +82,20 @@ Completed:
 
 -> middle click copies viewed block
 
-Phase 1: [Block Generation]
-
 -> Start converting vector3's into vector3int's
 	-> prevent loss of precision
 	-> start in worldedit and keep going
 
 -> mesh builder, store nearby chunks before going through every block
 
+-> tools [discwall DW, voxeldiscwall VDW]
+
+Phase 1: [Block Generation]
+
 -> safety check, when meshbuilder fails, it keeps trying
 
 -> extra mode with Z for manually breaking blocks with left/ placing with right click
 -> paint mode doesn't require click, hold down works instead
-
 
 -> brush tool -> line [p1, p2] line to aabb intersection
 
@@ -103,15 +104,7 @@ Phase 1: [Block Generation]
 		[SELECTION TOOL]
 		-> selection: (fill, delete, move, rotate, copy, paste)
 
--> select between voxel sniper and selection tool
--> UI selection -> edit/add (Arrow/gunpowder)
-	-> Block type selection
-	-> simple way of showing texture icon
-	-> show selected texture near arrow/gunpowder
-	-> menu showing list of all available blocks by their texture
-		-> gui menu
-
-(fun) -> particle effect when destroying a block
+(fun) -> particle effect when destroying a single block
 
 -> Blocks have different shapes
 	-> depending on shape/rotation (rotation from subid), hide specific sides

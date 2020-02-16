@@ -51,9 +51,6 @@ public static class WorldEdit
                     float e_z = (radius.z == 0) ? 0 : ((float)offsetPosition.z / radius.z);
 
                     float ellipsoidCheck = e_x * e_x + e_y * e_y + e_z * e_z;
-
-                    Debug.Log(offsetPosition + " " + ellipsoidCheck);
-
                     if (ellipsoidCheck <= 1.0f)
                     {
                         if (ChunkStorage.SetBlock(newWorldPosition, Block.CreateWorldBlock(id, subId, newWorldPosition)))

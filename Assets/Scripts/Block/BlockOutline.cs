@@ -15,6 +15,7 @@ public class BlockOutline : MonoBehaviour
     private bool m_hit = false;
     [System.NonSerialized] public Vector3 m_position = new Vector3();
     [System.NonSerialized] public Vector3 m_normal = new Vector3();
+    [System.NonSerialized] public Axis m_normalAxis = Axis.NONE;
 
     // Utility
     public bool HasHitBlock()
@@ -39,7 +40,17 @@ public class BlockOutline : MonoBehaviour
         {
             m_position = hit.point - hit.normal * 0.01f;
             m_normal = hit.normal;
-            //Debug.Log(m_position);
+
+            // Determine largest normal axis
+            float xAbs = Mathf.Abs(m_normal.x);
+            float yAbs = Mathf.Abs(m_normal.y);
+            float zAbs = Mathf.Abs(m_normal.z);
+            if (xAbs > yAbs && xAbs > zAbs)
+                m_normalAxis = Axis.X;
+            else if (zAbs > xAbs && zAbs > yAbs)
+                m_normalAxis = Axis.Z;
+            else
+                m_normalAxis = Axis.Y;
 
             m_hit = true;
             m_mesh.SetActive(true);

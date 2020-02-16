@@ -14,7 +14,9 @@ public enum BrushType
     BALL,
     VOXEL,
     DISC,
-    VOXEL_DISC
+    VOXEL_DISC,
+    DISC_WALL,
+    VOXEL_DISC_WALL
 }
 public enum BrushPaintType
 {

@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Axis
+{
+    NONE,
+    X,
+    Y,
+    Z
+}
+
 public class Pair<T, U>
 {
     public Pair(){}

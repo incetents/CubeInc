@@ -19,7 +19,7 @@ public class UIBlockSelectorScreen : MonoBehaviour
     private void AcquireDisplayer(Transform reference)
     {
         UIBlockDisplayer result = reference.gameObject.GetComponent<UIBlockDisplayer>();
-        if (result != null && result.isActiveAndEnabled)
+        if (result != null)
             displayers.Add(result);
 
         foreach (Transform child in reference)
