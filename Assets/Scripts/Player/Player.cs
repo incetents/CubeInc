@@ -83,6 +83,16 @@ public class Player : MonoBehaviour
         m_blockOutline = gameObject.GetComponent<BlockOutline>();
     }
 
+    // Left/Right Button
+    //private bool PrevLeftButton = false;
+    //private bool PrevRightButton = false;
+
+    private float LeftButtonTime = 0;
+    private float RightButtonTime = 0;
+
+    private bool LeftButtonSlow = false;
+    private bool RightButtonSlow = false;
+
     private void Update()
     {
         // Update Chunk the player is in
@@ -95,167 +105,109 @@ public class Player : MonoBehaviour
         // Game Functionality [ No Menu ]
         if (m_menuState == MenuState.NONE)
         {
-            // Select Target Block [middle click]
-            if (Input.GetMouseButtonDown(2) && m_blockOutline.HasHitBlock())
+            // Left/Right Button
+            if (Input.GetMouseButton(0))
             {
+                LeftButtonSlow = (Time.time > LeftButtonTime);
+                if(LeftButtonSlow)
+                    LeftButtonTime = Time.time + 0.1f;
+            }
+            else
+                LeftButtonSlow = false;
+
+            if (Input.GetMouseButton(1))
+            {
+                RightButtonSlow = (Time.time > RightButtonTime);
+                if(RightButtonSlow)
+                    RightButtonTime = Time.time + 0.1f;
+            }
+            else
+                RightButtonSlow = false;
+
+            // Edit Blocks
+            if (m_blockOutline.HasHitBlock())
+            {
+                // Acquire Block player is looking at
                 Vector3Int hitBlockPosition = Utility.RoundWorldPosition(m_blockOutline.m_position);
                 Block hitBlock = ChunkStorage.GetBlock(hitBlockPosition);
-                // Set Sniper to block player is looking at
-                VoxelSniper.m_blockID = hitBlock.m_data.m_id;
-            }
 
-            // Paint/Add Block
-            else if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && m_blockOutline.HasHitBlock())
-            {
-                Vector3Int hitBlockPosition = Vector3Int.zero;
+                // Acquire nearby block of hitBlockPosition
+                Vector3Int hitBlockPosition_Neighbor = Utility.RoundWorldPosition(m_blockOutline.m_position + m_blockOutline.m_normal);
+                //Block hitBlock_Neighbor = ChunkStorage.GetBlock(hitBlockPosition_Neighbor);
 
-                // Paint
-                if (Input.GetMouseButtonDown(0))
-                    hitBlockPosition = Utility.RoundWorldPosition(m_blockOutline.m_position);
-
-                // Add
-                else if (Input.GetMouseButtonDown(1))
-                    hitBlockPosition = Utility.RoundWorldPosition(m_blockOutline.m_position + m_blockOutline.m_normal);
-
-                Block hitBlock = ChunkStorage.GetBlock(hitBlockPosition);
-                if (hitBlock != null)
+                // Select Target Block [middle click]
+                if (Input.GetMouseButtonDown(2) && hitBlock != null)
                 {
-                    if (VoxelSniper.m_sniperToolMode == SniperToolMode.PAINT)
-                    {
-                        switch (VoxelSniper.m_brushType)
-                        {
-                            case BrushType.PENCIL:
-                                WorldEdit.SetBlock(hitBlockPosition, VoxelSniper.m_blockID, VoxelSniper.m_blockSubID);
-                                break;
+                    // Set Sniper to block player is looking at
+                    VoxelSniper.m_blockID = hitBlock.m_data.m_id;
+                }
 
-                            case BrushType.VOXEL:
-                                WorldEdit.SetBlockRegion(
-                                    hitBlockPosition + new Vector3Int((int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize),
-                                    hitBlockPosition + new Vector3Int((int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize),
-                                    VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
-                                    );
-                                break;
-
-                            case BrushType.BALL:
-                                WorldEdit.SetBlockSphere(
-                                    hitBlockPosition, new Vector3Int((int)VoxelSniper.m_brushSize, (int)VoxelSniper.m_brushSize, (int)VoxelSniper.m_brushSize),
-                                    VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
-                                    );
-                                break;
-
-                            case BrushType.DISC:
-                                WorldEdit.SetBlockSphere(
-                                    hitBlockPosition, new Vector3Int((int)VoxelSniper.m_brushSize, 0, (int)VoxelSniper.m_brushSize),
-                                    VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
-                                    );
-                                break;
-
-                            case BrushType.DISC_WALL:
-                                // Check Axis
-                                switch(m_blockOutline.m_normalAxis)
-                                {
-                                    case Axis.X:
-                                        WorldEdit.SetBlockSphere(
-                                            hitBlockPosition, new Vector3Int(0, (int)VoxelSniper.m_brushSize, (int)VoxelSniper.m_brushSize),
-                                            VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
-                                            );
-                                    break;
-
-                                    case Axis.Y:
-                                        WorldEdit.SetBlockSphere(
-                                            hitBlockPosition, new Vector3Int((int)VoxelSniper.m_brushSize, 0, (int)VoxelSniper.m_brushSize),
-                                            VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
-                                            );
-                                    break;
-
-                                    case Axis.Z:
-                                        WorldEdit.SetBlockSphere(
-                                            hitBlockPosition, new Vector3Int((int)VoxelSniper.m_brushSize, (int)VoxelSniper.m_brushSize, 0),
-                                            VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
-                                            );
-                                    break;
-                                }
-                                break;
-
-                            case BrushType.VOXEL_DISC:
-                                WorldEdit.SetBlockRegion(
-                                    hitBlockPosition + new Vector3Int((int)-VoxelSniper.m_brushSize, 0, (int)-VoxelSniper.m_brushSize),
-                                    hitBlockPosition + new Vector3Int((int)+VoxelSniper.m_brushSize, 0, (int)+VoxelSniper.m_brushSize),
-                                    VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
-                                    );
-                                break;
-
-                            case BrushType.VOXEL_DISC_WALL:
-                                // Check Axis
-                                switch (m_blockOutline.m_normalAxis)
-                                {
-                                    case Axis.X:
-                                        WorldEdit.SetBlockRegion(
-                                            hitBlockPosition + new Vector3Int(0, (int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize),
-                                            hitBlockPosition + new Vector3Int(0, (int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize),
-                                            VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
-                                            );
-                                        break;
-
-                                    case Axis.Y:
-                                        WorldEdit.SetBlockRegion(
-                                            hitBlockPosition + new Vector3Int((int)-VoxelSniper.m_brushSize, 0, (int)-VoxelSniper.m_brushSize),
-                                            hitBlockPosition + new Vector3Int((int)+VoxelSniper.m_brushSize, 0, (int)+VoxelSniper.m_brushSize),
-                                            VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
-                                            );
-                                        break;
-
-                                    case Axis.Z:
-                                        WorldEdit.SetBlockRegion(
-                                             hitBlockPosition + new Vector3Int((int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize, 0),
-                                             hitBlockPosition + new Vector3Int((int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize, 0),
-                                             VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
-                                             );
-                                        break;
-                                }
-                                break;
-                        }
-                    }
+                // Break Block
+                else if(VoxelSniper.m_sniperToolMode == SniperToolMode.BREAK)
+                {
+                    // Check Input
+                    if (Input.GetMouseButtonDown(0))
+                        WorldEdit.SetBlock(hitBlockPosition, 0, 0);
+                    else if (Input.GetMouseButtonDown(1))
+                        WorldEdit.SetBlock(hitBlockPosition_Neighbor, VoxelSniper.m_blockID, VoxelSniper.m_blockSubID);
+                    
+                }
+                // Paint Block
+                else if(VoxelSniper.m_sniperToolMode == SniperToolMode.PAINT)
+                {
+                    // Check Input
+                    if(LeftButtonSlow)
+                        VoxelSniper.Paint(hitBlockPosition, m_blockOutline.m_normalAxis);
+                    else if(RightButtonSlow)
+                        VoxelSniper.Paint(hitBlockPosition_Neighbor, m_blockOutline.m_normalAxis);
                 }
             }
+
 
             // Toggle Sniper Tool
             if (Input.GetKeyDown(KeyCode.Z))
             {
                 if (VoxelSniper.m_sniperToolMode == SniperToolMode.PAINT)
-                    VoxelSniper.m_sniperToolMode = SniperToolMode.SELECTION;
+                    VoxelSniper.m_sniperToolMode = SniperToolMode.BREAK;
                 else
                     VoxelSniper.m_sniperToolMode = SniperToolMode.PAINT;
             }
+            else if (Input.GetKeyDown(KeyCode.X))
+            {
+                if (VoxelSniper.m_sniperToolMode == SniperToolMode.SELECTION)
+                    VoxelSniper.m_sniperToolMode = SniperToolMode.BREAK;
+                else
+                    VoxelSniper.m_sniperToolMode = SniperToolMode.SELECTION;
+            }
 
             // Reset Sniper Tool
-            if(Input.GetKeyDown(KeyCode.K))
+            else if(Input.GetKeyDown(KeyCode.K))
             {
                 VoxelSniper.Reset();
             }
 
             // Toggle Chunk Lines
-            if (Input.GetKeyDown(KeyCode.F2))
+            else if (Input.GetKeyDown(KeyCode.F2))
                 m_showChunkLines = !m_showChunkLines;
 
             // Toggle Wireframe
-            if (Input.GetKeyDown(KeyCode.F1))
+            else if (Input.GetKeyDown(KeyCode.F1))
                 m_wireframeMode = !m_wireframeMode;
 
             // Toggle Noclip
-            if (Input.GetKeyDown(KeyCode.N))
+            else if (Input.GetKeyDown(KeyCode.N))
                 m_noclip = !m_noclip;
 
             // Enter Block Selector
-            if (Input.GetKeyDown(KeyCode.I))
+            else if (Input.GetKeyDown(KeyCode.I))
                 m_menuState = MenuState.BLOCK_SELECTION;
 
             // Enter Commands
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Slash))
+            else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Slash))
                 m_menuState = MenuState.COMMAND;
 
             // Enter Pause
-            if (Input.GetKeyDown(KeyCode.Escape))
+            else if (Input.GetKeyDown(KeyCode.Escape))
                 m_menuState = MenuState.PAUSED;
 
         }

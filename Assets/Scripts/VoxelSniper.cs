@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum SniperToolMode
 {
+    BREAK,
     PAINT,
     SELECTION
 }
@@ -43,4 +44,107 @@ public static class VoxelSniper
         m_blockID = 0;
         m_blockSubID = 0;
     }
+
+    public static void Paint(Vector3Int blockPosition, Axis blockNormal)
+    {
+        if (m_sniperToolMode != SniperToolMode.PAINT)
+        {
+            Debug.LogError("Using VoxelSniper:Paint on wrong mode");
+            return;
+        }
+
+        switch (VoxelSniper.m_brushType)
+        {
+            case BrushType.PENCIL:
+                WorldEdit.SetBlock(blockPosition, VoxelSniper.m_blockID, VoxelSniper.m_blockSubID);
+                break;
+
+            case BrushType.VOXEL:
+                WorldEdit.SetBlockRegion(
+                    blockPosition + new Vector3Int((int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize),
+                    blockPosition + new Vector3Int((int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize),
+                    VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                    );
+                break;
+
+            case BrushType.BALL:
+                WorldEdit.SetBlockSphere(
+                    blockPosition, new Vector3Int((int)VoxelSniper.m_brushSize, (int)VoxelSniper.m_brushSize, (int)VoxelSniper.m_brushSize),
+                    VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                    );
+                break;
+
+            case BrushType.DISC:
+                WorldEdit.SetBlockSphere(
+                    blockPosition, new Vector3Int((int)VoxelSniper.m_brushSize, 0, (int)VoxelSniper.m_brushSize),
+                    VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                    );
+                break;
+
+            case BrushType.DISC_WALL:
+                // Check Axis
+                switch (blockNormal)
+                {
+                    case Axis.X:
+                        WorldEdit.SetBlockSphere(
+                            blockPosition, new Vector3Int(0, (int)VoxelSniper.m_brushSize, (int)VoxelSniper.m_brushSize),
+                            VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                            );
+                        break;
+
+                    case Axis.Y:
+                        WorldEdit.SetBlockSphere(
+                            blockPosition, new Vector3Int((int)VoxelSniper.m_brushSize, 0, (int)VoxelSniper.m_brushSize),
+                            VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                            );
+                        break;
+
+                    case Axis.Z:
+                        WorldEdit.SetBlockSphere(
+                            blockPosition, new Vector3Int((int)VoxelSniper.m_brushSize, (int)VoxelSniper.m_brushSize, 0),
+                            VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                            );
+                        break;
+                }
+                break;
+
+            case BrushType.VOXEL_DISC:
+                WorldEdit.SetBlockRegion(
+                    blockPosition + new Vector3Int((int)-VoxelSniper.m_brushSize, 0, (int)-VoxelSniper.m_brushSize),
+                    blockPosition + new Vector3Int((int)+VoxelSniper.m_brushSize, 0, (int)+VoxelSniper.m_brushSize),
+                    VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                    );
+                break;
+
+            case BrushType.VOXEL_DISC_WALL:
+                // Check Axis
+                switch (blockNormal)
+                {
+                    case Axis.X:
+                        WorldEdit.SetBlockRegion(
+                            blockPosition + new Vector3Int(0, (int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize),
+                            blockPosition + new Vector3Int(0, (int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize),
+                            VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                            );
+                        break;
+
+                    case Axis.Y:
+                        WorldEdit.SetBlockRegion(
+                            blockPosition + new Vector3Int((int)-VoxelSniper.m_brushSize, 0, (int)-VoxelSniper.m_brushSize),
+                            blockPosition + new Vector3Int((int)+VoxelSniper.m_brushSize, 0, (int)+VoxelSniper.m_brushSize),
+                            VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                            );
+                        break;
+
+                    case Axis.Z:
+                        WorldEdit.SetBlockRegion(
+                             blockPosition + new Vector3Int((int)-VoxelSniper.m_brushSize, (int)-VoxelSniper.m_brushSize, 0),
+                             blockPosition + new Vector3Int((int)+VoxelSniper.m_brushSize, (int)+VoxelSniper.m_brushSize, 0),
+                             VoxelSniper.m_blockID, VoxelSniper.m_blockSubID
+                             );
+                        break;
+                }
+                break;
+        }
+}
 }

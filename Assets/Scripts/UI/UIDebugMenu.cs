@@ -59,7 +59,7 @@ public class UIDebugMenu : MonoBehaviour
 
         m_display.NewLine();
 
-        m_display.Write("[Z] Swap Tool", VoxelSniper.m_sniperToolMode.ToString(), Color.yellow);
+        m_display.Write("[Z/X] Swap Tool", VoxelSniper.m_sniperToolMode.ToString(), Color.yellow);
         if (VoxelSniper.m_sniperToolMode == SniperToolMode.PAINT)
         {
             m_display.Write("[K] Reset Tool");

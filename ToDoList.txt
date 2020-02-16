@@ -92,10 +92,18 @@ Completed:
 
 -> safety check, when meshbuilder fails, it keeps trying
 
-Phase 1: [Block Generation]
+-> move player paint/break logic into voxel sniper class
 
 -> extra mode with Z for manually breaking blocks with left/ placing with right click
+
 -> paint mode doesn't require click, hold down works instead
+
+Phase 1: [Block Generation]
+
+
+
+-> chunk stats on top right
+	-> chunk count [# occluded], vertex count
 
 -> brush tool -> line [p1, p2] line to aabb intersection
 
@@ -114,11 +122,6 @@ Phase 1: [Block Generation]
 -> flag if chunk has never been edited (if no, don't save it)
 -> save changed chunks
 	-> pre-emptively add subid in saving for future
-
--> command input part 2
-	-> shift selection
-	-> ability to easily color code text
-	-> up and down to re-use previously inputted text
 
 -> commands can modify subid now
 
@@ -167,7 +170,10 @@ Phase 4: [???]
 
 -> Use fast voxel traversal instead of normal raycasting
 
-
+-> command input part 2
+	-> shift selection
+	-> ability to easily color code text
+	-> up and down to re-use previously inputted text
 
 
 
