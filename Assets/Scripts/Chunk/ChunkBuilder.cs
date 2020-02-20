@@ -243,7 +243,7 @@ public class ChunkBuilder
         Chunk chunk = ChunkStorage.GetChunkFromIndex(m_chunkIndex);
         if (chunk == null)
         {
-            Debug.LogError("Missing Chunk for building: " + m_chunkIndex);
+            //Debug.LogWarning("Missing Chunk for building: " + m_chunkIndex);
             m_threadComplete = true;
             m_threadFailed = true;
             return;
@@ -259,7 +259,9 @@ public class ChunkBuilder
         BlockStorage blocks = chunk.m_blocks;
         if(blocks == null)
         {
-            Debug.LogError("Building Chunk with missing blocks");
+            //Debug.LogError("Building Chunk with missing blocks");
+            m_threadComplete = true;
+            m_threadFailed = true;
             return;
         }
         Vector3 globalPos = m_chunkIndex * Chunk.MaxSize;

@@ -156,8 +156,7 @@ public static class ChunkStorage
     }
 }
 
-//[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-public class Chunk //: MonoBehaviour
+public class Chunk
 {
     // Constants
     public static readonly Vector3Int MaxSize = new Vector3Int(16, 16, 16);

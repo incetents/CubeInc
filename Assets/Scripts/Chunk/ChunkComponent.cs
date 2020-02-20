@@ -152,7 +152,6 @@ public class ChunkComponent : MonoBehaviour
         else
         {
             m_meshRenderer.enabled = false;
-            //m_meshRenderer.material = GlobalData.material_wireframe;
         }
 
         // Destroy Self if too far away from player camera

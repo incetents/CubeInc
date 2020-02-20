@@ -147,7 +147,21 @@ public class Player : MonoBehaviour
                 {
                     // Check Input
                     if (Input.GetMouseButtonDown(0))
+                    {
                         WorldEdit.SetBlock(hitBlockPosition, 0, 0);
+
+                        // Particle
+                        //BlockInfo info = BlockDictionary.Get(VoxelSniper.m_blockID);
+                        BlockInfo info = hitBlock.m_data;
+                        if (info != null && info.m_textureIDs.Count > 0)
+                        {
+                            Vector3 blockCenter = new Vector3((float)hitBlockPosition.x + 0.5f, (float)hitBlockPosition.y + 0.5f, (float)hitBlockPosition.z + 0.5f);
+                            GameObject p = (GameObject)Instantiate(GlobalData.prefab_blockBreakParticle, blockCenter, GlobalData.prefab_blockBreakParticle.transform.rotation);
+                            p.GetComponent<BlockParticles>().SetMeshToBlock(info.m_textureIDs[0]);
+                            p.GetComponent<ParticleSystem>().Play();
+                        }
+
+                    }
                     else if (Input.GetMouseButtonDown(1))
                         WorldEdit.SetBlock(hitBlockPosition_Neighbor, VoxelSniper.m_blockID, VoxelSniper.m_blockSubID);
                     

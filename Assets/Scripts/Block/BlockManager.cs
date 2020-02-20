@@ -4,8 +4,6 @@ using UnityEngine;
 
 public static class BlockDictionary
 {
-    public static Dictionary<uint, Texture2D> textures = new Dictionary<uint, Texture2D>();
-
     private static Dictionary<uint, BlockInfo> dataID = new Dictionary<uint, BlockInfo>();
     private static Dictionary<string, BlockInfo> dataName = new Dictionary<string, BlockInfo>();
 
@@ -138,6 +136,7 @@ public class BlockManager : MonoBehaviour
 
             // Apply
             GlobalData.material_block.SetTexture("_TextureArray", blockTextureArray);
+            GlobalData.material_blockParticle.SetTexture("_TextureArray", blockTextureArray);
         }
 
         // Import all Blocks

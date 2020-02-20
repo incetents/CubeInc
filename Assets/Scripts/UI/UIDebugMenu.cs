@@ -28,10 +28,6 @@ public class UIDebugMenu : MonoBehaviour
     }
     private void Update()
     {
-        // Fix Text Rect Transform to always adjust to screen
-        //RectTransform textTransform = m_textMesh.GetComponent<RectTransform>();
-        //textTransform.sizeDelta = new Vector2(1920 - 12, 1080 - 12);
-
         // Calc FPS
         float fps = (1.0f / Time.smoothDeltaTime);
         m_rollingFPS[m_rollgingFPS_index] = fps;

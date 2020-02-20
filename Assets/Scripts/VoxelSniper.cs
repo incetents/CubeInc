@@ -28,7 +28,7 @@ public enum BrushPaintType
 
 public static class VoxelSniper
 {
-    public static SniperToolMode m_sniperToolMode = SniperToolMode.PAINT;
+    public static SniperToolMode m_sniperToolMode = SniperToolMode.BREAK;
 
     public static BrushType m_brushType;
     public static BrushPaintType m_brushPaintType;

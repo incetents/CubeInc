@@ -9,10 +9,11 @@ public class ChunkManager : MonoBehaviour
     private Player m_player;
 
     // Global
-    public static int m_ChunkDistance = 1;
+    public static int m_ChunkDistance = 2;
 
     // Data
-    private Chunk m_constructingChunk = null;
+    private Chunk[] m_allChunks = null;
+    private float m_chunkCreationTime = 0;
 
     // Settings
     [System.NonSerialized] public bool m_generateChunks = true;
@@ -73,15 +74,14 @@ public class ChunkManager : MonoBehaviour
         }
 
         // Update all existing chunks
-        //Chunk[] chunks = FindObjectsOfType<Chunk>();
-        Chunk[] chunks = ChunkStorage.allData.ToArray();
-        // Make sure chunks update based on distance from player
+        m_allChunks = ChunkStorage.allData.ToArray();
 
-        chunks = chunks.OrderBy(
+        // Make sure chunks update based on distance from player
+        m_allChunks = m_allChunks.OrderBy(
             x => Vector3.Distance(m_player.transform.position, x.GetCenter())
             ).ToArray();
 
-        foreach(Chunk chunk in chunks)
+        foreach(Chunk chunk in m_allChunks)
         {
             // Reload Chunks
             if(Input.GetKeyDown(KeyCode.G))
@@ -90,7 +90,7 @@ public class ChunkManager : MonoBehaviour
                 chunk.MakeDirty();
             }
 
-            if(chunk.IsDirty())
+            if(chunk.IsDirty() && Time.time > m_chunkCreationTime)
             {
                 if(chunk.IsMeshConstructed())
                 {
@@ -98,6 +98,7 @@ public class ChunkManager : MonoBehaviour
                     chunk.EndMeshConstruction();
                     chunk.MakeClean();
                     // Only create 1 Mesh per frame
+                    //m_chunkCreationTime = Time.time + 1.0f;
                     break;
                 }
                 else

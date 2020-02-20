@@ -98,8 +98,22 @@ Completed:
 
 -> paint mode doesn't require click, hold down works instead
 
+-> particle effect when destroying a single block
+-> menu mode pauses active particles
+
+---------------------------------
+
 Phase 1: [Block Generation]
 
+
+
+-> Cache last 30 or so chunks
+	-> setactive(false)
+	-> delete when going passed limit
+
+-> Improve Chunk Mesh Generation Speed
+	-> Abort thread if running and being deleted
+	-> Do some profiling
 
 
 -> chunk stats on top right
@@ -112,12 +126,9 @@ Phase 1: [Block Generation]
 		[SELECTION TOOL]
 		-> selection: (fill, delete, move, rotate, copy, paste)
 
-(fun) -> particle effect when destroying a single block
-
 -> Blocks have different shapes
 	-> depending on shape/rotation (rotation from subid), hide specific sides
 
--> Improve Chunk Mesh Generation Speed
 
 -> flag if chunk has never been edited (if no, don't save it)
 -> save changed chunks
@@ -175,7 +186,11 @@ Phase 4: [???]
 	-> ability to easily color code text
 	-> up and down to re-use previously inputted text
 
-
+-> make particle look better
+	->https://giphy.com/gifs/minecraft-mining-kjmc-61GxwqRgSri80
+	-> slower descent
+	-> doesn't shrink, just despawns [each particle has different despawn time]
+	-> larger uv for particles
 
 
 		
